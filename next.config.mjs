@@ -6,6 +6,9 @@ const nextConfig = {
       bodySizeLimit: '50mb',
     },
   },
+  allowedDevOrigins: [
+    process.env.REPLIT_DEV_DOMAIN,
+  ].filter(Boolean),
 };
 
 export default nextConfig;
