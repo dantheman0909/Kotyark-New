@@ -53,7 +53,7 @@ export default function InvestorsPage() {
   );
 
   const renderCards = (docs, icon) => (
-    <div className="category-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+    <div className="category-grid">
       {docs.map((doc, i) => (
         <Link href={doc.href} key={i} className="category-card-link">
           <div className="category-card">
@@ -83,7 +83,7 @@ export default function InvestorsPage() {
       <section className="section">
         <div className="container">
           <ScrollReveal>
-            <div className="stats-grid">
+            <div className="stats-grid investor-stats">
               <div className="stat-card">
                 <div className="stat-number" style={{ fontSize: '24px' }}>BSE Listed</div>
                 <div className="stat-label">Stock Exchange</div>

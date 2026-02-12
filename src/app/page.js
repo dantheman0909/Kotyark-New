@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
+import CarbonCreditBadge from '@/components/CarbonCreditBadge';
 
 export default function HomePage() {
   return (
@@ -31,6 +32,7 @@ export default function HomePage() {
             <Link href="/products" className="btn btn-outline-light btn-lg">Explore Products</Link>
           </div>
         </div>
+        <CarbonCreditBadge />
         <div className="hero-scroll" aria-hidden="true">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
