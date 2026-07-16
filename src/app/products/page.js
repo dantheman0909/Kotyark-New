@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
+import { getContentBlock } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Biodiesel & Glycerin Products',
@@ -7,6 +10,7 @@ export const metadata = {
 };
 
 export default function ProductsPage() {
+  const introBlock = getContentBlock('products-intro');
   return (
     <>
       <section className="page-hero">
@@ -15,6 +19,15 @@ export default function ProductsPage() {
           <p>High-quality biofuels and by-products manufactured at our zero-discharge facilities in Rajasthan and Gujarat.</p>
         </div>
       </section>
+
+      {/* Admin-editable intro block (shown only when set in the admin Site Content tab) */}
+      {introBlock?.html ? (
+        <section className="section">
+          <div className="container">
+            <div className="cms-content" dangerouslySetInnerHTML={{ __html: introBlock.html }} />
+          </div>
+        </section>
+      ) : null}
 
       {/* Current Products */}
       <section className="section">

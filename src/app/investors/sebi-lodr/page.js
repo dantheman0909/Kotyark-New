@@ -1,4 +1,7 @@
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
+import { getInvestorSections } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Disclosure Under Reg. 46 of SEBI (LODR)',
@@ -6,6 +9,7 @@ export const metadata = {
 };
 
 export default function SebiLodrPage() {
+  const sections = getInvestorSections();
   const disclosures = [
     { sr: 'A', particular: 'Details of Business', regulation: 'Reg. 46(2)(a)', status: 'Yes', link: '/about', linkText: 'View' },
     { sr: 'B', particular: 'Terms and Conditions of Appointment of Independent Directors', regulation: 'Reg. 46(2)(b)', status: 'Yes', link: '/investors/company-policies', linkText: 'View' },
@@ -40,7 +44,7 @@ export default function SebiLodrPage() {
   ];
 
   return (
-    <InvestorSubPageLayout title="Disclosure Under Reg. 46 of SEBI (LODR)">
+    <InvestorSubPageLayout title="Disclosure Under Reg. 46 of SEBI (LODR)" sections={sections}>
       <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
         Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) for website disclosures by Kotyark Industries Limited.
       </p>

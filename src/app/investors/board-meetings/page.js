@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
+import { getInvestorSections } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Board Meetings',
@@ -7,6 +10,7 @@ export const metadata = {
 };
 
 export default function BoardMeetingsPage() {
+  const sections = getInvestorSections();
   const financialYears = [
     { fy: 'FY 2025-26', slug: 'fy-2025-26' },
     { fy: 'FY 2024-25', slug: 'fy-2024-25' },
@@ -16,7 +20,7 @@ export default function BoardMeetingsPage() {
   ];
 
   return (
-    <InvestorSubPageLayout title="Board Meetings">
+    <InvestorSubPageLayout title="Board Meetings" sections={sections}>
       <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
         Board meeting notices, outcomes, and financial results filed with BSE. Select a financial year to view related documents.
       </p>

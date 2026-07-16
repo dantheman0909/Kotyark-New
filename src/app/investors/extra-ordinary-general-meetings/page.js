@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
+import { getInvestorSections } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Extra Ordinary General Meetings',
@@ -7,13 +10,14 @@ export const metadata = {
 };
 
 export default function EOGMPage() {
+  const sections = getInvestorSections();
   const meetings = [
     { title: 'EOGM - January 2024', date: 'January 2024', desc: 'Extra Ordinary General Meeting documents and resolutions passed.' },
     { title: 'EOGM - September 2022', date: 'September 2022', desc: 'Extra Ordinary General Meeting documents and resolutions passed.' },
   ];
 
   return (
-    <InvestorSubPageLayout title="Extra Ordinary General Meetings">
+    <InvestorSubPageLayout title="Extra Ordinary General Meetings" sections={sections}>
       <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
         Notices, minutes, and voting results of Extra Ordinary General Meetings held by Kotyark Industries Limited.
       </p>

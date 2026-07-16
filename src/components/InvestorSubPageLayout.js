@@ -2,7 +2,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const sidebarLinks = [
+// Fallback used only if no sections are provided (keeps the layout resilient).
+const fallbackLinks = [
   { href: '/investors/sebi-lodr', label: 'Disclosure under Reg. 46 of SEBI (LODR)' },
   { href: '/investors/closing-trading-window', label: 'Closing of Trading Window' },
   { href: '/investors/misc-sebi-disclosure', label: 'Misc Disclosure under SEBI' },
@@ -59,8 +60,11 @@ export function DocumentList({ documents }) {
   );
 }
 
-export default function InvestorSubPageLayout({ title, children }) {
+export default function InvestorSubPageLayout({ title, children, sections }) {
   const pathname = usePathname();
+  const sidebarLinks = (sections && sections.length > 0)
+    ? sections.map((s) => ({ href: s.href || `/investors/${s.slug}`, label: s.name }))
+    : fallbackLinks;
 
   return (
     <>

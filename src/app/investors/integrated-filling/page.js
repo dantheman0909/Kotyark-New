@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
+import { getInvestorSections } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Integrated Filling',
@@ -7,13 +10,14 @@ export const metadata = {
 };
 
 export default function IntegratedFillingPage() {
+  const sections = getInvestorSections();
   const categories = [
     { title: 'Governance & Compliance Filings', desc: 'Corporate governance reports, compliance certificates, and related regulatory filings.' },
     { title: 'Financial & Annual Filings', desc: 'Annual returns, financial statements, and other periodic filings with regulatory authorities.' },
   ];
 
   return (
-    <InvestorSubPageLayout title="Integrated Filling">
+    <InvestorSubPageLayout title="Integrated Filling" sections={sections}>
       <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
         Consolidated view of integrated filings made with regulatory authorities covering both governance and financial compliance.
       </p>

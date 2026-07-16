@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
+import { getContentBlock } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: "About Kotyark Industries - India's Biofuel Pioneer",
@@ -7,6 +10,7 @@ export const metadata = {
 };
 
 export default function AboutPage() {
+  const introBlock = getContentBlock('about-intro');
   return (
     <>
       {/* Page Hero */}
@@ -16,6 +20,15 @@ export default function AboutPage() {
           <p>Pioneering India&apos;s clean energy revolution through biodiesel manufacturing since our foundation.</p>
         </div>
       </section>
+
+      {/* Admin-editable intro block (shown only when set in the admin Site Content tab) */}
+      {introBlock?.html ? (
+        <section className="section">
+          <div className="container">
+            <div className="cms-content" dangerouslySetInnerHTML={{ __html: introBlock.html }} />
+          </div>
+        </section>
+      ) : null}
 
       {/* Company Overview */}
       <section className="section">

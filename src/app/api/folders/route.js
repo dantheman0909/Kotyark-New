@@ -34,9 +34,14 @@ export async function POST(request) {
       return NextResponse.json({ error: 'A folder with this name already exists' }, { status: 409 });
     }
 
+    // Place new folders at the end of their sibling group so the sidebar order is stable.
+    const maxOrder = db
+      .prepare("SELECT COALESCE(MAX(sort_order), 0) AS m FROM folders WHERE IFNULL(parent_id, '') = IFNULL(?, '')")
+      .get(parentId || null).m;
+
     db.prepare(
-      'INSERT INTO folders (id, parent_id, name, slug, visible_in_menu) VALUES (?, ?, ?, ?, ?)'
-    ).run(id, parentId || null, name, slug, visibleInMenu !== false ? 1 : 0);
+      'INSERT INTO folders (id, parent_id, name, slug, visible_in_menu, sort_order) VALUES (?, ?, ?, ?, ?, ?)'
+    ).run(id, parentId || null, name, slug, visibleInMenu !== false ? 1 : 0, maxOrder + 1);
 
     const folder = db.prepare('SELECT * FROM folders WHERE id = ?').get(id);
     return NextResponse.json({ folder }, { status: 201 });

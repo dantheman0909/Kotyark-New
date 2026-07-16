@@ -8,7 +8,7 @@ export async function PUT(request, { params }) {
     if (!isAuth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
-    const { name, visibleInMenu, sortOrder } = await request.json();
+    const { name, visibleInMenu, sortOrder, content, metaDescription } = await request.json();
     const db = getDb();
 
     const folder = db.prepare('SELECT * FROM folders WHERE id = ?').get(id);
@@ -29,6 +29,14 @@ export async function PUT(request, { params }) {
     if (sortOrder !== undefined) {
       updates.push('sort_order = ?');
       values.push(sortOrder);
+    }
+    if (content !== undefined) {
+      updates.push('content = ?');
+      values.push(content);
+    }
+    if (metaDescription !== undefined) {
+      updates.push('meta_description = ?');
+      values.push(metaDescription);
     }
 
     if (updates.length > 0) {

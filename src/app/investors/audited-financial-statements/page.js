@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
+import { getInvestorSections } from '@/lib/pages';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Audited Financial Statements of Subsidiaries',
@@ -7,6 +10,7 @@ export const metadata = {
 };
 
 export default function AuditedFinancialStatementsPage() {
+  const sections = getInvestorSections();
   const subsidiaries = [
     { name: 'Kotyark Agro Pvt Ltd', slug: 'kotyarkagropvtltd' },
     { name: 'Kotyark Bio Specialities Ltd', slug: 'kotyarkbiospecialitiesltd' },
@@ -14,7 +18,7 @@ export default function AuditedFinancialStatementsPage() {
   ];
 
   return (
-    <InvestorSubPageLayout title="Audited Financial Statements of Subsidiaries">
+    <InvestorSubPageLayout title="Audited Financial Statements of Subsidiaries" sections={sections}>
       <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
         Audited financial statements of subsidiary companies as per Regulation 46(2)(l)(iv) of SEBI (LODR) Regulations, 2015.
       </p>

@@ -151,6 +151,40 @@ const SEED_DOCUMENTS = [
   { folder_id: 'inv-moa', title: 'MOA - AOA (Memorandum & Articles of Association)', url: 'https://www.kotyark.com/_files/ugd/510267_e38ad21a33454ce1b57355f32228f284.pdf' },
 ];
 
+// HTML page content (rich text) for investor sections that are now DB-driven.
+// Only applied when the folder has no content yet, so admin edits are never overwritten.
+const SEED_FOLDER_CONTENT = {
+  'inv-trading': `<p>Notices regarding closure of trading window for designated persons as per SEBI (Prohibition of Insider Trading) Regulations, 2015.</p>`,
+  'inv-misc': `<p>Miscellaneous regulatory disclosures including corporate governance reports, secretarial compliance reports, and certificates filed as per SEBI regulations.</p>`,
+  'inv-policies': `<p>Corporate governance policies adopted by Kotyark Industries Limited in compliance with the Companies Act, 2013 and SEBI (LODR) Regulations, 2015.</p>`,
+  'inv-agm': `<p>Annual General Meeting notices, minutes, annual reports, voting results, and related documentation as per the Companies Act, 2013.</p>`,
+  'inv-merger': `<p>All documents related to the scheme of merger and amalgamation proceedings under the Companies Act, 2013 and applicable SEBI regulations.</p>`,
+  'inv-migration': `<p>Documents related to the migration of Kotyark Industries Limited from BSE SME Platform to the Main Board.</p>`,
+  'inv-odr': `<p>SEBI has introduced the Smart Online Dispute Resolution (ODR) portal to facilitate resolution of disputes between investors and listed companies. Investors can file complaints through the ODR mechanism.</p>
+<h3>How to file a complaint?</h3>
+<ol>
+<li>Visit the Smart ODR portal at <a href="https://smartodr.in" target="_blank" rel="noopener noreferrer">smartodr.in</a></li>
+<li>Register as an investor/complainant</li>
+<li>Select the relevant market intermediary</li>
+<li>Submit your complaint with supporting documents</li>
+<li>Track the resolution progress online</li>
+</ol>`,
+  'inv-dividend': `<p>Details of unpaid and unclaimed dividends as per Section 124 of the Companies Act, 2013. Shareholders are requested to verify and claim their unpaid dividends.</p>`,
+  'inv-postal': `<p>Postal ballot notices, e-voting results, and scrutinizer reports for resolutions passed through postal ballot mechanism.</p>`,
+  'inv-moa': `<p>The Memorandum of Association (MOA) and Articles of Association (AOA) are the founding constitutional documents of Kotyark Industries Limited, defining the company's objectives, powers, and internal governance rules.</p>`,
+};
+
+// Editable content blocks for existing bespoke pages (rendered with a fallback to the
+// page's built-in copy when empty). Seeded as empty so the built-in copy shows until edited.
+const SEED_CONTENT_BLOCKS = [
+  { key: 'about-intro', title: 'About Page — Intro Block' },
+  { key: 'products-intro', title: 'Products Page — Intro Block' },
+];
+
+function columnExists(db, table, column) {
+  return db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === column);
+}
+
 function getDb() {
   if (!db) {
     const fs = require('fs');
@@ -192,7 +226,31 @@ function getDb() {
         created_at TEXT DEFAULT (datetime('now')),
         expires_at TEXT NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS media (
+        id TEXT PRIMARY KEY,
+        url TEXT NOT NULL,
+        original_name TEXT,
+        mime TEXT,
+        size INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS content_blocks (
+        key TEXT PRIMARY KEY,
+        title TEXT,
+        html TEXT DEFAULT '',
+        updated_at TEXT DEFAULT (datetime('now'))
+      );
     `);
+
+    // --- Migrations: add page-content columns to folders (idempotent) ---
+    if (!columnExists(db, 'folders', 'content')) {
+      db.exec("ALTER TABLE folders ADD COLUMN content TEXT DEFAULT ''");
+    }
+    if (!columnExists(db, 'folders', 'meta_description')) {
+      db.exec("ALTER TABLE folders ADD COLUMN meta_description TEXT DEFAULT ''");
+    }
 
     // Seed default folders and documents if empty
     const folderCount = db.prepare('SELECT COUNT(*) as c FROM folders').get().c;
@@ -215,6 +273,27 @@ function getDb() {
       });
       seedAll();
     }
+
+    // Seed rich-text content for the now DB-driven investor sections.
+    // Only fills folders that have no content yet, so admin edits are preserved.
+    const setFolderContent = db.prepare(
+      "UPDATE folders SET content = ? WHERE id = ? AND (content IS NULL OR content = '')"
+    );
+    const seedFolderContent = db.transaction(() => {
+      for (const [id, html] of Object.entries(SEED_FOLDER_CONTENT)) {
+        setFolderContent.run(html, id);
+      }
+    });
+    seedFolderContent();
+
+    // Seed editable content blocks (empty by default → pages fall back to built-in copy).
+    const insertBlock = db.prepare(
+      "INSERT OR IGNORE INTO content_blocks (key, title, html) VALUES (?, ?, '')"
+    );
+    const seedBlocks = db.transaction(() => {
+      for (const b of SEED_CONTENT_BLOCKS) insertBlock.run(b.key, b.title);
+    });
+    seedBlocks();
   }
   return db;
 }
