@@ -227,9 +227,9 @@ export default function PageManager() {
                 </div>
                 <input type="text" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} placeholder="Document title…" required />
                 {docMode === 'file' ? (
-                  <input type="file" onChange={(e) => setDocFile(e.target.files[0])} required />
+                  <input key="docfile" type="file" onChange={(e) => setDocFile(e.target.files[0])} required />
                 ) : (
-                  <input type="url" value={docUrl} onChange={(e) => setDocUrl(e.target.value)} placeholder="https://…" required />
+                  <input key="docurl" type="url" value={docUrl} onChange={(e) => setDocUrl(e.target.value)} placeholder="https://…" required />
                 )}
                 <button type="submit" className="admin-save-btn" disabled={busy}>Add</button>
               </form>

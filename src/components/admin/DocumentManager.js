@@ -263,12 +263,12 @@ export default function DocumentManager() {
                   <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} placeholder="Document title as shown on website..." required />
                 </div>
                 {uploadMode === 'file' ? (
-                  <div className="form-group">
+                  <div className="form-group" key="filegroup">
                     <label>File (PDF, DOC, etc.)</label>
                     <input type="file" onChange={(e) => setUploadFile(e.target.files[0])} required />
                   </div>
                 ) : (
-                  <div className="form-group">
+                  <div className="form-group" key="urlgroup">
                     <label>External URL</label>
                     <input type="url" value={externalUrl} onChange={(e) => setExternalUrl(e.target.value)} placeholder="https://..." required />
                   </div>
