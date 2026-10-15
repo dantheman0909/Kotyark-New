@@ -65,7 +65,8 @@ export async function POST() {
 
     const results = await mapWithConcurrency(docs, CONCURRENCY, async (d) => {
       const r = await probe(d.external_url);
-      await query('UPDATE documents SET link_status = $1, link_http_code = $2, link_checked_at = now() WHERE id = $3', [r.status, r.code, d.id]);
+      // storage_key IS NULL: a file stored while this run was probing must not be re-flagged.
+      await query('UPDATE documents SET link_status = $1, link_http_code = $2, link_checked_at = now() WHERE id = $3 AND storage_key IS NULL', [r.status, r.code, d.id]);
       return { ...d, ...r };
     });
     const count = (s) => results.filter((r) => r.status === s).length;

@@ -5,6 +5,9 @@ import { query, queryOne } from './db';
 /** The legacy "Investor Relations" root folder is a container, never shown as a section. */
 export const ROOT_FOLDER_SLUG = 'investors';
 
+/** The single definition of "needs attention": legacy link broken or unreachable, and no stored file. */
+export const LINK_ATTENTION_SQL = "d.link_status IN ('broken','error') AND d.storage_key IS NULL";
+
 export const GROUP_BY = ['none', 'fy', 'year'];
 
 // mime -> extension, and the allow-list for uploads.
@@ -37,7 +40,7 @@ export async function listFolders({ visibleOnly = false, withIntro = false, incl
   return query(
     `SELECT ${FOLDER_COLS}${withIntro ? ', f.intro_html' : ''},
             (SELECT count(*)::int FROM documents d WHERE d.folder_id = f.id${includeDrafts ? '' : " AND d.status = 'published'"}) AS document_count${withBroken ? `,
-            (SELECT count(*)::int FROM documents d WHERE d.folder_id = f.id AND d.link_status IN ('broken','error') AND d.storage_key IS NULL) AS broken_count` : ''}
+            (SELECT count(*)::int FROM documents d WHERE d.folder_id = f.id AND ${LINK_ATTENTION_SQL}) AS broken_count` : ''}
        FROM document_folders f
       ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
       ORDER BY f.sort_order, f.name`);
@@ -72,14 +75,13 @@ export async function listAllDocuments({ publishedOnly = false, limit = 1000 } =
       ORDER BY d.created_at DESC LIMIT $1`, [Math.min(Math.max(1, limit), 5000)]);
 }
 
-/** Admin: documents whose legacy link last probed broken/unreachable (stored files are never listed). */
-export async function listLinkIssues(linkStatus = 'broken') {
-  const statuses = linkStatus === 'error' ? ['error'] : ['broken', 'error'];
+/** Admin: documents needing attention (LINK_ATTENTION_SQL), outside the legacy root container. */
+export async function listLinkIssues() {
   return query(
     `SELECT ${DOC_COLS}, f.slug AS folder_slug, f.name AS folder_name
        FROM documents d JOIN document_folders f ON f.id = d.folder_id
-      WHERE d.link_status = ANY($1) AND d.storage_key IS NULL
-      ORDER BY f.sort_order, f.name, d.sort_order, d.title LIMIT 1000`, [statuses]);
+      WHERE ${LINK_ATTENTION_SQL} AND f.slug <> $1
+      ORDER BY f.sort_order, f.name, d.sort_order, d.title LIMIT 1000`, [ROOT_FOLDER_SLUG]);
 }
 
 export async function getDocumentBySlug(slug, { publishedOnly = true } = {}) {

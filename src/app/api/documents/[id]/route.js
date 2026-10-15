@@ -67,6 +67,10 @@ export async function PUT(req, { params }) {
     if ('external_url' in set && !set.external_url && !before.storage_key && !file) {
       throw httpError(400, 'A document needs a file or an external URL');
     }
+    // A corrected legacy URL is no longer known-broken: reset until the next check.
+    if (!file && !before.storage_key && 'external_url' in set && set.external_url && set.external_url !== before.external_url) {
+      Object.assign(set, { link_status: 'unchecked', link_http_code: null });
+    }
     if (file) {
       const ing = await ingestFile(file, newSlug || before.slug);
       newKey = ing.storage_key;

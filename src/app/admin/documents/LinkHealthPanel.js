@@ -4,7 +4,12 @@ import { api } from './api';
 import { useToast } from '@/components/admin/Toast';
 import s from './documents.module.css';
 
-const csvCell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+// Prefix cells that spreadsheets would evaluate as formulas (CSV injection), then quote.
+const csvCell = (v) => {
+  const t = String(v ?? '');
+  const safe = /^[=+\-@\t\r]/.test(t) ? `'${t}` : t;
+  return `"${safe.replace(/"/g, '""')}"`;
+};
 
 function downloadCsv(rows) {
   const head = ['Section', 'Title', 'Legacy URL', 'Status', 'HTTP code'];
@@ -13,7 +18,7 @@ function downloadCsv(rows) {
   const url = URL.createObjectURL(new Blob([lines], { type: 'text/csv;charset=utf-8' }));
   const a = document.createElement('a');
   a.href = url; a.download = `links-needing-attention-${new Date().toISOString().slice(0, 10)}.csv`;
-  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 /**
@@ -68,8 +73,10 @@ export default function LinkHealthPanel({ result, version, onOpen, onChanged, on
 
   const parts = [];
   if (result) parts.push(`${result.ok} OK`);
-  parts.push(`${attention} need the original PDF`);
-  if (result) { parts.push(`${result.error} unreachable`); parts.push(`${result.stored} stored in App Storage`); }
+  const unreachable = rows.filter((d) => (d.link_status || d.status) === 'error').length;
+  parts.push(`${attention - unreachable} need the original PDF`);
+  if (unreachable) parts.push(`${unreachable} unreachable (retry later)`);
+  if (result) parts.push(`${result.stored} stored in App Storage`);
 
   return (
     <div className={`${s.health} ${attention ? s.healthWarn : s.healthOk}`} style={{ gridColumn: '1 / -1' }}>

@@ -27,7 +27,7 @@ export async function GET(req) {
     // ?linkStatus=broken|error: documents:write only (ignored for everyone else). Lets the admin panel reload the
     // persisted broken set without re-probing every URL.
     if (editor && (linkStatus === 'broken' || linkStatus === 'error')) {
-      docs = await listLinkIssues(linkStatus);
+      docs = await listLinkIssues(); // both values return the same attention set (LINK_ATTENTION_SQL)
     } else if (folderId) {
       const folder = await getFolderById(folderId);
       if (!folder || (!folder.visible && !editor)) return Response.json({ documents: [] });
