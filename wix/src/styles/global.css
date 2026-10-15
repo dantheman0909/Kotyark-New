@@ -1,0 +1,1387 @@
+/* ==========================================================================
+   KOTYARK INDUSTRIES: WIX STUDIO GLOBAL CSS
+   Port of the Next.js design system (src/app/globals.css) to Wix Studio.
+   Rules this file follows
+   - Classes only. No tag selectors, no ID selectors.
+   - Wix global / semantic classes used (documented on dev.wix.com):
+       .button .button__label .button__icon   .rich-text .rich-text__text
+       .table .table__header .table__row .table__cell
+       .horizontal-menu(__item, __item-label)  .vertical-menu(__item, __item-label, __submenu)
+       .breadcrumbs .breadcrumbs__item         .text-input(__label, __input)
+       .text-box(__label, __input)             .header .footer .box .repeater
+   - Custom classes are prefixed k-. A designer assigns them in the editor
+     (CSS Classes panel) or with $w('#id').customClassList.add('k-...').
+     A custom class is added to the ROOT of the element it is assigned to, so
+     inner parts are reached with descendant selectors (".k-x .button__label").
+   - Fonts are NOT imported here. Add Plus Jakarta Sans and Inter in
+     Site Styles > Fonts; the stacks below fall back safely if missing.
+   - Design tokens are copied exactly from globals.css :root (lines 8-85),
+     renamed from --color-* / --space-* / ... to --k-*.
+   - Verify in the editor: pseudo-elements, backdrop-filter, animation-timeline
+     and position: sticky depend on Wix's rendered DOM. See wix/docs/design-system.md.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. DESIGN TOKENS            (globals.css:8-85)
+   ========================================================================== */
+:root {
+  /* Brand core */
+  --k-primary: #0d3b24;
+  --k-primary-light: #1b5e3a;
+  --k-primary-lighter: #2e8b57;
+  /* Brand accent */
+  --k-accent: #d97706;
+  --k-accent-hover: #b45309;
+  --k-accent-glow: rgba(217, 119, 6, 0.15);
+  --k-accent-gradient-end: #f59e0b; /* second stop of the hero highlight / carbon icon gradient */
+  /* Backgrounds */
+  --k-bg-page: #fafdf7;
+  --k-bg-surface: #ffffff;
+  --k-bg-elevated: rgba(255, 255, 255, 0.72);
+  --k-bg-hero: #071a10;
+  --k-bg-section-alt: #f0f7f1;
+  /* Text */
+  --k-text-primary: #0c1f13;
+  --k-text-secondary: #3d5a48;
+  --k-text-muted: #6b8a78;
+  --k-text-on-dark: #f0fff4;
+  --k-text-on-accent: #ffffff;
+  /* Borders */
+  --k-border: #d1e5d8;
+  --k-border-glass: rgba(255, 255, 255, 0.18);
+  --k-divider: #e8f0ea;
+  /* Status */
+  --k-success: #16a34a;
+  --k-info: #0891b2;
+  --k-warning: #d97706;
+  /* Glass */
+  --k-glass-bg: rgba(255, 255, 255, 0.72);
+  --k-glass-border: rgba(255, 255, 255, 0.18);
+  --k-glass-blur: blur(16px);
+  --k-glass-shadow: 0 8px 32px rgba(13, 59, 36, 0.08);
+  /* Spacing */
+  --k-space-1: 4px;
+  --k-space-2: 8px;
+  --k-space-3: 12px;
+  --k-space-4: 16px;
+  --k-space-5: 24px;
+  --k-space-6: 32px;
+  --k-space-7: 48px;
+  --k-space-8: 64px;
+  --k-space-9: 96px;
+  --k-space-10: 128px;
+  /* Container */
+  --k-container-max: 1280px;
+  --k-container-wide: 1440px;
+  --k-container-narrow: 768px;
+  --k-container-padding: 24px;
+  /* Radius */
+  --k-radius-sm: 8px;
+  --k-radius-md: 12px;
+  --k-radius-lg: 16px;
+  --k-radius-xl: 24px;
+  --k-radius-full: 9999px;
+  /* Shadows */
+  --k-shadow-sm: 0 1px 3px rgba(13, 59, 36, 0.04);
+  --k-shadow-md: 0 4px 16px rgba(13, 59, 36, 0.06);
+  --k-shadow-lg: 0 8px 32px rgba(13, 59, 36, 0.08);
+  --k-shadow-xl: 0 16px 48px rgba(13, 59, 36, 0.12);
+  --k-shadow-glow-accent: 0 0 24px rgba(217, 119, 6, 0.2);
+  --k-shadow-glow-green: 0 0 32px rgba(46, 139, 87, 0.15);
+  /* Easing */
+  --k-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --k-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Font stacks (globals.css:105-111 body, :124 headings) */
+  --k-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --k-font-heading: "Plus Jakarta Sans", sans-serif;
+  /* Gradients reused by several blocks */
+  --k-gradient-dark: linear-gradient(135deg, var(--k-bg-hero) 0%, var(--k-primary) 100%);
+}
+
+/* ==========================================================================
+   2. TYPOGRAPHY               (globals.css:99-157, section header 972-998)
+   Apply to Wix Text elements. A custom class lands on the .rich-text root;
+   the paragraph/heading node inside is .rich-text__text, so both are styled.
+   ========================================================================== */
+/* Body copy (body: 17px / 1.65, Inter) */
+.k-body,
+.k-body .rich-text__text {
+  font-family: var(--k-font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--k-text-primary);
+}
+/* h1 (globals.css:130-133) */
+.k-h1,
+.k-h1 .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--k-primary);
+}
+/* h2 (134-136) */
+.k-h2,
+.k-h2 .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--k-primary);
+}
+/* h3 (137-140) */
+.k-h3,
+.k-h3 .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(22px, 2.5vw, 28px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--k-primary);
+}
+/* h4 (141-144) */
+.k-h4,
+.k-h4 .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--k-primary);
+}
+/* Section tag / eyebrow (980-989) */
+.k-eyebrow,
+.k-eyebrow .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.65;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--k-accent);
+}
+/* Lead text under a section heading (995-998) */
+.k-lead,
+.k-lead .rich-text__text {
+  font-family: var(--k-font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--k-text-secondary);
+}
+/* Small copy used in cards (feature-card p 828-832, team-bio 1134-1138) */
+.k-text-sm,
+.k-text-sm .rich-text__text {
+  font-family: var(--k-font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--k-text-secondary);
+}
+.k-text-muted,
+.k-text-muted .rich-text__text {
+  color: var(--k-text-muted);
+}
+/* Text colour modifiers */
+.k-text-accent,
+.k-text-accent .rich-text__text { color: var(--k-accent); }
+.k-text-center,
+.k-text-center .rich-text__text { text-align: center; }
+/* Headings / copy on dark backgrounds (section-dark h2,h3 200-203) */
+.k-on-dark,
+.k-on-dark .rich-text__text {
+  color: var(--k-text-on-dark);
+}
+.k-on-dark-soft,
+.k-on-dark-soft .rich-text__text {
+  color: rgba(240, 255, 244, 0.8);
+}
+/* Links inside rich text: Wix themes link colour through --wst-color-action;
+   these only apply when the class is added to the text element (a, 150-157) */
+.k-link,
+.k-link .rich-text__text {
+  color: var(--k-primary-light);
+  transition: color 200ms var(--k-ease-smooth);
+}
+.k-link:hover,
+.k-link:hover .rich-text__text {
+  color: var(--k-accent);
+}
+
+/* ==========================================================================
+   3. LAYOUT AND SECTIONS      (globals.css:169-203)
+   Assign to Wix Studio Sections. Prefer the editor's own grid for widths;
+   k-container is for a Box that must be centred at max width.
+   ========================================================================== */
+.k-container {
+  max-width: var(--k-container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--k-container-padding);
+  padding-right: var(--k-container-padding);
+}
+.k-container--wide   { max-width: var(--k-container-wide); }
+.k-container--narrow { max-width: var(--k-container-narrow); }
+/* .section: padding 96px 0 (187-189) */
+.k-section {
+  padding-top: var(--k-space-9);
+  padding-bottom: var(--k-space-9);
+  background-color: var(--k-bg-page);
+}
+/* .section-alt (191-193) */
+.k-section--alt {
+  background-color: var(--k-bg-section-alt);
+}
+/* Surface (white) band: trust bar background (663-667) */
+.k-section--surface {
+  background-color: var(--k-bg-surface);
+}
+/* .section-dark (195-198) */
+.k-section--dark {
+  background-color: var(--k-bg-hero);
+  color: var(--k-text-on-dark);
+}
+.k-section--dark .rich-text__text {
+  color: var(--k-text-on-dark);
+}
+/* Section header block: centred, max 700px (972-978) */
+.k-section-header {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--k-space-8);
+  text-align: center;
+}
+/* Trust bar strip (.trust-bar 663-667) */
+.k-trust-bar {
+  background-color: var(--k-bg-surface);
+  border-bottom: 1px solid var(--k-divider);
+  padding-top: var(--k-space-6);
+  padding-bottom: var(--k-space-6);
+}
+/* Trust item: icon + two lines (676-705) */
+.k-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: var(--k-space-4);
+  padding-right: var(--k-space-4);
+}
+.k-trust-label,
+.k-trust-label .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--k-text-primary);
+}
+.k-trust-sublabel,
+.k-trust-sublabel .rich-text__text {
+  font-size: 13px;
+  color: var(--k-text-muted);
+}
+/* Split section image frame (947-956) */
+.k-split-image {
+  border-radius: var(--k-radius-xl);
+  overflow: hidden;
+  position: relative;
+}
+/* Horizontal rule (divider colour) */
+.k-divider {
+  border-top: 1px solid var(--k-divider);
+}
+
+/* ==========================================================================
+   4. BUTTONS                  (globals.css:209-267)
+   Apply to native Wix Buttons. Wix paints a button from .button and its
+   label from .button__label, so both are written; the doubled class
+   (.button.k-btn-*) raises specificity over the theme's button style.
+   ========================================================================== */
+/* Shared pill shape (.btn 209-222) */
+.button.k-btn-primary,
+.button.k-btn-outline,
+.button.k-btn-outline-light {
+  border-radius: var(--k-radius-full);
+  cursor: pointer;
+  transition: all 250ms var(--k-ease-smooth);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.k-btn-primary .button__label,
+.k-btn-outline .button__label,
+.k-btn-outline-light .button__label {
+  font-family: var(--k-font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* .btn-primary (224-235) */
+.button.k-btn-primary {
+  background-color: var(--k-accent);
+  border: none;
+  box-shadow: var(--k-shadow-md);
+  padding: 14px 32px;
+}
+.k-btn-primary .button__label { color: var(--k-text-on-accent); }
+.button.k-btn-primary:hover {
+  background-color: var(--k-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--k-shadow-glow-accent);
+}
+.k-btn-primary:hover .button__label { color: var(--k-text-on-accent); }
+/* .btn-secondary, named outline here (237-246) */
+.button.k-btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--k-primary);
+  padding: 12px 30px;
+}
+.k-btn-outline .button__label { color: var(--k-primary); }
+.button.k-btn-outline:hover { background-color: var(--k-primary); }
+.k-btn-outline:hover .button__label { color: #ffffff; }
+/* .btn-outline-light (248-258) */
+.button.k-btn-outline-light {
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 30px;
+}
+.k-btn-outline-light .button__label { color: #ffffff; }
+.button.k-btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+}
+.k-btn-outline-light:hover .button__label { color: #ffffff; }
+/* Sizes: .btn-sm (260-263), .btn-lg (264-267) */
+.button.k-btn-sm { padding: 10px 20px; }
+.k-btn-sm .button__label { font-size: 14px; }
+.button.k-btn-lg { padding: 18px 40px; }
+.k-btn-lg .button__label { font-size: 18px; }
+/* Trailing arrow icon on product-card-link style buttons */
+.k-btn-primary .button__icon,
+.k-btn-outline .button__icon,
+.k-btn-outline-light .button__icon {
+  transition: transform 200ms var(--k-ease-smooth);
+}
+.k-btn-primary:hover .button__icon,
+.k-btn-outline:hover .button__icon,
+.k-btn-outline-light:hover .button__icon {
+  transform: translateX(3px);
+}
+/* Text-style link button: "Learn more" in product cards (908-921) */
+.button.k-btn-link {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+.k-btn-link .button__label {
+  font-family: var(--k-font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--k-accent);
+}
+.k-btn-link:hover .button__label { color: var(--k-accent-hover); }
+/* Focus ring for keyboard users (accessibility, not in reference) */
+.k-btn-primary:focus-visible,
+.k-btn-outline:focus-visible,
+.k-btn-outline-light:focus-visible {
+  outline: 3px solid var(--k-accent-glow);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   5. HEADER AND MENU          (Navbar: globals.css:273-438)
+   Wix owns header position, scroll effects and the mobile menu. Only the
+   glass skin and menu item looks are reproduced.
+   ========================================================================== */
+/* .navbar glass bar (273-291) */
+.k-header {
+  background: var(--k-glass-bg);
+  -webkit-backdrop-filter: var(--k-glass-blur);
+  backdrop-filter: var(--k-glass-blur);
+  border: 1px solid var(--k-glass-border);
+  border-radius: var(--k-radius-lg);
+  box-shadow: var(--k-shadow-lg);
+  transition: all 300ms var(--k-ease-smooth);
+}
+/* .navbar.scrolled (293-297): add via customClassList when scrolled */
+.k-header--scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--k-shadow-xl);
+}
+/* .navbar-nav > li > a (329-345) on a Wix horizontal menu */
+.k-menu .horizontal-menu__item {
+  border-radius: var(--k-radius-sm);
+  transition: all 200ms var(--k-ease-smooth);
+}
+.k-menu .horizontal-menu__item:hover {
+  background: rgba(13, 59, 36, 0.04);
+}
+.k-menu .horizontal-menu__item-label {
+  font-family: var(--k-font-heading);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--k-text-primary);
+  transition: color 200ms var(--k-ease-smooth);
+}
+.k-menu .horizontal-menu__item:hover .horizontal-menu__item-label {
+  color: var(--k-primary-light);
+}
+/* Vertical (mobile / submenu list) skin: dropdown-menu a (371-383) */
+.k-menu-vertical .vertical-menu__item {
+  border-radius: var(--k-radius-sm);
+  transition: all 150ms var(--k-ease-smooth);
+}
+.k-menu-vertical .vertical-menu__item:hover {
+  background: var(--k-bg-section-alt);
+}
+.k-menu-vertical .vertical-menu__item-label {
+  font-family: var(--k-font-body);
+  font-size: 14px;
+  color: var(--k-text-primary);
+}
+.k-menu-vertical .vertical-menu__item:hover .vertical-menu__item-label {
+  color: var(--k-primary-light);
+}
+.k-menu-vertical .vertical-menu__submenu {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-md);
+  box-shadow: var(--k-shadow-xl);
+  padding: var(--k-space-2);
+}
+/* Mobile slide-in panel (409-426): style the Wix menu container / box */
+.k-mobile-panel {
+  background: var(--k-bg-surface);
+  box-shadow: var(--k-shadow-xl);
+}
+.k-mobile-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   6. HERO                     (globals.css:444-547)
+   Structure in the editor: Section (k-hero) > background image/video layer
+   with k-hero-bg, a Box above it with k-hero-overlay, then the content Box.
+   ========================================================================== */
+/* .hero (444-452) */
+.k-hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--k-bg-hero);
+}
+/* .hero-bg: photo at 40% (454-460) */
+.k-hero-bg { opacity: 0.4; }
+/* .hero-overlay: diagonal green gradient (462-471) */
+.k-hero-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(7, 26, 16, 0.92) 0%,
+    rgba(13, 59, 36, 0.75) 50%,
+    rgba(7, 26, 16, 0.85) 100%
+  );
+  pointer-events: none;
+}
+/* Lighter overlay for photo sections / banners (derived from hero-overlay) */
+.k-overlay-bottom {
+  background: linear-gradient(180deg, transparent 40%, rgba(7, 26, 16, 0.6) 100%);
+  pointer-events: none;
+}
+/* .hero-content (473-479) */
+.k-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 900px;
+  padding: var(--k-space-10) var(--k-container-padding);
+}
+/* .hero-badge pill (481-494) */
+.k-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--k-radius-full);
+  padding: 8px 20px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.k-hero-badge,
+.k-hero-badge .rich-text__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--k-accent);
+}
+/* .hero h1 (496-503) */
+.k-hero-title,
+.k-hero-title .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+/* .hero h1 .highlight (505-510). Works on a separate text element; Wix rich
+   text cannot carry a span class, so split the highlighted words into their own text. */
+.k-hero-highlight,
+.k-hero-highlight .rich-text__text {
+  background: linear-gradient(135deg, var(--k-accent) 0%, var(--k-accent-gradient-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+/* .hero-subtitle (512-520) */
+.k-hero-subtitle,
+.k-hero-subtitle .rich-text__text {
+  font-family: var(--k-font-body);
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.6;
+  color: rgba(240, 255, 244, 0.8);
+}
+.k-hero-subtitle { max-width: 640px; margin-left: auto; margin-right: auto; }
+/* .hero-actions (522-527) */
+.k-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+/* .hero-scroll bouncing arrow (529-547) */
+.k-hero-scroll {
+  color: rgba(255, 255, 255, 0.5);
+  animation: k-scroll-bounce 2s ease-in-out infinite;
+}
+@keyframes k-scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(8px); }
+}
+/* The reference also translateX(-50%) to centre itself; in Wix centre with
+   the editor and keep the vertical bounce only. */
+/* Inner page hero (1246-1283) */
+.k-page-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-top: var(--k-space-10);
+  padding-bottom: var(--k-space-8);
+  background: var(--k-gradient-dark);
+  text-align: center;
+}
+.k-page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle at 70% 30%, rgba(46, 139, 87, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.k-page-hero-title,
+.k-page-hero-title .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+}
+.k-page-hero-text,
+.k-page-hero-text .rich-text__text {
+  font-size: 18px;
+  color: rgba(240, 255, 244, 0.75);
+}
+.k-page-hero-text { max-width: 640px; margin-left: auto; margin-right: auto; }
+/* Carbon credit badge: floating glass card (553-633; CarbonCreditBadge.js) */
+.k-carbon-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  max-width: 320px;
+  position: relative;
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--k-radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  animation: k-float 6s ease-in-out infinite;
+}
+.k-carbon-badge::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  border-radius: var(--k-radius-xl);
+  border: 2px solid var(--k-accent);
+  opacity: 0;
+  pointer-events: none;
+  animation: k-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.k-carbon-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--k-accent), var(--k-accent-gradient-end));
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+  flex-shrink: 0;
+}
+.k-carbon-title,
+.k-carbon-title .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+.k-carbon-subtitle,
+.k-carbon-subtitle .rich-text__text {
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+}
+@keyframes k-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes k-pulse {
+  0%, 100% { transform: scale(1); opacity: 0; }
+  50%      { opacity: 0.3; }
+}
+
+/* ==========================================================================
+   7. CARDS                    (globals.css:729-927, 1086-1138, 1204-1229)
+   Assign to the Box that holds the card (or to the repeater item Box).
+   ========================================================================== */
+/* Shared surface: white, 1px green-grey border */
+.k-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  transition: all 300ms var(--k-ease-smooth);
+}
+/* .stat-card (729-757) */
+.k-stat-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  padding: var(--k-space-7) var(--k-space-5);
+  text-align: center;
+  transition: all 300ms var(--k-ease-smooth);
+}
+.k-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--k-shadow-glow-green);
+  border-color: var(--k-primary-lighter);
+}
+.k-stat-number,
+.k-stat-number .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--k-primary);
+}
+.k-stat-label,
+.k-stat-label .rich-text__text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--k-text-secondary);
+}
+/* .feature-card (793-832) */
+.k-feature-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  padding: var(--k-space-7);
+  transition: all 300ms var(--k-ease-smooth);
+}
+.k-feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--k-shadow-lg);
+  border-color: var(--k-primary-lighter);
+}
+.k-feature-title,
+.k-feature-title .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--k-text-primary);
+}
+/* Icon tile used in feature, trust, doc, contact and fy cards (807-821, 683-693) */
+.k-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--k-radius-md);
+  background: linear-gradient(135deg, var(--k-bg-section-alt) 0%, rgba(46, 139, 87, 0.08) 100%);
+  color: var(--k-primary-lighter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.k-icon-box--sm {
+  width: 48px;
+  height: 48px;
+  background: var(--k-bg-section-alt);
+}
+.k-icon-box--round {
+  border-radius: 50%;
+  background: var(--k-bg-section-alt);
+  color: var(--k-primary);
+}
+/* .product-card (858-921). Image Box carries k-product-card__image. */
+.k-product-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 300ms var(--k-ease-smooth);
+}
+.k-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--k-shadow-xl);
+  border-color: var(--k-primary-lighter);
+}
+.k-product-card__image {
+  position: relative;
+  overflow: hidden;
+}
+.k-product-card__image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(7, 26, 16, 0.6) 100%);
+  pointer-events: none;
+}
+.k-product-card__body { padding: var(--k-space-6); }
+.k-product-card__link .button__label,
+.k-product-card__link,
+.k-product-card__link .rich-text__text {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--k-accent);
+}
+/* .team-card / leadership person (1092-1138) */
+.k-person-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  padding: var(--k-space-7) var(--k-space-5);
+  text-align: center;
+  transition: all 300ms var(--k-ease-smooth);
+}
+.k-person-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--k-shadow-lg);
+}
+/* .team-photo: 120px circle with 3px ring (1106-1121). Apply to the Image. */
+.k-person-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--k-border);
+  background: var(--k-bg-section-alt);
+}
+.k-person-role,
+.k-person-role .rich-text__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--k-accent);
+}
+.k-person-bio,
+.k-person-bio .rich-text__text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--k-text-secondary);
+}
+/* .category-card: investor hub tile (1204-1229, 1844-1868) */
+.k-category-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  padding: var(--k-space-6);
+  cursor: pointer;
+  transition: all 300ms var(--k-ease-smooth);
+}
+.k-category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--k-shadow-md);
+  border-color: var(--k-primary-light);
+}
+.k-category-card:hover .k-icon-box {
+  background: var(--k-primary);
+  color: #ffffff;
+}
+.k-category-desc,
+.k-category-desc .rich-text__text {
+  font-size: 14px;
+  color: var(--k-text-muted);
+}
+/* .benefit-item (1370-1403) */
+.k-benefit-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: var(--k-space-5);
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-md);
+  transition: all 300ms var(--k-ease-smooth);
+}
+.k-benefit-card:hover {
+  border-color: var(--k-primary-lighter);
+  box-shadow: var(--k-shadow-md);
+}
+.k-benefit-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(46, 139, 87, 0.1);
+  color: var(--k-success);
+  flex-shrink: 0;
+}
+/* .contact-info-card (1333-1352) */
+.k-contact-card {
+  display: flex;
+  gap: 16px;
+  padding: var(--k-space-5);
+  background: var(--k-bg-section-alt);
+  border-radius: var(--k-radius-md);
+}
+
+/* ==========================================================================
+   8. STATS BAND AND CTA BAND  (globals.css:723-781, 1004-1045)
+   ========================================================================== */
+/* Stats band: a full-width strip of stat cards (723-727 grid). The
+   "on dark" variant restyles the same numbers for a dark band. */
+.k-stats-band {
+  padding-top: var(--k-space-8);
+  padding-bottom: var(--k-space-8);
+  background: var(--k-bg-section-alt);
+}
+.k-stats-band--dark {
+  background: var(--k-gradient-dark);
+}
+.k-stats-band--dark .k-stat-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.k-stats-band--dark .k-stat-number,
+.k-stats-band--dark .k-stat-number .rich-text__text { color: #ffffff; }
+.k-stats-band--dark .k-stat-label,
+.k-stats-band--dark .k-stat-label .rich-text__text { color: rgba(240, 255, 244, 0.8); }
+/* Investor stats use longer values: smaller number (775-781) */
+.k-stat-number--compact,
+.k-stat-number--compact .rich-text__text { font-size: 24px; }
+/* .cta-section (1004-1045). z-index -1 on ::before keeps the glow behind
+   the Wix children without positioning each of them. */
+.k-cta-band {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--k-gradient-dark);
+  border-radius: var(--k-radius-xl);
+  padding: var(--k-space-9) var(--k-space-8);
+  text-align: center;
+}
+.k-cta-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle at 30% 50%, rgba(46, 139, 87, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.k-cta-title,
+.k-cta-title .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 700;
+  color: #ffffff;
+}
+.k-cta-text,
+.k-cta-text .rich-text__text {
+  color: rgba(240, 255, 244, 0.8);
+}
+.k-cta-text { max-width: 600px; margin-left: auto; margin-right: auto; }
+
+/* ==========================================================================
+   9. FORMS                    (globals.css:1051-1081, 1295-1331)
+   Wix inputs: .text-input / .text-box with __label and __input parts.
+   ========================================================================== */
+/* .form-group label + input (1299-1326) */
+.k-field .text-input__label,
+.k-field .text-box__label {
+  font-family: var(--k-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--k-text-primary);
+}
+.k-field .text-input__input,
+.k-field .text-box__input {
+  padding: 14px 16px;
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-md);
+  background: var(--k-bg-surface);
+  font-family: var(--k-font-body);
+  font-size: 15px;
+  color: var(--k-text-primary);
+  outline: none;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+.k-field .text-input__input:focus,
+.k-field .text-box__input:focus {
+  border-color: var(--k-primary-lighter);
+  box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.08);
+}
+.k-field .text-box__input { min-height: 140px; resize: vertical; }
+/* Newsletter pill input on dark (1060-1080) */
+.k-field--glass .text-input__input {
+  padding: 14px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--k-radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.k-field--glass .text-input__input::placeholder { color: rgba(255, 255, 255, 0.5); }
+.k-field--glass .text-input__input:focus { border-color: var(--k-accent); box-shadow: none; }
+
+/* ==========================================================================
+   10. BADGES, CHIPS, TAGS     (globals.css:481-494, 1697-1708, 1767-1783)
+   ========================================================================== */
+/* Base chip: pill with small bold uppercase text */
+.k-badge,
+.k-badge .rich-text__text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.k-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.k-badge .rich-text__text { color: #b91c1c; }
+/* .doc-card-badge (red "NEW"): default above. Compliance cells: */
+.k-badge--yes { background: #dcfce7; color: #166534; }
+.k-badge--yes .rich-text__text { color: #166534; }
+.k-badge--na { background: #f3f4f6; color: #6b7280; }
+.k-badge--na .rich-text__text { color: #6b7280; }
+/* .compliance-badge sizing (1767-1773) */
+.k-badge--cell,
+.k-badge--cell .rich-text__text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+/* Amber chip: accent tint, for tags such as hero-badge on light backgrounds */
+.k-badge--accent { background: rgba(217, 119, 6, 0.1); color: var(--k-accent-hover); }
+.k-badge--accent .rich-text__text { color: var(--k-accent-hover); }
+.k-badge--green { background: rgba(46, 139, 87, 0.1); color: var(--k-primary-light); }
+.k-badge--green .rich-text__text { color: var(--k-primary-light); }
+
+/* ==========================================================================
+   11. BREADCRUMB              (investor-breadcrumb: globals.css:1546-1572)
+   Use on Wix's native Breadcrumbs element in the page hero.
+   ========================================================================== */
+.k-breadcrumb { font-size: 0.9rem; }
+.k-breadcrumb .breadcrumbs__item {
+  font-weight: 500;
+  color: var(--k-accent);
+  opacity: 1;
+}
+.k-breadcrumb .breadcrumbs__item:hover { text-decoration: underline; }
+/* Separators and the current page read as dimmed light text (1564-1572) */
+.k-breadcrumb--on-dark .breadcrumbs__item:last-child {
+  color: var(--k-text-on-dark);
+  opacity: 0.8;
+}
+.k-breadcrumb-sep,
+.k-breadcrumb-sep .rich-text__text {
+  color: var(--k-text-on-dark);
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   12. INVESTOR SIDEBAR AND DOCUMENTS (globals.css:1575-1722)
+   ========================================================================== */
+/* .investor-sidebar card (1582-1590). Sticky only works if no ancestor has
+   overflow set; verify in the editor, else use the editor's "stick to" option. */
+.k-sidebar {
+  position: sticky;
+  top: 100px;
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  padding: 24px;
+  box-shadow: var(--k-shadow-sm);
+}
+.k-sidebar-title,
+.k-sidebar-title .rich-text__text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--k-text-muted);
+}
+/* .investor-sidebar nav a (1610-1630) on a Wix vertical menu */
+.k-sidebar .vertical-menu__item {
+  padding: 10px 14px;
+  border-radius: var(--k-radius-sm);
+  transition: all 0.2s ease;
+}
+.k-sidebar .vertical-menu__item-label {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--k-text-secondary);
+}
+.k-sidebar .vertical-menu__item:hover { background: var(--k-bg-section-alt); }
+.k-sidebar .vertical-menu__item:hover .vertical-menu__item-label { color: var(--k-primary); }
+/* Link row for a repeater-based sidebar: item = k-sidebar-link,
+   current page = k-sidebar-link--active (set from page code) */
+.k-sidebar-link {
+  padding: 10px 14px;
+  border-radius: var(--k-radius-sm);
+  line-height: 1.4;
+  transition: all 0.2s ease;
+}
+.k-sidebar-link:hover { background: var(--k-bg-section-alt); }
+.k-sidebar-link--active,
+.k-sidebar-link--active:hover { background: var(--k-primary); }
+.k-sidebar-link--active .rich-text__text,
+.k-sidebar-link--active .button__label {
+  color: #ffffff;
+  font-weight: 600;
+}
+/* .doc-card (1639-1722). Assign to the repeater item Box. */
+.k-doc-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.k-doc-card:hover {
+  border-color: var(--k-primary-light);
+  box-shadow: 0 4px 20px rgba(13, 59, 36, 0.08);
+  transform: translateX(4px);
+}
+.k-doc-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--k-radius-sm);
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: var(--k-accent-hover);
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+.k-doc-card:hover .k-doc-card__icon {
+  background: linear-gradient(135deg, var(--k-primary-light), var(--k-primary));
+  color: #ffffff;
+}
+.k-doc-card__title,
+.k-doc-card__title .rich-text__text {
+  font-size: 0.93rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--k-text-primary);
+}
+.k-doc-card:hover .k-doc-card__title,
+.k-doc-card:hover .k-doc-card__title .rich-text__text { color: var(--k-primary); }
+.k-doc-card__arrow {
+  flex-shrink: 0;
+  color: var(--k-text-muted);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.25s ease;
+}
+.k-doc-card:hover .k-doc-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--k-primary);
+}
+/* Repeater gap between doc cards (.doc-card-grid 1633-1637): set the
+   repeater's row gap to 10px in the editor; this class helps if gap is CSS-driven. */
+.k-doc-list { display: flex; flex-direction: column; gap: 10px; }
+/* .doc-item plain list row (1161-1192) */
+.k-doc-row {
+  padding: 16px 20px;
+  border-radius: var(--k-radius-md);
+  transition: all 200ms var(--k-ease-smooth);
+}
+.k-doc-row:hover { background: var(--k-bg-section-alt); }
+/* Financial-year group header (derived: fy-card 1803-1841 as a section label
+   above a group of doc cards, e.g. "FY 2023-24") */
+.k-fy-header,
+.k-fy-header .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--k-primary);
+}
+.k-fy-header {
+  padding: 10px 0 10px 14px;
+  border-left: 4px solid var(--k-accent);
+  margin-top: var(--k-space-6);
+  margin-bottom: var(--k-space-3);
+}
+/* .fy-card tile (1803-1841) */
+.k-fy-card {
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.k-fy-card:hover {
+  border-color: var(--k-primary-light);
+  box-shadow: var(--k-shadow-md);
+  transform: translateY(-2px);
+}
+.k-fy-card-title,
+.k-fy-card-title .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--k-text-primary);
+}
+.k-fy-card-text,
+.k-fy-card-text .rich-text__text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--k-text-muted);
+}
+
+/* ==========================================================================
+   13. COMPLIANCE TABLE        (globals.css:1725-1794)
+   Assign k-table to a Wix Table element (uses .table__* classes), or
+   k-table-row to repeater row Boxes if the table is a repeater grid.
+   ========================================================================== */
+.k-table {
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+.k-table .table__header {
+  padding: 14px 16px;
+  background: var(--k-primary);
+  color: #ffffff;
+  text-align: left;
+  font-family: var(--k-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.k-table .table__cell {
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid var(--k-border);
+  vertical-align: top;
+  line-height: 1.5;
+  color: var(--k-text-primary);
+  font-family: var(--k-font-body);
+}
+.k-table .table__row:hover { background: var(--k-bg-section-alt); }
+.k-table .table__pagination { fill: var(--k-primary); }
+/* Repeater-row alternative: header strip + body rows */
+.k-table-head {
+  padding: 14px 16px;
+  background: var(--k-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.k-table-head .rich-text__text { color: #ffffff; }
+.k-table-row {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--k-border);
+  line-height: 1.5;
+}
+.k-table-row:hover { background: var(--k-bg-section-alt); }
+/* .compliance-link (1785-1794): use on a text link or link button */
+.k-table-link,
+.k-table-link .rich-text__text,
+.k-table-link .button__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--k-accent);
+}
+.k-table-link:hover { text-decoration: underline; }
+
+/* ==========================================================================
+   14. FOOTER                  (globals.css:1420-1488; Footer.js)
+   ========================================================================== */
+/* .footer (1420-1424) on the Wix Footer */
+.k-footer {
+  background: var(--k-bg-hero);
+  color: var(--k-text-on-dark);
+  padding-top: var(--k-space-9);
+  padding-bottom: var(--k-space-6);
+}
+/* .footer h5 column heading (1439-1445) */
+.k-footer-heading,
+.k-footer-heading .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+}
+/* .footer-brand p (1433-1437) */
+.k-footer-text,
+.k-footer-text .rich-text__text {
+  font-size: 14px;
+  color: rgba(240, 255, 244, 0.6);
+}
+.k-footer-text { max-width: 300px; }
+/* .footer-links a (1454-1462): text link, button link or vertical menu */
+.k-footer-link,
+.k-footer-link .rich-text__text,
+.k-footer-link .button__label,
+.k-footer-links .vertical-menu__item-label {
+  font-size: 14px;
+  color: rgba(240, 255, 244, 0.6);
+  transition: color 200ms;
+}
+.k-footer-link:hover,
+.k-footer-link:hover .rich-text__text,
+.k-footer-link:hover .button__label,
+.k-footer-links .vertical-menu__item:hover .vertical-menu__item-label {
+  color: var(--k-accent);
+}
+/* .footer-bottom (1464-1472) */
+.k-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: var(--k-space-6);
+}
+.k-footer-bottom,
+.k-footer-bottom .rich-text__text {
+  font-size: 13px;
+  color: rgba(240, 255, 244, 0.4);
+}
+
+/* ==========================================================================
+   15. SCROLL REVEAL           (.fade-up: globals.css:1494-1519; ScrollReveal.js)
+   The reference toggles .visible with IntersectionObserver. In Wix use
+   either this class or the editor's native Entrance animations
+   (Animations panel > Entrance > Fade/Slide, 600ms, ease-out), which are
+   the more reliable option. Without animation-timeline support the
+   fallback plays once on load.
+   ========================================================================== */
+@keyframes k-reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.k-reveal {
+  animation: k-reveal-up 600ms var(--k-ease-smooth) both;
+}
+.k-reveal--delay-1 { animation-delay: 100ms; }
+.k-reveal--delay-2 { animation-delay: 200ms; }
+.k-reveal--delay-3 { animation-delay: 300ms; }
+/* Browsers with scroll-driven animations reveal as the element enters view */
+@supports (animation-timeline: view()) {
+  .k-reveal {
+    animation: k-reveal-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+  .k-reveal--delay-1,
+  .k-reveal--delay-2,
+  .k-reveal--delay-3 { animation-delay: 0s; }
+}
+/* Spinner (login-spinner 2021-2032), reused for any loading indicator */
+@keyframes k-spin { to { transform: rotate(360deg); } }
+.k-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: k-spin 0.8s linear infinite;
+}
+/* Accessibility: .fade-up / global reduced-motion block (1507-1519) */
+@media (prefers-reduced-motion: reduce) {
+  .k-reveal,
+  .k-carbon-badge,
+  .k-carbon-badge::after,
+  .k-hero-scroll,
+  .k-spinner {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .k-stat-card,
+  .k-feature-card,
+  .k-product-card,
+  .k-person-card,
+  .k-category-card,
+  .k-doc-card,
+  .k-fy-card,
+  .button.k-btn-primary {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   16. RESPONSIVE              (media queries: globals.css 428, 635, 653, 707,
+   759, 834, 923, 958, 1140, 1231, 1354, 1405, 1474, 1871)
+   Wix Studio's layout grids/breakpoints handle column counts; the rules
+   below mirror the reference's paddings and sizes at its breakpoints.
+   ========================================================================== */
+/* Tablet and below: 1023px (navbar, hero, trust, stats, features, team, category, footer) */
+@media (max-width: 1023px) {
+  .k-section { padding-top: var(--k-space-8); padding-bottom: var(--k-space-8); }
+  .k-section-header { margin-bottom: var(--k-space-7); }
+  /* Carbon badge moves into flow, centred (635-650) */
+  .k-carbon-badge {
+    width: 90%;
+    max-width: 400px;
+    margin: 32px auto 24px;
+  }
+  .k-cta-band { padding: var(--k-space-8) var(--k-space-6); }
+}
+/* Investor layout collapses at 900px (1871-1889) */
+@media (max-width: 900px) {
+  .k-sidebar { position: static; }
+  .k-table { font-size: 0.82rem; }
+  .k-table .table__header,
+  .k-table .table__cell,
+  .k-table-head,
+  .k-table-row { padding: 10px 12px; }
+}
+/* Phone: 639px */
+@media (max-width: 639px) {
+  .k-hero-content { padding: var(--k-space-9) var(--k-container-padding); }
+  .k-page-hero { padding-top: var(--k-space-9); padding-bottom: var(--k-space-7); }
+  /* Carbon badge hidden on phones (653-657) */
+  .k-carbon-badge { display: none; }
+  .k-stat-card { padding: var(--k-space-5) var(--k-space-4); }
+  .k-feature-card { padding: var(--k-space-5); }
+  .k-cta-band { padding: var(--k-space-7) var(--k-space-5); }
+  .k-doc-card { padding: 14px 16px; }
+  /* Footer bottom stacks and centres (1483-1487) */
+  .k-footer-bottom { text-align: center; }
+  /* Buttons stay readable and full-width in hero actions */
+  .k-hero-actions { flex-direction: column; align-items: center; }
+}
