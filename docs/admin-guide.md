@@ -29,6 +29,7 @@ For everyone who edits www.kotyark.com. Read once end to end; afterwards use the
 
 - Sign in with your own email and password. Accounts are never shared.
 - After **5 wrong passwords in 15 minutes** the account is locked for 15 minutes. Wait, or ask an Owner to reset your password.
+- **Locked out of every Owner account?** In the Replit Shell: `ADMIN_EMAIL=you@kotyark.com ADMIN_PASSWORD='new 12+ char password' npm run admin:reset`. It creates or resets that Owner, clears the lockout and is recorded in the Audit log.
 - Change your own password from the user menu (top right). Changing it signs out your other sessions.
 - Sessions last 12 hours.
 

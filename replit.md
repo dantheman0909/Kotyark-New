@@ -50,7 +50,8 @@ The Run button runs `npm install` before `npm run dev`, and the deployment build
 branch with new dependencies never needs a manual install.
 
 `npm run dev` · `npm run build` · `npm run start` · `npm run migrate` · `npm run migrate:content`
-(`-- --ingest` to copy working Wix PDFs into App Storage) · `npm run audit:links` · `npm run verify:seo`
+(`-- --ingest` to copy working Wix PDFs into App Storage) · `npm run audit:links` · `npm run verify:seo` ·
+`npm run admin:reset` (create the owner login or reset its password from `ADMIN_EMAIL` / `ADMIN_PASSWORD`; clears lockout)
 
 ## Deployment
 Target: VM. Build `npm run build`; run `npm run migrate && npm run start`.
