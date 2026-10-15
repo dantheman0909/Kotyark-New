@@ -23,7 +23,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
+args = "npm install --no-audit --no-fund && npm run dev"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -36,4 +36,7 @@ externalPort = 80
 [deployment]
 deploymentTarget = "vm"
 run = ["sh", "-c", "npm run migrate && npm run start"]
-build = ["npm", "run", "build"]
+build = ["sh", "-c", "npm ci --no-audit --no-fund && npm run build"]
+
+[objectStorage]
+defaultBucketID = "replit-objstore-0e4fb7e7-4b1a-4c62-b022-73b703d6d7cc"

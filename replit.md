@@ -43,9 +43,12 @@ manage menus, redirects, media, settings and users. Every change is audited.
 | `DATABASE_URL` | yes | Provided by the Replit PostgreSQL integration |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first boot | Creates the first Owner when no users exist (password 12+ chars) |
 | `SITE_URL` | yes | `https://www.kotyark.com` (canonical URLs, sitemap) |
-| `REPLIT_BUCKET_ID` | optional | App Storage bucket, if not the default |
+| `REPLIT_BUCKET_ID` | optional | Overrides the bucket. Default bucket is set in `.replit` (`[objectStorage] defaultBucketID`) |
 
 ## Commands
+The Run button runs `npm install` before `npm run dev`, and the deployment build runs `npm ci`, so pulling a
+branch with new dependencies never needs a manual install.
+
 `npm run dev` · `npm run build` · `npm run start` · `npm run migrate` · `npm run migrate:content`
 (`-- --ingest` to copy working Wix PDFs into App Storage) · `npm run audit:links` · `npm run verify:seo`
 

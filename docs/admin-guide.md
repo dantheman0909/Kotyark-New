@@ -152,7 +152,7 @@ Filter by section, action, user and date. Expand a row for the before/after deta
 ---
 
 ## Go-live checklist (Owner)
-1. Replit: PostgreSQL database added; App Storage bucket created; secrets `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ chars), `SITE_URL=https://www.kotyark.com` set.
+1. Replit: PostgreSQL database added; App Storage bucket created (default bucket already set in `.replit`); secrets `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ chars), `SITE_URL=https://www.kotyark.com` set.
 2. Deploy. The deployment runs database migrations automatically before starting.
 3. In the Replit shell, once: `npm run migrate:content` (imports sections, documents, draft pages, menus, settings), then `npm run audit:links`.
 4. Optional: `npm run migrate:content -- --ingest` copies the working Wix PDFs into App Storage.
