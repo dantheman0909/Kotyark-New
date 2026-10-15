@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent worktrees, scratch, local build dirs
+/.claude/worktrees/
+attached_assets/_scratch/
+/.storage/
+/.next-*/
