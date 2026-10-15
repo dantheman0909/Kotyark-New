@@ -1,0 +1,31 @@
+srNo,particular,regulation,linkUrl,sortOrder
+A,Details of Business,Reg. 46(2)(a),/about,1
+B,Terms and Conditions of Appointment of Independent Directors,Reg. 46(2)(b),/investors/company-policies,2
+C,Composition of Various Committees of Board of Directors,Reg. 46(2)(c),/investors/company-policies,3
+D,Code of Conduct for Board of Directors and Senior Management Personnel,Reg. 46(2)(d),/investors/company-policies,4
+E,Details of Establishment of Vigil Mechanism / Whistle Blower Policy,Reg. 46(2)(e),/investors/company-policies,5
+F,Criteria of Making Payments to Non-Executive Directors,Reg. 46(2)(f),/investors/company-policies,6
+G,Policy on Dealing with Related Party Transactions,Reg. 46(2)(g),/investors/company-policies,7
+H,"Policy for Determining ""Material"" Subsidiaries",Reg. 46(2)(h),/investors/company-policies,8
+I,Details of Familiarization Programmes Imparted to Independent Directors,Reg. 46(2)(i),/investors/company-policies,9
+J,Email Address for Grievance Redressal and Other Relevant Details,Reg. 46(2)(j),/contact,10
+K,Contact Information of Designated Officials for Investor Grievances,Reg. 46(2)(k),/contact,11
+L(i),Notice of Board Meeting for Discussing Financial Results,Reg. 46(2)(l)(i),/investors/board-meetings,12
+L(ii),Financial Results (Upon Conclusion of Board Meeting),Reg. 46(2)(l)(ii),/investors/board-meetings,13
+L(iii),"Complete Copy of Annual Report (Balance Sheet, P&L, Directors' Report, Corporate Governance Report)",Reg. 46(2)(l)(iii),/investors/annual-general-meeting,14
+L(iv),Audited Financial Statements of Each Subsidiary,Reg. 46(2)(l)(iv),/investors/audited-financial-statements,15
+M,Shareholding Pattern,Reg. 46(2)(m),/investors/misc-sebi-disclosure,16
+N,Details of Agreements with Media Companies and/or their Associates,Reg. 46(2)(n),,17
+O,Schedule of Analysts or Institutional Investors Meet and Presentations,Reg. 46(2)(o),,18
+P,Audio/Video Recordings and Transcripts of Post-Earnings/Quarterly Calls,Reg. 46(2)(p),,19
+Q,New Name and Old Name of the Listed Entity (if changed in last 1 year),Reg. 46(2)(q),,20
+R,All Credit Ratings Obtained for Outstanding Instruments,Reg. 46(2)(r),/investors/misc-sebi-disclosure,21
+S,Advertisements Published in Newspapers as per Regulation 47(1),Reg. 46(2)(s),/investors/misc-sebi-disclosure,22
+T,Secretarial Compliance Report,Reg. 46(2)(t),/investors/misc-sebi-disclosure,23
+U,Policy for Determination of Materiality of Events or Information,Reg. 46(2)(u),/investors/company-policies,24
+V,Contact Details of Key Managerial Personnel Authorized for Determining Materiality,Reg. 46(2)(v),/contact,25
+W,Disclosures under Sub-regulation (8) of Regulation 30,Reg. 46(2)(w),/investors/misc-sebi-disclosure,26
+X,Statements of Deviation(s) or Variation(s) as specified in Regulation 32,Reg. 46(2)(x),,27
+Y,Dividend Distribution Policy,Reg. 46(2)(y),/investors/company-policies,28
+Z,"Annual Return as provided under Section 92 of Companies Act, 2013",Reg. 46(2)(z),/investors/annual-general-meeting,29
+ZA,Employee Benefit Scheme Documents (Excluding Commercial Secrets),Reg. 46(2)(za),,30
