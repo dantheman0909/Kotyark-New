@@ -125,3 +125,14 @@
 .kp-layout-slide-in.kp-pos-bottom-right.kp-root.kp-root.kp-root { right: 20px !important; left: auto !important; }
 .kp-layout-slide-in.kp-pos-bottom-left.kp-root.kp-root.kp-root { left: 20px !important; right: auto !important; }
 .kp-mobile.kp-layout-slide-in.kp-root.kp-root.kp-root { bottom: 0 !important; left: 0 !important; right: 0 !important; }
+
+/* Hard limits that author CSS can never override (review: a bar or slide-in must not grow over the page,
+   and the close button must always be visible and usable). */
+.kp-root.kp-root.kp-layout-top-bar .kp-frame, .kp-root.kp-root.kp-layout-bottom-bar .kp-frame { max-height: min(40vh, 240px) !important; }
+.kp-root.kp-root.kp-layout-top-bar .kp-dialog, .kp-root.kp-root.kp-layout-bottom-bar .kp-dialog { overflow-y: auto !important; }
+.kp-root.kp-root.kp-layout-slide-in .kp-frame { max-height: 80vh !important; }
+.kp-root.kp-root.kp-mobile.kp-layout-slide-in .kp-frame { max-height: 75vh !important; }
+.kp-root.kp-root.kp-mobile.kp-layout-modal .kp-frame { max-height: 88% !important; }
+.kp-root.kp-root.kp-preview.kp-layout-slide-in .kp-frame { max-height: 100% !important; }
+.kp-root.kp-root .kp-frame .kp-close { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
+  color: var(--kp-text) !important; background: color-mix(in srgb, var(--kp-text) 10%, var(--kp-bg)) !important; }

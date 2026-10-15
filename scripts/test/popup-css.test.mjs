@@ -227,3 +227,27 @@ test('fuzz: no accepted CSS can set root/dialog position or size (2,000 random c
   }
   assert.ok(accepted > 100, `fuzz produced too few accepted stylesheets (${accepted}) to be meaningful`);
 });
+
+// Third review: size-growing values, hidden close button, '-' prefixed names.
+test('round 3: viewport/percent units and oversized lengths are refused on box-growing properties', () => {
+  const ID = '12345678-1234-1234-1234-123456789abc';
+  for (const bad of [
+    '.kp-content{padding-top:100vh}', '.kp-content{font-size:100vh}', '.kp-content{gap:100vh}',
+    '.kp-dialog{border-width:50vh}', '.kp-heading{line-height:100}', '.kp-heading{letter-spacing:100vw}',
+    '.kp-content{padding:65px}', '.kp-heading{font-size:calc(1px + 100vh)}', '.kp-heading{font-size:max(1px,90vh)}',
+    '@keyframes grow{to{padding-top:100vh}} .kp-content{animation:grow 1s}', '.kp-content{padding:10cm}',
+  ]) {
+    const r = scopeCss(bad, ID);
+    assert.ok(!/vh|vw|cm|calc|max\(|padding-top:100|font-size:100|gap:100|line-height:100|padding:65/.test(r.css), `${bad} -> ${r.css}`);
+    assert.ok(r.warnings.length > 0, `${bad} should warn`);
+  }
+  const ok = scopeCss('.kp-content{padding:24px 32px} .kp-heading{font-size:2rem;line-height:1.2;letter-spacing:1px}', ID);
+  assert.match(ok.css, /padding:24px 32px/); assert.match(ok.css, /font-size:2rem/); assert.match(ok.css, /line-height:1\.2/);
+});
+test('round 3: names starting with "-" are checked like any other', () => {
+  const ID = '12345678-1234-1234-1234-123456789abc';
+  for (const bad of ['.kp-dialog{animation:1s -kp-fade}', '.kp-dialog{animation:1s --x}', '.kp-heading{color:--calc(1px)}']) {
+    const r = scopeCss(bad, ID);
+    assert.equal(r.css.trim(), '', `${bad} -> ${r.css}`);
+  }
+});

@@ -135,6 +135,11 @@ function cleanValue(rawValue, { funcs = BASE_FNS, allowUrl = false } = {}) {
     const fn = m[1].toLowerCase();
     if (fn !== '__url__' && !funcs.has(fn)) return { reason: `function ${fn}() is not allowed here` };
   }
+  // A function name must stand alone: '--calc(' or 'x-calc(' must not pass as calc(.
+  for (const m of rest.matchAll(/([\w-]+)\s*\(/g)) {
+    const fn = m[1].toLowerCase();
+    if (fn !== '__url__' && !funcs.has(fn)) return { reason: `function ${short(fn)}() is not allowed here` };
+  }
   return { v };
 }
 
@@ -146,6 +151,28 @@ function checkMargin(raw) {
     if (tok === '0' || tok === 'auto') continue;
     const m = /^(\d+(?:\.\d+)?)(px|rem|em)$/i.exec(tok);
     if (!m || parseFloat(m[1]) > MARGIN_MAX[m[2].toLowerCase()]) return { reason: `margin must have no negative value and be at most 64px / 4rem / 4em per side (got "${short(tok)}")` };
+  }
+  return c;
+}
+// Size caps for every property that can grow the pop-up box. Only px / rem / em (and unitless where noted);
+// viewport, percentage and absolute units are refused so a bar or slide-in can never be stretched over the page.
+const LEN_CAPS = [
+  [/^padding(-(top|right|bottom|left))?$/, { px: 64, rem: 4, em: 4 }],
+  [/^(row-|column-)?gap$/, { px: 48, rem: 3, em: 3 }],
+  [/^font-size$/, { px: 72, rem: 4.5, em: 4.5 }],
+  [/^line-height$/, { px: 96, rem: 6, em: 6, '': 3 }],
+  [/^(letter|word)-spacing$/, { px: 16, rem: 1, em: 1 }],
+  [/^(border(-(top|right|bottom|left))?(-width)?|outline(-width)?|outline-offset|text-decoration-thickness|text-underline-offset)$/, { px: 16, rem: 1, em: 1 }],
+  [/^border(-(top|bottom)-(left|right))?-radius$/, { px: 999, rem: 60, em: 60, '%': 50 }],
+];
+function capFor(prop) { for (const [re, cap] of LEN_CAPS) if (re.test(prop)) return cap; return null; }
+function checkLengths(c, prop, cap) {
+  for (const m of c.v.matchAll(/(-?\d*\.?\d+)([a-z%]*)/gi)) {
+    const unit = m[2].toLowerCase();
+    const n = Math.abs(parseFloat(m[1]));
+    if (n === 0) continue;
+    if (!(unit in cap)) return { reason: `${prop} only accepts px, rem or em sizes (got "${short(m[0])}")` };
+    if (n > cap[unit]) return { reason: `${prop} is limited to ${cap[unit]}${unit} (got "${short(m[0])}")` };
   }
   return c;
 }
@@ -178,7 +205,7 @@ function checkAnimation(raw, names) {
   const c = cleanValue(raw, { funcs: TIMING_SET });
   if (c.reason) return c;
   let bad = '';
-  const out = c.v.replace(/(?<![\w.-])[a-z_][a-z0-9_-]*/gi, (w, off, str) => {
+  const out = c.v.replace(/(?<![\w.-])-{0,2}[a-z_][a-z0-9_-]*/gi, (w, off, str) => {
     if (str[off + w.length] === '(') return w; // cubic-bezier( / steps( (function names are checked in cleanValue)
     if (ANIM_KEYWORDS.has(w.toLowerCase())) return w.toLowerCase();
     if (names.has(w)) return names.get(w);
@@ -211,6 +238,11 @@ function checkDecl(rawProp, rawValue, ctx) {
   else if (prop === 'background' || prop === 'background-image') r = cleanValue(rawValue, { funcs: BG_FNS, allowUrl: true });
   else if (prop.includes('filter')) r = cleanValue(rawValue, { funcs: FILTER_SET });
   else if (prop.startsWith('transition')) r = cleanValue(rawValue, { funcs: TIMING_SET });
+  else if (capFor(prop)) {
+    // No calc()/min()/max()/clamp() for sizes: the caps must be checkable token by token.
+    const c = cleanValue(rawValue, { funcs: new Set() });
+    r = c.reason ? c : checkLengths(c, prop, capFor(prop));
+  }
   else r = cleanValue(rawValue, { funcs: BASE_FNS });
   return r.reason ? { prop, reason: r.reason } : { prop, v: r.v };
 }

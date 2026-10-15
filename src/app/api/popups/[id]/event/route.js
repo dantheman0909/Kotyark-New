@@ -35,7 +35,7 @@ export async function POST(req, { params }) {
     if (!UUID_RE.test(id)) return new Response(null, { status: 204 });
     let type;
     try { type = JSON.parse(text)?.type; } catch { return new Response(null, { status: 204 }); }
-    const col = COLUMN[type];
+    const col = typeof type === 'string' && Object.hasOwn(COLUMN, type) ? COLUMN[type] : null; // never Object.prototype keys
     if (!col) return new Response(null, { status: 204 });
     await query(
       `INSERT INTO popup_stats(popup_id, day, ${col})
