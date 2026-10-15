@@ -1,21 +1,11 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { destroySession } from '@/lib/auth';
+import { getCurrentUser, destroySession, errorResponse } from '@/lib/auth';
+import { audit } from '@/lib/audit';
 
 export async function POST() {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('session_token')?.value;
-
-    if (token) {
-      destroySession(token);
-    }
-
-    cookieStore.delete('session_token');
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Logout error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
+    const user = await getCurrentUser();
+    await destroySession();
+    if (user) await audit(user, 'logout', 'session', null, `${user.email} signed out`);
+    return Response.json({ ok: true });
+  } catch (e) { return errorResponse(e); }
 }

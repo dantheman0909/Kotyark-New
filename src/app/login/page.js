@@ -1,15 +1,25 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default function LoginPage() {
-  const [username, setUsername] = useState('');
+// Only same-origin relative paths inside /admin are honoured.
+function safeNext(value) {
+  if (typeof value !== 'string') return '/admin';
+  if (!value.startsWith('/admin')) return '/admin';
+  if (value.startsWith('//') || value.includes('\\') || /[\r\n]/.test(value)) return '/admin';
+  if (value !== '/admin' && !/^\/admin[/?#]/.test(value)) return '/admin';
+  return value;
+}
+
+function LoginForm() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const params = useSearchParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,13 +30,13 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
-
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
-        router.push('/admin');
+        router.push(safeNext(params.get('next')));
+        router.refresh();
       } else {
         setError(data.error || 'Login failed');
       }
@@ -48,12 +58,12 @@ export default function LoginPage() {
               </svg>
             </div>
             <h1>Admin Login</h1>
-            <p>Sign in to manage investor relations documents</p>
+            <p>Sign in to manage the Kotyark website</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
             {error && (
-              <div className="login-error">
+              <div className="login-error" role="alert">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
                 </svg>
@@ -62,13 +72,15 @@ export default function LoginPage() {
             )}
 
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="email">Email</label>
               <input
-                id="username"
+                id="email"
                 type="text"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                placeholder="Enter your username"
+                inputMode="email"
+                autoComplete="username"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@company.com"
                 required
                 autoFocus
               />
@@ -79,6 +91,7 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Enter your password"
@@ -106,5 +119,13 @@ export default function LoginPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
