@@ -1,7 +1,19 @@
 import Link from 'next/link';
 
-export default function Footer() {
+// nav: footer menu from the CMS ([{ label, href, children? }]) or null for the original hard-coded columns.
+// Top-level items without children are gathered under "Company"; items with children become their own column.
+function footerColumns(nav) {
+  const loose = nav.filter((i) => !i.children?.length && i.href);
+  const groups = nav.filter((i) => i.children?.length);
+  const cols = [];
+  if (loose.length) cols.push({ title: 'Company', links: loose });
+  for (const g of groups) cols.push({ title: g.label, links: g.children });
+  return cols.slice(0, 2);
+}
+
+export default function Footer({ nav = null }) {
   const currentYear = new Date().getFullYear();
+  const cmsColumns = nav && nav.length ? footerColumns(nav) : null;
 
   return (
     <footer className="footer" role="contentinfo">
@@ -19,28 +31,41 @@ export default function Footer() {
             </p>
           </div>
 
+          {cmsColumns ? cmsColumns.map((col) => (
+            <div key={col.title}>
+              <h5>{col.title}</h5>
+              <ul className="footer-links">
+                {col.links.map((l) => (
+                  <li key={l.id || l.href}><Link href={l.href}>{l.label}</Link></li>
+                ))}
+              </ul>
+            </div>
+          )) : (
+            <>
           {/* Quick Links */}
-          <div>
-            <h5>Company</h5>
-            <ul className="footer-links">
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/products">Products</Link></li>
-              <li><Link href="/products/biodiesel">Biodiesel</Link></li>
-              <li><Link href="/products/crude-glycerin">Crude Glycerin</Link></li>
-              <li><Link href="/investors">Investors</Link></li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h5>Resources</h5>
-            <ul className="footer-links">
-              <li><Link href="/investors">SEBI LODR Filings</Link></li>
-              <li><Link href="/investors">Financial Statements</Link></li>
-              <li><Link href="/investors">Board Meetings</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
-            </ul>
-          </div>
+              <div>
+                <h5>Company</h5>
+                <ul className="footer-links">
+                  <li><Link href="/about">About Us</Link></li>
+                  <li><Link href="/products">Products</Link></li>
+                  <li><Link href="/products/biodiesel">Biodiesel</Link></li>
+                  <li><Link href="/products/crude-glycerin">Crude Glycerin</Link></li>
+                  <li><Link href="/investors">Investors</Link></li>
+                </ul>
+              </div>
+    
+              {/* Legal */}
+              <div>
+                <h5>Resources</h5>
+                <ul className="footer-links">
+                  <li><Link href="/investors">SEBI LODR Filings</Link></li>
+                  <li><Link href="/investors">Financial Statements</Link></li>
+                  <li><Link href="/investors">Board Meetings</Link></li>
+                  <li><Link href="/contact">Contact Us</Link></li>
+                </ul>
+              </div>
+            </>
+          )}
 
           {/* Contact Info */}
           <div>

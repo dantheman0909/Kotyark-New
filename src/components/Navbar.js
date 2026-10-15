@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { DEFAULT_HEADER_NAV } from "@/lib/nav-defaults";
 
-export default function Navbar() {
+export default function Navbar({ items }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -19,20 +20,7 @@ export default function Navbar() {
     setMobileOpen(false);
   }, [pathname]);
 
-  const navItems = [
-    { label: "Home", href: "/" },
-    { label: "About Us", href: "/about" },
-    {
-      label: "Products",
-      href: "/products",
-      children: [
-        { label: "Biodiesel", href: "/products/biodiesel" },
-        { label: "Crude Glycerin", href: "/products/crude-glycerin" },
-      ],
-    },
-    { label: "Investors", href: "/investors" },
-    { label: "Contact", href: "/contact" },
-  ];
+  const navItems = items && items.length ? items : DEFAULT_HEADER_NAV;
 
   return (
     <>
@@ -51,8 +39,8 @@ export default function Navbar() {
 
         <ul className="navbar-nav">
           {navItems.map((item) => (
-            <li key={item.href}>
-              <Link href={item.href}>
+            <li key={item.id || item.href}>
+              {item.href ? <Link href={item.href}>
                 {item.label}
                 {item.children && (
                   <svg
@@ -69,11 +57,11 @@ export default function Navbar() {
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 )}
-              </Link>
+              </Link> : <span className="nav-heading">{item.label}</span>}
               {item.children && (
                 <div className="dropdown-menu">
                   {item.children.map((child) => (
-                    <Link key={child.href} href={child.href}>
+                    <Link key={child.id || child.href} href={child.href}>
                       {child.label}
                     </Link>
                   ))}
@@ -162,7 +150,8 @@ export default function Navbar() {
           }}
         >
           {navItems.map((item) => (
-            <div key={item.href}>
+            <div key={item.id || item.href}>
+              {item.href ? (
               <Link
                 href={item.href}
                 style={{
@@ -177,10 +166,13 @@ export default function Navbar() {
               >
                 {item.label}
               </Link>
+              ) : (
+                <span style={{ display: "block", padding: "12px 16px", fontSize: "16px", fontWeight: 600 }}>{item.label}</span>
+              )}
               {item.children &&
                 item.children.map((child) => (
                   <Link
-                    key={child.href}
+                    key={child.id || child.href}
                     href={child.href}
                     style={{
                       display: "block",
