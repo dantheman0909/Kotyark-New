@@ -152,12 +152,16 @@ export function seoWarnings(design = {}, rules = {}) {
   return out;
 }
 
-/** Hard publish blocker: full-screen + visible on mobile + opens before 3 s. Returns a message or ''. */
+/**
+ * Hard publish blocker: a modal or full-screen pop-up, visible on mobile, that can open within 3 s of page load.
+ * 'scroll' counts as early because it fires at once on pages that are too short to scroll. Returns a message or ''.
+ */
 export function blockingPublishMessage(design = {}, rules = {}) {
   const mobileVisible = rules.devices !== 'desktop';
-  const early = rules.trigger === 'load' || (rules.trigger === 'delay' && Number(rules.delaySeconds) < 3);
-  if (design.layout === 'fullscreen' && mobileVisible && early) {
-    return 'A full-screen pop-up cannot open within 3 seconds of page load on mobile (Google treats it as an intrusive interstitial). Delay it by 3 seconds or more, use another trigger, choose a slide-in or bar, or show it on desktop only.';
+  const early = rules.trigger === 'load' || rules.trigger === 'scroll'
+    || (rules.trigger === 'delay' && Number(rules.delaySeconds) < 3);
+  if (isModalLayout(design.layout) && mobileVisible && early) {
+    return 'A centred or full-screen pop-up shown on mobile cannot open on page load, on scroll, or within 3 seconds (Google treats it as an intrusive interstitial). Use a delay of 3 seconds or more, choose a slide-in or bar, or show it on desktop only.';
   }
   return '';
 }

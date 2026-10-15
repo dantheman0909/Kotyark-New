@@ -162,7 +162,8 @@ test('blockingPublishMessage still guards mobile full-screen interstitials', () 
   assert.ok(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'mobile', trigger: 'delay', delaySeconds: 2 }));
   assert.equal(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'desktop', trigger: 'load' }), '');
   assert.equal(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'all', trigger: 'delay', delaySeconds: 3 }), '');
-  assert.equal(blockingPublishMessage({ layout: 'modal' }, { devices: 'all', trigger: 'load' }), '');
+  assert.ok(blockingPublishMessage({ layout: 'modal' }, { devices: 'all', trigger: 'load' })); // modal is a mobile interstitial too
+  assert.equal(blockingPublishMessage({ layout: 'slide-in' }, { devices: 'all', trigger: 'load' }), '');
 });
 
 function rng(seed) { let s = seed >>> 0; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 2 ** 32; }; }
@@ -250,4 +251,13 @@ test('round 3: names starting with "-" are checked like any other', () => {
     const r = scopeCss(bad, ID);
     assert.equal(r.css.trim(), '', `${bad} -> ${r.css}`);
   }
+});
+
+test('round 4: close button cannot be targeted; hex colours in shorthands still work', () => {
+  const ID = '12345678-1234-1234-1234-123456789abc';
+  for (const bad of ['.kp-close{font-size:0}', '.kp-close{filter:blur(40px)}', '.kp-close{margin-top:64px}', '.kp-close:hover{opacity:.1}']) {
+    assert.equal(scopeCss(bad, ID).css.trim(), '', bad);
+  }
+  assert.match(scopeCss('.kp-content{border:1px solid #e5e7eb}', ID).css, /border:1px solid #e5e7eb/);
+  assert.match(scopeCss('.kp-dialog{border-top:2px solid #123456;outline:1px dashed #0b5d3b}', ID).css, /border-top:2px solid #123456/);
 });

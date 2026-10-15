@@ -67,7 +67,7 @@
 .kp-close { position: absolute; top: 10px; right: 10px; z-index: 3; width: 38px; height: 38px; border-radius: 50%; border: 0; cursor: pointer;
   background: color-mix(in srgb, var(--kp-bg) 70%, transparent); color: var(--kp-text); font-size: 1.5rem; line-height: 1; display: flex; align-items: center; justify-content: center; }
 .kp-close:hover { background: color-mix(in srgb, var(--kp-text) 18%, var(--kp-bg)); }
-.kp-layout-top-bar .kp-close, .kp-layout-bottom-bar .kp-close { top: 50%; transform: translateY(-50%); right: 12px; }
+.kp-layout-top-bar .kp-close, .kp-layout-bottom-bar .kp-close { top: 12px; right: 12px; }
 
 /* image positions (desktop) */
 .kp-img-left .kp-dialog, .kp-img-right .kp-dialog { flex-direction: row; }
@@ -135,4 +135,5 @@
 .kp-root.kp-root.kp-mobile.kp-layout-modal .kp-frame { max-height: 88% !important; }
 .kp-root.kp-root.kp-preview.kp-layout-slide-in .kp-frame { max-height: 100% !important; }
 .kp-root.kp-root .kp-frame .kp-close { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
+  font-size: 1.5rem !important; filter: none !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; text-shadow: none !important; transform: none !important; animation: none !important;
   color: var(--kp-text) !important; background: color-mix(in srgb, var(--kp-text) 10%, var(--kp-bg)) !important; }

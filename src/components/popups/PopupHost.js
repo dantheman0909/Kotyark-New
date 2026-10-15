@@ -104,7 +104,8 @@ export default function PopupHost({ popups: initial, initialPath = null }) {
       const check = () => {
         const doc = document.documentElement;
         const scrollable = doc.scrollHeight - window.innerHeight;
-        const pct = scrollable <= 0 ? 100 : (window.scrollY / scrollable) * 100;
+        if (scrollable <= 0) return; // a page too short to scroll never fires a scroll trigger
+        const pct = (window.scrollY / scrollable) * 100;
         if (pct >= candidate.rules.scrollPercent) fire();
       };
       window.addEventListener('scroll', check, { passive: true });

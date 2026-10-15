@@ -4,7 +4,7 @@
 // Class names Popup.js renders. Selectors may only be built from these.
 export const POPUP_CSS_CLASSES = [
   '.kp-dialog', '.kp-eyebrow', '.kp-heading', '.kp-body', '.kp-image', '.kp-cta', '.kp-cta--secondary',
-  '.kp-close', '.kp-actions', '.kp-content', '.kp-dismiss',
+  '.kp-actions', '.kp-content', '.kp-dismiss',
 ];
 export const POPUP_CSS_PSEUDO_CLASSES = [':hover', ':focus', ':focus-visible', ':active', ':first-child', ':last-child'];
 export const POPUP_CSS_PSEUDO_ELEMENTS = ['::before', '::after', '::placeholder'];

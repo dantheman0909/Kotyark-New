@@ -175,7 +175,8 @@ On phones, modals and slide-ins appear as a **bottom sheet** (full-width card at
 
 ### 13.4 Custom CSS tab (optional)
 For small visual touches the Design tab cannot do (letter-spacing, a gradient button, a hover colour). Custom CSS is an **allowlist**: only the constructs below are applied; everything else is removed and explained in a note under the editor. Every rule is automatically limited to this pop-up.
-- **Classes you can style:** `.kp-dialog`, `.kp-eyebrow`, `.kp-heading`, `.kp-body`, `.kp-image`, `.kp-cta`, `.kp-cta--secondary`, `.kp-close`, `.kp-actions`, `.kp-content`, `.kp-dismiss`.
+- **Classes you can style:** `.kp-dialog`, `.kp-eyebrow`, `.kp-heading`, `.kp-body`, `.kp-image`, `.kp-cta`, `.kp-cta--secondary`, `.kp-actions`, `.kp-content`, `.kp-dismiss`.
+- **The close button cannot be styled.** Its look and size are fixed so visitors can always close the pop-up.
 - **States and pseudo-elements:** `:hover`, `:focus`, `:focus-visible`, `:active`, `:first-child`, `:last-child`; `::before`, `::after`, `::placeholder`. Inside `.kp-body` you can also style `a p strong em ul ol li h2 h3 h4` (for example `.kp-body a:hover`).
 - **Selectors:** each selector is made of those classes, joined only by a space or `>`. Not allowed: `+`, `~`, a selector starting with a combinator, `:not` / `:is` / `:where` / `:has`, attribute selectors, `#id`, `*`, `body` / `html` / `:root` / `.kp-root`.
 - **Properties:** colour and background (`background-image` only a gradient or `url(/media/<image id>)` from the Media library), `opacity`; borders, `border-radius`, outline; `box-shadow`, `text-shadow`, `filter` / `backdrop-filter` (blur, brightness, contrast, grayscale, saturate, drop-shadow); font size, weight, style, line-height, letter/word spacing, alignment, transform-case, text-decoration; `padding`; `margin` (no negative values, at most 64px / 4rem / 4em per side); `gap`; `max-width` (up to 100%); `object-fit`, `object-position`, `aspect-ratio`; `transition` and `animation`; `cursor` (keywords); `font-family` (Plus Jakarta Sans, Inter, system-ui, sans-serif, serif only). `content` works only on `::before` / `::after` with a plain quoted string. `!important` is stripped.
@@ -193,7 +194,7 @@ For small visual touches the Design tab cannot do (letter-spacing, a gradient bu
 - **Priority:** if several pop-ups match a page, only the one with the highest number is shown.
 
 ### 13.6 Search-engine guidance
-Google can demote pages whose content is covered by a full-screen or large pop-up straight after a visitor arrives from search, especially on mobile. The editor warns when a pop-up visible on mobile is a **Modal or Full screen** that opens on page load or within 3 seconds. Prefer a **slide-in or bar**, a delay of 5 seconds or more, or desktop only. New pop-ups default to a 5-second delay slide-in. Always give visitors an easy way to close it (the close button and Esc are built in).
+Google can demote pages whose content is covered by a full-screen or large pop-up straight after a visitor arrives from search, especially on mobile. **Publishing is refused** when a pop-up visible on mobile is a **Modal or Full screen** that opens on page load, on scroll, or within 3 seconds (a scroll trigger never fires on pages too short to scroll). Prefer a **slide-in or bar**, a delay of 5 seconds or more, or desktop only. New pop-ups default to a 5-second delay slide-in. Always give visitors an easy way to close it (the close button and Esc are built in).
 
 ### 13.7 Statistics
 The list shows, for the last 30 days (India calendar days), **views** (pop-up shown), **clicks** (a button pressed) and **CTR** (clicks / views). Counts are approximate (ad blockers and bots) and are only recorded while a pop-up is published.

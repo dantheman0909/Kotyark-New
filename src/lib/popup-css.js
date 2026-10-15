@@ -167,7 +167,8 @@ const LEN_CAPS = [
 ];
 function capFor(prop) { for (const [re, cap] of LEN_CAPS) if (re.test(prop)) return cap; return null; }
 function checkLengths(c, prop, cap) {
-  for (const m of c.v.matchAll(/(-?\d*\.?\d+)([a-z%]*)/gi)) {
+  // Hex colours (#e5e7eb) in shorthands are not lengths.
+  for (const m of c.v.replace(/#[0-9a-f]{3,8}\b/gi, ' ').matchAll(/(-?\d*\.?\d+)([a-z%]*)/gi)) {
     const unit = m[2].toLowerCase();
     const n = Math.abs(parseFloat(m[1]));
     if (n === 0) continue;
