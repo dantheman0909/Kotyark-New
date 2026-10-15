@@ -1,90 +1,78 @@
-import { NextResponse } from 'next/server';
-import { validateSession } from '@/lib/auth';
-import getDb from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
-import fs from 'fs';
+import { query } from '@/lib/db';
+import { getCurrentUser, can, requireUser, errorResponse, httpError } from '@/lib/auth';
+import { audit } from '@/lib/audit';
+import { uniqueSlug } from '@/lib/slug';
+import { autoDescription } from '@/lib/pdf-text';
+import { deleteObject } from '@/lib/storage';
+import { revalidateFolder } from '@/lib/revalidate';
+import {
+  getFolderById, listDocuments, listAllDocuments, documentFileUrl, documentLandingPath,
+} from '@/lib/documents';
+import { readInput, parseMetadata, ingestFile, titleFromFilename, DOC_RETURN } from './_lib';
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'documents');
+export const dynamic = 'force-dynamic';
 
-export async function GET(request) {
+const decorate = (d) => ({ ...d, url: documentFileUrl(d), landing_path: documentLandingPath(d.folder_slug, d) });
+
+// GET /api/documents[?folderId=...] -> { documents: [...] }  (never includes extracted_text)
+// Unauthenticated callers only ever see published documents in visible folders.
+export async function GET(req) {
   try {
-    const { searchParams } = new URL(request.url);
-    const folderId = searchParams.get('folderId');
-
-    const db = getDb();
-    let documents;
-
+    const folderId = new URL(req.url).searchParams.get('folderId');
+    const user = await getCurrentUser();
+    const editor = Boolean(user && can(user, 'documents:write'));
+    let docs;
     if (folderId) {
-      documents = db.prepare(
-        'SELECT * FROM documents WHERE folder_id = ? ORDER BY created_at DESC'
-      ).all(folderId);
+      const folder = await getFolderById(folderId);
+      if (!folder || (!folder.visible && !editor)) return Response.json({ documents: [] });
+      docs = await listDocuments(folderId, { publishedOnly: !editor });
     } else {
-      documents = db.prepare(
-        'SELECT d.*, f.name as folder_name, f.slug as folder_slug FROM documents d LEFT JOIN folders f ON d.folder_id = f.id ORDER BY d.created_at DESC'
-      ).all();
+      docs = await listAllDocuments({ publishedOnly: !editor });
     }
-
-    return NextResponse.json({ documents });
-  } catch (error) {
-    console.error('Documents GET error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
+    return Response.json({ documents: docs.map(decorate) });
+  } catch (e) { return errorResponse(e); }
 }
 
-export async function POST(request) {
+// POST /api/documents  multipart/form-data
+//   file? | externalUrl?  (one required), folderId (required), title?, fy?, doc_date?, status?, sort_order?, description?
+// -> 201 { document }.  JSON body accepted for external links only.
+export async function POST(req) {
+  let storedKey = null;
   try {
-    const isAuth = await validateSession();
-    if (!isAuth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await requireUser('documents:write');
+    const { fields, file } = await readInput(req);
+    const meta = parseMetadata(fields);
+    if (!meta.folder_id) throw httpError(400, 'folderId is required');
+    const folder = await getFolderById(meta.folder_id);
+    if (!folder) throw httpError(404, 'Folder not found');
+    if (!file && !meta.external_url) throw httpError(400, 'Provide a file or an externalUrl');
 
-    const formData = await request.formData();
-    const file = formData.get('file');
-    const title = formData.get('title');
-    const folderId = formData.get('folderId');
-    const externalUrl = formData.get('externalUrl');
+    const title = meta.title || (file ? titleFromFilename(file.name) : titleFromFilename(decodeURIComponent(new URL(meta.external_url).pathname.split('/').pop() || '')));
+    const slug = await uniqueSlug(meta.slug || title, async (s) => (await query('SELECT 1 FROM documents WHERE slug = $1', [s])).length > 0);
 
-    if (!folderId) {
-      return NextResponse.json({ error: 'folderId is required' }, { status: 400 });
-    }
+    let stored = { storage_key: null, mime: 'application/pdf', size: 0, original_name: null, text: '' };
+    if (file) { stored = await ingestFile(file, slug); storedKey = stored.storage_key; }
+    const description = meta.description || autoDescription(stored.text);
 
-    const db = getDb();
+    let sortOrder = meta.sort_order;
+    if (sortOrder === undefined) sortOrder = 0;
 
-    // Verify folder exists
-    const folder = db.prepare('SELECT * FROM folders WHERE id = ?').get(folderId);
-    if (!folder) return NextResponse.json({ error: 'Folder not found' }, { status: 404 });
-
-    const id = uuidv4();
-
-    if (externalUrl) {
-      // External link (e.g. existing WIX hosted PDF)
-      db.prepare(
-        'INSERT INTO documents (id, folder_id, title, file_path, original_name, file_size, is_external) VALUES (?, ?, ?, ?, ?, ?, ?)'
-      ).run(id, folderId, title || externalUrl, externalUrl, null, 0, 1);
-    } else if (file) {
-      // File upload
-      if (!fs.existsSync(UPLOAD_DIR)) {
-        fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-      }
-
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const ext = path.extname(file.name);
-      const fileName = `${id}${ext}`;
-      const filePath = path.join(UPLOAD_DIR, fileName);
-
-      fs.writeFileSync(filePath, buffer);
-
-      db.prepare(
-        'INSERT INTO documents (id, folder_id, title, file_path, original_name, file_size, is_external) VALUES (?, ?, ?, ?, ?, ?, ?)'
-      ).run(id, folderId, title || file.name, `/documents/${fileName}`, file.name, buffer.length, 0);
-    } else {
-      return NextResponse.json({ error: 'Either file or externalUrl is required' }, { status: 400 });
-    }
-
-    const document = db.prepare('SELECT * FROM documents WHERE id = ?').get(id);
-    return NextResponse.json({ document }, { status: 201 });
-  } catch (error) {
-    console.error('Documents POST error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const rows = await query(
+      `INSERT INTO documents(folder_id, title, slug, description, storage_key, external_url, original_name, mime, size,
+                             fy, doc_date, extracted_text, status, sort_order, link_status, created_by, updated_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$16)
+       RETURNING ${DOC_RETURN}`,
+      [folder.id, title, slug, description, stored.storage_key, meta.external_url ?? null, stored.original_name, stored.mime,
+        stored.size, meta.fy ?? null, meta.doc_date ?? null, stored.text, meta.status || 'published', sortOrder,
+        meta.external_url ? 'unchecked' : 'n/a', user.id]);
+    const doc = { ...rows[0], folder_slug: folder.slug };
+    await audit(user, 'upload', 'document', doc.id, `Added document "${title}" to ${folder.name}`,
+      { after: { slug, folder: folder.slug, storage_key: doc.storage_key, external_url: doc.external_url } });
+    revalidateFolder(folder.slug);
+    return Response.json({ document: decorate(doc) }, { status: 201 });
+  } catch (e) {
+    if (storedKey) await deleteObject(storedKey).catch(() => {});
+    if (e?.code === '23505') return errorResponse(httpError(409, 'A document with that link already exists in this folder'));
+    return errorResponse(e);
   }
 }
