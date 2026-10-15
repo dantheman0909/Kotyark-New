@@ -86,14 +86,15 @@ export default function Popup({ popup, viewport = 'desktop', preview = false, on
     <div className={cls} data-kp={id} style={style}
       onMouseDown={modal && d.layout === 'modal' && !preview ? (e) => { if (e.target === e.currentTarget) onClose?.('dismiss'); } : undefined}>
       {popup.css ? <style>{popup.css}</style> : null}
-      {/* kp-frame clips the dialog (overflow hidden, contain paint), so even allowed margins/padding cannot draw outside it */}
-      <div className="kp-frame">
-      <div ref={dialogRef} className="kp-dialog" role="dialog" tabIndex={-1}
+      {/* The frame is the dialog and owns the close button. Author CSS can style .kp-dialog but never the frame,
+          so no styleable element is an ancestor of the close button (it cannot be hidden via opacity/filter). */}
+      <div ref={dialogRef} className="kp-frame" role="dialog" tabIndex={-1}
         aria-modal={modal ? 'true' : 'false'}
         {...(c.heading ? { 'aria-labelledby': headingId } : { 'aria-label': 'Announcement' })}>
         <button type="button" className="kp-close" aria-label="Close" data-kp-autofocus onClick={preview ? undefined : () => onClose?.('dismiss')}>
           <span aria-hidden="true">&times;</span>
         </button>
+      <div className="kp-dialog">
         {img && (/* eslint-disable-next-line @next/next/no-img-element */
           <img className="kp-image" src={img} alt={c.imagePosition === 'background' ? '' : c.imageAlt} loading="eager" />
         )}

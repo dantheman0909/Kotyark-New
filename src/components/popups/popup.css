@@ -137,3 +137,6 @@
 .kp-root.kp-root .kp-frame .kp-close { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
   font-size: 1.5rem !important; filter: none !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; text-shadow: none !important; transform: none !important; animation: none !important;
   color: var(--kp-text) !important; background: color-mix(in srgb, var(--kp-text) 10%, var(--kp-bg)) !important; }
+/* Round 5: the close button is a child of the frame (not of .kp-dialog); bars are tall enough to hold it. */
+.kp-root.kp-root .kp-frame { position: relative !important; }
+.kp-root.kp-root.kp-layout-top-bar .kp-dialog, .kp-root.kp-root.kp-layout-bottom-bar .kp-dialog { min-height: 62px !important; }
