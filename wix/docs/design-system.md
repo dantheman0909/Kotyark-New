@@ -137,9 +137,9 @@ Set the button's own layout (width, alignment) in the editor.
 | `k-icon-box`, `--sm`, `--round` | Box (holds icon/vector) | `.feature-icon`, `.trust-icon`, `.fy-icon`, G:807-821, 683-693 | 56px tile (48px, or circle) |
 | `k-product-card`, `__image`, `__body`, `__link` | Box (repeater item) | G:858-921 | 24px radius; image gets a bottom gradient via `::after` |
 | `k-person-card`, `k-person-photo`, `k-person-role`, `k-person-bio` | Box / Image / Text | `.team-*`, G:1092-1138 | Leadership. Photo is a 120px ringed circle |
-| `k-category-card`, `k-category-desc` | Box | G:1204-1229, 1844-1868 | Investor hub tile; icon box turns green on hover |
+| `k-category-card`, `k-category-card__icon`, `k-category-desc` | Box / Box (icon tile) / Text | `.category-card`, `.doc-icon`, G:1177-1186, 1204-1229, 1844-1868 | Investor hub tile; the 40px amber icon tile (`__icon`) turns green on hover |
 | `k-benefit-card`, `k-benefit-check` | Box | G:1370-1403 | Check item |
-| `k-contact-card` | Box | `.contact-info-card`, G:1333-1352 | Pale green panel |
+| `k-contact-card`, `k-contact-card__icon` | Box / Box (icon tile) | `.contact-info-card`, `.contact-info-icon`, G:1333-1352 | Pale green panel with a 44px white icon tile |
 
 ### Bands
 
@@ -159,7 +159,7 @@ Set the button's own layout (width, alignment) in the editor.
 
 | Class | Apply to | Reproduces | Notes |
 |---|---|---|---|
-| `k-badge` | Box / Text | `.doc-card-badge`, G:1697-1708 | Red uppercase pill (default) |
+| `k-badge` | Box / Text / Button | `.doc-card-badge`, G:1697-1708 | Red uppercase pill (default). On a Button (the `PDF` pill is `#docLink`) the label is styled through `.button__label` |
 | `k-badge--yes`, `--na`, `--cell` | same | `.badge-yes/.badge-na/.compliance-badge`, G:1767-1783 | Green "Yes", grey "NA", cell sizing |
 | `k-badge--accent`, `--green` | same | derived tints | Not in the reference; extra palette-based chips |
 
@@ -177,14 +177,28 @@ Set the button's own layout (width, alignment) in the editor.
 |---|---|---|---|
 | `k-sidebar`, `k-sidebar-title` | Box / Text | `.investor-sidebar`, G:1582-1599 | Sticky at 100px; static below 900px |
 | (inside `k-sidebar`) | Vertical menu | `.investor-sidebar nav a`, G:1610-1624 | Items styled through `.vertical-menu__item*` |
-| `k-sidebar-link`, `k-sidebar-link--active` | Repeater item | G:1610-1630 | For a repeater-built sidebar; set `--active` from page code |
-| `k-doc-card`, `__icon`, `__title`, `__arrow` | Repeater item Box and children | `.doc-card`, G:1639-1722 | Hover slides 4px right, icon turns green, arrow appears. `k-badge` goes inside for "NEW" |
+| `k-sidebar-link`, `k-sidebar-link--active` | Button (`#sidebarLink` in the repeater item) | G:1610-1630 | For the repeater-built sidebar. The Velo code adds the plain class `active` (`customClassList.add('active')`), and `.k-sidebar-link.active` is styled the same as `--active` (green fill, white label), so no `k-` class is added from code |
+| `k-doc-card`, `__icon`, `__title`, `__arrow` | Repeater item Box and children | `.doc-card`, G:1639-1722 | Hover slides 4px right, icon turns green, arrow appears. `k-badge` goes inside for the `PDF` pill (`#docLink`) |
 | `k-doc-list`, `k-doc-row` | Box | `.doc-list/.doc-item`, G:1155-1192 | Plain list variant |
 | `k-fy-header` | Text | derived from `.fy-card`, G:1803-1841 | Financial-year group heading with orange left bar. The reference has no separate FY header; this is new |
 | `k-fy-card`, `k-fy-card-title`, `k-fy-card-text` | Box / Text | G:1803-1841 | Centred category tile |
-| `k-table` | Wix Table | `.compliance-table`, G:1731-1765 | Green header row, divider rows, hover tint |
+| `k-table` | Wix Table | `.compliance-table`, G:1731-1765 | Green header row, divider rows, hover tint. Not used by the Reg. 46 table, which is a repeater (`k-table-head` + `k-table-row`) because it is CMS-bound |
 | `k-table-head`, `k-table-row` | Repeater header / row Box | same | Use when the "table" is a repeater grid |
 | `k-table-link` | Text / Button | `.compliance-link`, G:1785-1794 | Orange bold link |
+
+### Inline-styled patterns (new)
+
+These had no class in the reference: `src/**` wrote the values as inline `style` props. They are defined in `global.css` section 10b, with the JSX line cited in the CSS comment. Each is used by `wix/docs/page-build-spec.md`.
+
+| Class | Apply to | Reference (inline style) | Notes |
+|---|---|---|---|
+| `k-mini-stat`, `k-mini-stat-number`, `k-mini-stat-label` | Box / Text / Text | `src/app/page.js:322-330` | 16px padding, pale green, 12px radius; number Plus Jakarta Sans 800 28px primary; label 14px muted |
+| `k-product-tag` | Text / Box | `src/app/products/page.js:40-44` | Pill chip, 12px / 600, 4px 12px padding, pale green, primary text |
+| `k-card-panel`, `k-card-panel-text` | Box / Text | `src/app/about/page.js:78-80` | Vision / Mission panel: white, 1px border, 16px radius, 48px padding; copy 18px / 1.7 |
+| `k-spec-table` | Wix Table | `src/app/products/biodiesel/page.js:138-160` | Carries the 800px card frame itself; green header row, 15px rows, first column weight 500 |
+| `k-form-success`, `k-form-success-icon` | Box / Box | `src/app/contact/page.js:43-48` | Success panel (48px 32px, pale green, 16px radius, centred) and the 64px check circle |
+| `k-info-panel`, `k-info-panel-text` | Box / Text | `src/app/contact/page.js:146-153` | Company details: pale green, 1px border, 16px radius, 24px padding; copy 14px / 1.8 |
+| `k-info-panel-green`, `k-info-panel-heading` | Box / Text | `src/app/contact/page.js:156-161` | 135deg primary to primary-light panel; copy at 80% light, heading white |
 
 ### Footer
 
@@ -220,6 +234,8 @@ Set the button's own layout (width, alignment) in the editor.
 | `.hero h1 .highlight` inside one heading | Rich text cannot carry a span class; `k-hero-highlight` works on a separate text element |
 | `.hero-scroll` `translateX(-50%)` centring | Position is set in the editor; only the vertical bounce is kept |
 | `.navbar.scrolled` | Wix handles it with header scroll effects; `k-header--scrolled` is optional |
+| `.navbar-logo`, `.dropdown-menu` (as classes) | Logo size is set in the editor; a horizontal menu's dropdown has no documented class, so it is styled in the menu's design settings (`k-menu-vertical` skins a vertical menu and its submenu) |
+| `.split`, `.contact-grid`, `.investor-layout`, `.compliance-table-wrap` | Layout: columns, gaps and a horizontally scrolling wrapper are editor settings |
 
 ## 4. What must be set in the editor
 
@@ -232,8 +248,8 @@ CSS cannot do these on Wix; configure them in Studio.
 - **Header**: floating position and 16px inset, height 64px, logo sizing (44px tall, max 200px wide), mobile menu
   and its breakpoint (1023px), header-to-hamburger switch, scroll behaviour.
 - **Menu structure**: top-level items, dropdown groups (About, Products, Investors) and their links, the CTA
-  button in the header, the investor sidebar items, and the active-item state (style the menu's "selected" state in
-  the editor; only `.vertical-menu__item` hover is in CSS).
+  button in the header, the investor sidebar items, and the active-item state of a menu (style the menu's "selected" state in
+  the editor; only `.vertical-menu__item` hover is in CSS). The investor sidebar is a repeater of Buttons, not a menu: its current item gets the class `active` from Velo, styled by `.k-sidebar-link.active`.
 - **Image crops and fit**: product-card image 240px crop, 120px circular person photos, split images, hero
   background position and cover.
 - **Repeaters**: item counts, row gaps (10px for doc cards, 20-24px for card grids), CMS bindings. Do not

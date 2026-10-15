@@ -814,6 +814,23 @@
   background: var(--k-primary);
   color: #ffffff;
 }
+/* .doc-icon inside the hub card: 40px amber tile, turns green on hover (1177-1186, 1861-1868) */
+.k-category-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--k-radius-sm);
+  background: rgba(217, 119, 6, 0.08);
+  color: var(--k-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 300ms var(--k-ease-smooth);
+}
+.k-category-card:hover .k-category-card__icon {
+  background: var(--k-primary);
+  color: #ffffff;
+}
 .k-category-desc,
 .k-category-desc .rich-text__text {
   font-size: 14px;
@@ -849,6 +866,18 @@
   padding: var(--k-space-5);
   background: var(--k-bg-section-alt);
   border-radius: var(--k-radius-md);
+}
+/* .contact-info-icon: 44px white tile (1342-1351) */
+.k-contact-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--k-radius-sm);
+  background: var(--k-bg-surface);
+  color: var(--k-primary-lighter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -972,6 +1001,15 @@
   color: #b91c1c;
 }
 .k-badge .rich-text__text { color: #b91c1c; }
+/* Same pill on a Button (the PDF link in a doc card is a Button, #docLink) */
+.k-badge .button__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #b91c1c;
+}
 /* .doc-card-badge (red "NEW"): default above. Compliance cells: */
 .k-badge--yes { background: #dcfce7; color: #166534; }
 .k-badge--yes .rich-text__text { color: #166534; }
@@ -990,6 +1028,135 @@
 .k-badge--accent .rich-text__text { color: var(--k-accent-hover); }
 .k-badge--green { background: rgba(46, 139, 87, 0.1); color: var(--k-primary-light); }
 .k-badge--green .rich-text__text { color: var(--k-primary-light); }
+
+/* ==========================================================================
+   10b. PANELS, CHIPS AND SPEC TABLE  (inline-styled in the reference JSX)
+   These patterns had no class in src/app/globals.css: the reference wrote
+   the values as inline style props. Values are copied from that JSX.
+   ========================================================================== */
+/* Mini stat box (page.js:323-330): 16px padding, pale green, 12px radius.
+   Number = Plus Jakarta Sans 800 28px primary; label = 14px muted. Both are
+   styled here so they only need the box class on a Box holding two Texts. */
+.k-mini-stat {
+  padding: var(--k-space-4);
+  background: var(--k-bg-section-alt);
+  border-radius: var(--k-radius-md);
+}
+.k-mini-stat-number,
+.k-mini-stat-number .rich-text__text {
+  font-family: var(--k-font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--k-primary);
+}
+.k-mini-stat-label,
+.k-mini-stat-label .rich-text__text {
+  font-size: 14px;
+  color: var(--k-text-muted);
+}
+/* Product tag chip (products/page.js:40-44): 12px / 600, 4px 12px, pill */
+.k-product-tag,
+.k-product-tag .rich-text__text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--k-primary);
+}
+.k-product-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: var(--k-bg-section-alt);
+  border-radius: var(--k-radius-full);
+}
+/* Vision / Mission panel (about/page.js:78): white, 1px border, 16px radius,
+   48px padding. Body copy 18px / 1.7 on the paragraph (about/page.js:80). */
+.k-card-panel {
+  padding: var(--k-space-7);
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+}
+.k-card-panel-text,
+.k-card-panel-text .rich-text__text {
+  font-size: 18px;
+  line-height: 1.7;
+}
+/* Technical data table (biodiesel/page.js:138-160): card frame, green header
+   row, 15px body rows. Apply to a Wix Table element. */
+.k-spec-table {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--k-bg-surface);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+  overflow: hidden;
+}
+.k-spec-table .table__header {
+  padding: 14px 20px;
+  background: var(--k-primary);
+  color: #ffffff;
+  text-align: left;
+  font-family: var(--k-font-heading);
+  font-size: 14px;
+  font-weight: 600;
+}
+.k-spec-table .table__cell {
+  padding: 12px 20px;
+  border: none;
+  border-bottom: 1px solid var(--k-border);
+  font-size: 15px;
+  color: var(--k-text-secondary);
+}
+.k-spec-table .table__cell:first-child {
+  font-weight: 500;
+  color: var(--k-text-primary);
+}
+/* Contact form success panel (contact/page.js:43-53): 48px 32px, pale green,
+   16px radius, centred. The 64px check circle is k-icon-box--round resized in
+   the editor, or this modifier. */
+.k-form-success {
+  padding: var(--k-space-7) var(--k-space-6);
+  background: var(--k-bg-section-alt);
+  border-radius: var(--k-radius-lg);
+  text-align: center;
+}
+.k-form-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--k-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--k-space-5);
+}
+/* Company details panel (contact/page.js:146): pale green, 1px border, 16px
+   radius, 24px padding; copy 14px / 1.8 secondary. */
+.k-info-panel {
+  padding: var(--k-space-5);
+  background: var(--k-bg-section-alt);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-lg);
+}
+.k-info-panel-text,
+.k-info-panel-text .rich-text__text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--k-text-secondary);
+}
+/* Approved manufacturer panel (contact/page.js:156-161): 135deg primary ->
+   primary-light, white heading, 14px copy at rgba(240,255,244,0.8). */
+.k-info-panel-green {
+  padding: var(--k-space-5);
+  background: linear-gradient(135deg, var(--k-primary) 0%, var(--k-primary-light) 100%);
+  border-radius: var(--k-radius-lg);
+  color: #ffffff;
+}
+.k-info-panel-green .rich-text__text { color: rgba(240, 255, 244, 0.8); font-size: 14px; }
+.k-info-panel-green .k-info-panel-heading,
+.k-info-panel-green .k-info-panel-heading .rich-text__text { color: #ffffff; font-size: inherit; }
 
 /* ==========================================================================
    11. BREADCRUMB              (investor-breadcrumb: globals.css:1546-1572)
@@ -1049,7 +1216,9 @@
 .k-sidebar .vertical-menu__item:hover { background: var(--k-bg-section-alt); }
 .k-sidebar .vertical-menu__item:hover .vertical-menu__item-label { color: var(--k-primary); }
 /* Link row for a repeater-based sidebar: item = k-sidebar-link,
-   current page = k-sidebar-link--active (set from page code) */
+   current page = k-sidebar-link--active, or the plain class "active" that
+   investorSection.js adds with customClassList.add('active') on #sidebarLink
+   (a Button, so the label is .button__label) */
 .k-sidebar-link {
   padding: 10px 14px;
   border-radius: var(--k-radius-sm);
@@ -1058,9 +1227,13 @@
 }
 .k-sidebar-link:hover { background: var(--k-bg-section-alt); }
 .k-sidebar-link--active,
-.k-sidebar-link--active:hover { background: var(--k-primary); }
+.k-sidebar-link--active:hover,
+.k-sidebar-link.active,
+.k-sidebar-link.active:hover { background: var(--k-primary); }
 .k-sidebar-link--active .rich-text__text,
-.k-sidebar-link--active .button__label {
+.k-sidebar-link--active .button__label,
+.k-sidebar-link.active .rich-text__text,
+.k-sidebar-link.active .button__label {
   color: #ffffff;
   font-weight: 600;
 }

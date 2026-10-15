@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { documentUrlToHttp, resolveDocLink, groupDocuments, buildSidebar, buildHubGroups, buildReg46Rows, formatDocDate } from '../src/public/lib/investor.js';
-import { buildSectionSeo, documentListJsonLd, organizationJsonLd } from '../src/public/lib/seo.js';
+import { buildSectionSeo, buildHubSeo, documentListJsonLd, organizationJsonLd, withBrand } from '../src/public/lib/seo.js';
 
 const O = 'https://example.com';
 
@@ -78,7 +78,7 @@ test('JSON-LD builders', () => {
   assert.equal(ld.mainEntity.itemListElement[0].item.datePublished, '2025-02-11');
   const seo = buildSectionSeo(O, section, []);
   assert.equal(seo.canonical, `${O}/investors/board-meetings`);
-  assert.equal(seo.title, 'BM');
+  assert.equal(seo.title, 'BM | Kotyark Industries');
   const crumbs = seo.structuredData.find((x) => x['@type'] === 'BreadcrumbList').itemListElement;
   assert.deepEqual(crumbs.map((c) => c.position), [1, 2, 3]);
   assert.equal(organizationJsonLd(O).logo, undefined);
@@ -90,4 +90,10 @@ test('generated CSVs: row counts and reference integrity', () => {
   assert.equal(read('InvestorSections').length > 15, true); // multi-line cells may add lines
   assert.equal(read('InvestorDocuments').length, 105);
   assert.equal(read('Reg46Disclosures').length, 31);
+});
+
+test('withBrand matches the reference title template without doubling the brand', () => {
+  assert.equal(withBrand('Company Policies'), 'Company Policies | Kotyark Industries');
+  assert.equal(withBrand('About Kotyark Industries - Pioneer'), 'About Kotyark Industries - Pioneer');
+  assert.equal(buildHubSeo('https://www.kotyark.com').title, 'Investor Relations - BSE Listed | Kotyark Industries');
 });

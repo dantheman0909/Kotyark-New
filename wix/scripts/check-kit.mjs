@@ -20,9 +20,10 @@ const spec = read('docs/page-build-spec.md');
 const css = read('src/styles/global.css');
 const readme = read('src/pages/README.md');
 
-const cssClasses = new Set(css.match(/\.k-[a-z0-9]+(?:-[a-z0-9]+)*/g)?.map(c => c.slice(1)) || []);
-// Class mentions in the spec: inside backticks only, to skip prose like "k-" prefix explanations.
-const specClasses = uniq([...spec.matchAll(/`[^`]*`/g)].flatMap(m => m[0].match(/\bk-[a-z0-9]+(?:-[a-z0-9]+)*\b/g) || [])
+const K = '\\bk-[a-z0-9]+(?:(?:--|__|-)[a-z0-9]+)*';
+const cssClasses = new Set(css.match(new RegExp('\\.' + K.slice(2), 'g'))?.map(c => c.slice(1)) || []);
+// Class mentions in the spec: inside code spans or bold (BEM names with -- and __ included).
+const specClasses = uniq([...spec.matchAll(/`[^`]*`|\*\*[^*]*\*\*/g)].flatMap(m => m[0].match(new RegExp(K, 'g')) || [])
   .filter(c => !/^k-x(-y)?$/.test(c)));
 report('spec classes defined in global.css', specClasses.filter(c => !cssClasses.has(c)));
 

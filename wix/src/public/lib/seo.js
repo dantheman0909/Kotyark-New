@@ -77,10 +77,19 @@ export function documentListJsonLd(origin, section, docs) {
   });
 }
 
+/**
+ * Page <title> as the reference site renders it: "<title> | Kotyark Industries",
+ * unless the title already names the brand (avoids "… Kotyark Industries | Kotyark Industries").
+ */
+export function withBrand(title) {
+  const t = String(title || '').trim();
+  return /kotyark industries/i.test(t) ? t : `${t} | Kotyark Industries`;
+}
+
 /** Everything wix-seo-frontend needs for a section page. */
 export function buildSectionSeo(origin, section, docs) {
   const path = `/investors/${section.slug}`;
-  const title = section.seoTitle || section.heading || section.title;
+  const title = withBrand(section.seoTitle || section.heading || section.title);
   const description = section.seoDescription || section.description || '';
   return {
     title,
@@ -108,7 +117,7 @@ export function buildSectionSeo(origin, section, docs) {
 
 export function buildHubSeo(origin) {
   const description = 'Access SEBI filings, board meetings, financial statements & company policies for Kotyark Industries Limited. BSE listed biofuel company.';
-  const title = 'Investor Relations - BSE Listed';
+  const title = withBrand('Investor Relations - BSE Listed');
   return {
     title,
     description,
