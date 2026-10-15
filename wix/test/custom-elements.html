@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kotyark custom elements: visual test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fafdf7; color: #0c1f13; font-size: 17px; }
+  h2 { font-family: "Plus Jakarta Sans", sans-serif; color: #0d3b24; padding: 32px 24px 8px; font-size: 20px; }
+  p.note { padding: 0 24px 12px; color: #6b8a78; font-size: 14px; }
+  /* Mimics the Wix hero: the badge element sits at bottom right, 40px from the edges */
+  .hero { position: relative; height: 560px; overflow: hidden; background: #071a10; }
+  .hero-bg { position: absolute; inset: 0; background: url(../../public/images/hero-forest.jpg) center/cover; opacity: .4; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(7,26,16,.92) 0%, rgba(13,59,36,.75) 50%, rgba(7,26,16,.85) 100%); }
+  .hero kotyark-carbon-badge { position: absolute; right: 28px; bottom: 28px; width: 360px; height: 112px; }
+  .section-alt { background: #f0f7f1; padding: 24px 0 48px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .grid.two { grid-template-columns: 1fr 1fr; max-width: 640px; }
+  .grid.inv { grid-template-columns: repeat(4, 1fr); }
+  .grid > * { height: 150px; }
+  @media (max-width: 1023px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 639px) { .grid { gap: 16px; } .grid.inv { grid-template-columns: 1fr; } .hero kotyark-carbon-badge { display: none; } }
+  .spacer { height: 700px; }
+</style>
+</head>
+<body>
+<h2>1. kotyark-carbon-badge on the hero (hidden below 640px, as in the reference)</h2>
+<div class="hero"><div class="hero-bg"></div><div class="hero-overlay"></div>
+  <kotyark-carbon-badge></kotyark-carbon-badge></div>
+
+<h2>1b. kotyark-carbon-badge with custom attributes (no animation)</h2>
+<div class="hero" style="height:200px"><div class="hero-bg"></div><div class="hero-overlay"></div>
+  <kotyark-carbon-badge title="Government Approved" prefix="by" highlight="Rajasthan Bio-Fuel Authority" animate="false" style="left:24px;right:auto;width:360px"></kotyark-carbon-badge></div>
+
+<div class="spacer"></div>
+<h2>2. Home stats (scroll here: counts up once)</h2>
+<div class="section-alt" id="stats-home"><div class="grid">
+  <kotyark-stat-counter value="480K" label="KL Annual Capacity"></kotyark-stat-counter>
+  <kotyark-stat-counter value="210" label="KL/Day Production" delay="150"></kotyark-stat-counter>
+  <kotyark-stat-counter value="86%" label="Less GHG Emissions" delay="300"></kotyark-stat-counter>
+  <kotyark-stat-counter value="Zero" label="Discharge Facilities" delay="450"></kotyark-stat-counter>
+</div></div>
+
+<h2>3. About / Glycerin (number-size 36px), decimals and commas</h2>
+<div class="section-alt"><div class="grid two">
+  <kotyark-stat-counter value="480K" label="KL Annual Capacity" number-size="36px"></kotyark-stat-counter>
+  <kotyark-stat-counter value="~10%" label="By-product yield" number-size="36px"></kotyark-stat-counter>
+  <kotyark-stat-counter value="1,250.5" label="Comma and decimal test" number-size="36px"></kotyark-stat-counter>
+  <kotyark-stat-counter value="2" label="Facilities" number-size="36px"></kotyark-stat-counter>
+</div></div>
+
+<h2>4. Investors (non-numeric text stays static)</h2>
+<div class="section-alt"><div class="grid inv">
+  <kotyark-stat-counter value="BSE Listed" label="Stock Exchange" number-size="24px"></kotyark-stat-counter>
+  <kotyark-stat-counter value="L15149RJ2023PLC091598" label="CIN" number-size="20px"></kotyark-stat-counter>
+  <kotyark-stat-counter value="SEBI Compliant" label="Regulator" number-size="24px"></kotyark-stat-counter>
+  <kotyark-stat-counter value="480K KL" label="Capacity" number-size="24px"></kotyark-stat-counter>
+</div></div>
+
+<h2>5. Velo-style attribute update</h2>
+<p class="note">Button simulates <code>$w('#el').setAttribute('value', '500K')</code>.</p>
+<div class="section-alt"><div class="grid two"><kotyark-stat-counter id="live" value="480K" label="Live update"></kotyark-stat-counter></div>
+  <p class="note" style="padding-top:16px"><button id="upd" onclick="document.getElementById('live').setAttribute('value','500K')">Set value to 500K</button> <span id="log"></span></p></div>
+<div style="height:80px"></div>
+
+<script src="../src/public/custom-elements/kotyark-carbon-badge.js"></script>
+<script src="../src/public/custom-elements/kotyark-stat-counter.js"></script>
+<script>
+  document.querySelectorAll('kotyark-stat-counter').forEach(function (el) {
+    el.addEventListener('countend', function (e) { var l = document.getElementById('log'); l.textContent += ' countend:' + e.detail.value; });
+  });
+</script>
+</body>
+</html>
