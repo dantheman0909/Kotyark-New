@@ -1,5 +1,7 @@
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Disclosure Under Reg. 46 of SEBI (LODR)',
   description: 'Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) website disclosures for Kotyark Industries Limited.',
@@ -40,7 +42,7 @@ export default function SebiLodrPage() {
   ];
 
   return (
-    <InvestorSubPageLayout title="Disclosure Under Reg. 46 of SEBI (LODR)">
+    <InvestorSubPageLayout title="Disclosure Under Reg. 46 of SEBI (LODR)" activeSlug="sebi-lodr">
       <p style={{ marginBottom: '24px', color: 'var(--color-text-secondary)' }}>
         Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) for website disclosures by Kotyark Industries Limited.
       </p>
