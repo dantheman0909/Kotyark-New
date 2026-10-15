@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 5000",
     "migrate": "node scripts/migrate.mjs",
-    "migrate:content": "node scripts/migrate-to-cms.mjs"
+    "migrate:content": "node scripts/migrate-to-cms.mjs",
+    "audit:links": "node scripts/link-audit.mjs",
+    "verify:seo": "node scripts/verify-seo.mjs"
   },
   "dependencies": {
     "@replit/object-storage": "^1.0.0",
