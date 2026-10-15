@@ -3,7 +3,8 @@
 // A page's `blocks` column is an array of { id, type, props }.
 //
 // Field kinds: text | textarea | richtext | url | image | select | boolean | number
-//              | folder (document_folders.id) | list (repeating group with `fields`)
+//              | folder (document_folders.id) | tags (array of short strings)
+//              | list (repeating group with `fields`)
 // `required` fields must be non-empty. richtext is sanitized server-side.
 
 export const BLOCKS = {
@@ -14,6 +15,7 @@ export const BLOCKS = {
       heading:    { kind: 'text', label: 'Heading', required: true },
       subheading: { kind: 'textarea', label: 'Subheading' },
       image:      { kind: 'image', label: 'Background image' },
+      imageAlt:   { kind: 'text', label: 'Image alt text' },
       variant:    { kind: 'select', label: 'Style', options: ['full', 'page'], default: 'page' }, // full = home hero, page = .page-hero
       ctas:       { kind: 'list', label: 'Buttons', max: 2, fields: {
         label: { kind: 'text', label: 'Label', required: true },
@@ -25,6 +27,7 @@ export const BLOCKS = {
   rich_text: {
     label: 'Rich text',
     fields: {
+      eyebrow: { kind: 'text', label: 'Eyebrow' },
       heading: { kind: 'text', label: 'Heading' },
       html:    { kind: 'richtext', label: 'Body', required: true },
       width:   { kind: 'select', label: 'Width', options: ['normal', 'narrow', 'wide'], default: 'normal' },
@@ -33,6 +36,7 @@ export const BLOCKS = {
   image_text: {
     label: 'Image + text',
     fields: {
+      eyebrow:       { kind: 'text', label: 'Eyebrow' },
       heading:       { kind: 'text', label: 'Heading' },
       html:          { kind: 'richtext', label: 'Body', required: true },
       image:         { kind: 'image', label: 'Image', required: true },
@@ -47,6 +51,7 @@ export const BLOCKS = {
   stats: {
     label: 'Stats',
     fields: {
+      eyebrow: { kind: 'text', label: 'Eyebrow' },
       heading: { kind: 'text', label: 'Heading' },
       items:   { kind: 'list', label: 'Stats', min: 1, max: 8, fields: {
         value: { kind: 'text', label: 'Value', required: true },   // '480,000 KL'
@@ -57,15 +62,20 @@ export const BLOCKS = {
   card_grid: {
     label: 'Card grid',
     fields: {
+      eyebrow:  { kind: 'text', label: 'Eyebrow' },
       heading:  { kind: 'text', label: 'Heading' },
       intro:    { kind: 'textarea', label: 'Intro' },
       columns:  { kind: 'select', label: 'Columns', options: ['2', '3', '4'], default: '3' },
       items:    { kind: 'list', label: 'Cards', min: 1, max: 12, fields: {
         title: { kind: 'text', label: 'Title', required: true },
         body:  { kind: 'textarea', label: 'Body' },
-        image: { kind: 'image', label: 'Image' },
-        icon:  { kind: 'text', label: 'Icon (emoji or short text)' },
-        href:  { kind: 'url', label: 'Link' },
+        role:      { kind: 'text', label: 'Subtitle / role' },
+        image:     { kind: 'image', label: 'Image' },
+        imageAlt:  { kind: 'text', label: 'Image alt text' },
+        icon:      { kind: 'text', label: 'Icon (emoji or short text)' },
+        tags:      { kind: 'tags', label: 'Tags' },
+        href:      { kind: 'url', label: 'Link' },
+        linkLabel: { kind: 'text', label: 'Link label' },
       } },
     },
   },
@@ -76,6 +86,8 @@ export const BLOCKS = {
       body:    { kind: 'textarea', label: 'Body' },
       label:   { kind: 'text', label: 'Button label', required: true },
       href:    { kind: 'url', label: 'Button link', required: true },
+      secondaryLabel: { kind: 'text', label: 'Second button label' },
+      secondaryHref:  { kind: 'url', label: 'Second button link' },
     },
   },
   faq: {
@@ -140,7 +152,7 @@ export function defaultProps(type) {
   if (!def) throw new Error(`Unknown block type: ${type}`);
   const out = {};
   for (const [k, f] of Object.entries(def.fields)) {
-    out[k] = f.kind === 'list' ? [] : f.default ?? (f.kind === 'boolean' ? false : f.kind === 'number' ? 0 : '');
+    out[k] = f.kind === 'list' || f.kind === 'tags' ? [] : f.default ?? (f.kind === 'boolean' ? false : f.kind === 'number' ? 0 : '');
   }
   return out;
 }
@@ -161,6 +173,9 @@ export function validateBlock(block) {
         if (f.min && arr.length < f.min) errs.push(`${where}${f.label}: at least ${f.min} required`);
         if (f.max && arr.length > f.max) errs.push(`${where}${f.label}: at most ${f.max} allowed`);
         arr.forEach((item, i) => check(f.fields, item, `${where}${f.label} #${i + 1} › `));
+      } else if (f.kind === 'tags') {
+        if (v != null && (!Array.isArray(v) || v.some(t => typeof t !== 'string'))) errs.push(`${where}${f.label}: must be a list of text`);
+        else if (f.required && !(v || []).length) errs.push(`${where}${f.label} is required`);
       } else if (f.required && (v === undefined || v === null || String(v).trim() === '')) {
         errs.push(`${where}${f.label} is required`);
       } else if (f.kind === 'select' && v && !f.options.includes(String(v))) {
@@ -169,6 +184,9 @@ export function validateBlock(block) {
     }
   };
   check(def.fields, block.props, `${def.label} › `);
+  if (block.type === 'cta_banner' && !!block.props?.secondaryLabel !== !!block.props?.secondaryHref) {
+    errs.push(`${def.label} › Second button needs both a label and a link`);
+  }
   return errs;
 }
 
@@ -195,6 +213,7 @@ export function blocksToText(blocks, htmlToText) {
       const v = props?.[k];
       if (f.kind === 'list' && Array.isArray(v)) v.forEach(item => walk(f.fields, item));
       else if (f.kind === 'richtext') parts.push(htmlToText(v));
+      else if (f.kind === 'tags' && Array.isArray(v)) parts.push(v.join(' '));
       else if (['text', 'textarea'].includes(f.kind) && v) parts.push(String(v));
     }
   };

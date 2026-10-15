@@ -1,46 +1,55 @@
-import getDb from '@/lib/db';
+import { query } from '@/lib/db';
+import { absoluteUrl } from '@/lib/site';
 
-const BASE_URL = process.env.SITE_URL || 'https://www.kotyark.com';
+export const dynamic = 'force-dynamic';
+
+// Routes that exist as files. A published CMS page at the same path supplies lastModified (or removes it if noindex).
+const STATIC_PATHS = [
+  '/', '/about', '/products', '/products/biodiesel', '/products/crude-glycerin',
+  '/contact', '/investors', '/investors/sebi-lodr',
+];
+
+function priorityFor(path) {
+  if (path === '/') return 1.0;
+  const depth = path.split('/').filter(Boolean).length;
+  return depth === 1 ? 0.8 : 0.6;
+}
 
 export default async function sitemap() {
-  const db = getDb();
+  const now = new Date();
+  /** @type {Map<string, {url:string,lastModified:Date,changeFrequency:string,priority:number}>} */
+  const entries = new Map();
+  const put = (path, lastModified, changeFrequency, priority) => {
+    const url = absoluteUrl(path);
+    entries.set(url, { url, lastModified, changeFrequency, priority });
+  };
 
-  // Static pages
-  const staticPages = [
-    { url: `${BASE_URL}`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/products`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/sustainability`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/programs`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/investors`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-  ];
+  for (const p of STATIC_PATHS) put(p, now, p === '/' || p === '/investors' ? 'weekly' : 'monthly', priorityFor(p));
 
-  // Dynamic investor pages from CMS folders
-  const folders = db.prepare('SELECT slug, created_at FROM folders WHERE parent_id IS NOT NULL ORDER BY sort_order').all();
-  const folderPages = folders.map(f => ({
-    url: `${BASE_URL}/investors/${f.slug}`,
-    lastModified: new Date(f.created_at),
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  }));
+  try {
+    const [pages, folders, docs] = await Promise.all([
+      query(`SELECT path, updated_at, (coalesce(seo->>'noindex', '') = 'true') AS noindex
+               FROM pages WHERE status = 'published'`),
+      query(`SELECT slug, updated_at FROM document_folders WHERE visible ORDER BY sort_order, name`),
+      query(`SELECT d.slug, d.storage_key IS NOT NULL AS has_file, d.updated_at, f.slug AS folder_slug
+               FROM documents d JOIN document_folders f ON f.id = d.folder_id
+              WHERE d.status = 'published' AND f.visible
+              ORDER BY d.updated_at DESC`),
+    ]);
 
-  // Documents — include external URLs for discoverability
-  const docs = db.prepare(`
-    SELECT d.title, d.file_path, d.is_external, d.created_at, f.slug as folder_slug, f.name as folder_name
-    FROM documents d
-    JOIN folders f ON f.id = d.folder_id
-    ORDER BY d.created_at DESC
-  `).all();
+    for (const p of pages) {
+      if (p.noindex) { entries.delete(absoluteUrl(p.path)); continue; }
+      put(p.path, new Date(p.updated_at), 'monthly', priorityFor(p.path));
+    }
+    for (const f of folders) put(`/investors/${f.slug}`, new Date(f.updated_at), 'weekly', 0.7);
+    for (const d of docs) {
+      put(`/investors/${d.folder_slug}/${d.slug}`, new Date(d.updated_at), 'yearly', 0.5);
+      // Only files we host. Legacy external (Wix) URLs are never listed.
+      if (d.has_file) put(`/files/${d.slug}.pdf`, new Date(d.updated_at), 'yearly', 0.4);
+    }
+  } catch (e) {
+    console.error('[sitemap] database unavailable, serving static routes only:', e?.message);
+  }
 
-  const docPages = docs
-    .filter(d => d.is_external)
-    .map(d => ({
-      url: d.file_path,
-      lastModified: new Date(d.created_at),
-      changeFrequency: 'yearly',
-      priority: 0.5,
-    }));
-
-  return [...staticPages, ...folderPages, ...docPages];
+  return [...entries.values()];
 }

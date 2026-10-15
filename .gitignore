@@ -46,3 +46,6 @@ attached_assets/_scratch/
 # legacy sqlite (never commit) + local file storage
 /data/*.db*
 /.storage/
+
+# agent worktrees (parallel sub-agent checkouts)
+/.claude/worktrees/

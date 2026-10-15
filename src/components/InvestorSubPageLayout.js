@@ -1,24 +1,7 @@
-'use client';
+// Server component: the sidebar comes from the database (visible folders), the active
+// item is passed in by the page (no usePathname needed).
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-const sidebarLinks = [
-  { href: '/investors/sebi-lodr', label: 'Disclosure under Reg. 46 of SEBI (LODR)' },
-  { href: '/investors/closing-trading-window', label: 'Closing of Trading Window' },
-  { href: '/investors/misc-sebi-disclosure', label: 'Misc Disclosure under SEBI' },
-  { href: '/investors/board-meetings', label: 'Board Meetings' },
-  { href: '/investors/audited-financial-statements', label: 'Audited Financial Statements' },
-  { href: '/investors/annual-general-meeting', label: 'Annual General Meeting' },
-  { href: '/investors/extra-ordinary-general-meetings', label: 'Extra Ordinary General Meeting' },
-  { href: '/investors/company-policies', label: 'Company Policies' },
-  { href: '/investors/merger-and-amalgamation', label: 'Merger & Amalgamation' },
-  { href: '/investors/migration-to-main-board', label: 'Migration To Main Board' },
-  { href: '/investors/smart-odr', label: 'Smart ODR' },
-  { href: '/investors/unpaid-dividend', label: 'Unpaid Dividend' },
-  { href: '/investors/postal-ballot', label: 'Postal Ballot' },
-  { href: '/investors/integrated-filling', label: 'Integrated Filling' },
-  { href: '/investors/moa-aoa', label: 'MOA - AOA' },
-];
+import { listFolders, labelForMime, formatDocDate, documentLandingPath } from '@/lib/documents';
 
 function DownloadArrow() {
   return (
@@ -28,18 +11,13 @@ function DownloadArrow() {
   );
 }
 
-export function DocumentList({ documents }) {
+/** Cards linking to each document's landing page. `folderSlug` is used when rows lack folder_slug. */
+export function DocumentList({ documents, folderSlug }) {
   if (!documents || documents.length === 0) return null;
   return (
     <div className="doc-card-grid">
-      {documents.map((doc, i) => (
-        <a
-          key={i}
-          href={doc.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="doc-card"
-        >
+      {documents.map((doc) => (
+        <Link key={doc.id || doc.slug} href={documentLandingPath(doc.folder_slug || folderSlug, doc)} className="doc-card">
           <div className="doc-card-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -49,18 +27,31 @@ export function DocumentList({ documents }) {
             </svg>
           </div>
           <div className="doc-card-info">
-            <span className="doc-card-title">{doc.title}</span>
-            <span className="doc-card-badge">PDF</span>
+            <span className="doc-card-title">
+              {doc.title}
+              {doc.doc_date && (
+                <span style={{ display: 'block', fontSize: '0.78rem', fontWeight: 400, color: 'var(--color-text-muted)', marginTop: 2 }}>
+                  {formatDocDate(doc.doc_date)}
+                </span>
+              )}
+            </span>
+            <span className="doc-card-badge">{labelForMime(doc.mime)}</span>
           </div>
           <DownloadArrow />
-        </a>
+        </Link>
       ))}
     </div>
   );
 }
 
-export default function InvestorSubPageLayout({ title, children }) {
-  const pathname = usePathname();
+/**
+ * @param {string} title           hero heading
+ * @param {string} [activeSlug]    folder slug highlighted in the sidebar
+ * @param {{name:string, href:string}} [parent]  optional middle breadcrumb (e.g. the folder on a document page)
+ */
+export default async function InvestorSubPageLayout({ title, activeSlug, parent, children }) {
+  let folders = [];
+  try { folders = await listFolders({ visibleOnly: true }); } catch (e) { console.error('Sidebar folders failed:', e.message); }
 
   return (
     <>
@@ -69,6 +60,10 @@ export default function InvestorSubPageLayout({ title, children }) {
           <nav className="investor-breadcrumb" aria-label="Breadcrumb">
             <Link href="/investors">Investor Relations</Link>
             <span className="investor-breadcrumb-sep">›</span>
+            {parent && (<>
+              <Link href={parent.href}>{parent.name}</Link>
+              <span className="investor-breadcrumb-sep">›</span>
+            </>)}
             <span>{title}</span>
           </nav>
           <h1>{title}</h1>
@@ -82,13 +77,10 @@ export default function InvestorSubPageLayout({ title, children }) {
               <h3>Investor Sections</h3>
               <nav>
                 <ul>
-                  {sidebarLinks.map(link => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className={pathname === link.href ? 'active' : ''}
-                      >
-                        {link.label}
+                  {folders.map((f) => (
+                    <li key={f.id}>
+                      <Link href={`/investors/${f.slug}`} className={f.slug === activeSlug ? 'active' : ''}>
+                        {f.name}
                       </Link>
                     </li>
                   ))}
