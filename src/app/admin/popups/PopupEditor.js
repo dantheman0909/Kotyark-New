@@ -13,11 +13,14 @@ import RichTextEditor from '@/app/admin/pages/_components/RichTextEditor';
 import Popup from '@/components/popups/Popup';
 import { imageSrc } from '@/lib/blocks/schemas';
 import {
+  POPUP_CSS_CLASSES, POPUP_CSS_PSEUDO_CLASSES, POPUP_CSS_PSEUDO_ELEMENTS, POPUP_CSS_BODY_ELEMENTS, POPUP_CSS_PROPERTY_GROUPS,
+  POPUP_CSS_FORBIDDEN_PROPERTIES, POPUP_CSS_MARGIN_LIMIT,
+} from '@/lib/popup-css-spec';
+import {
   DEFAULT_CONTENT, DEFAULT_DESIGN, DEFAULT_RULES, POPUP_ENUMS, PRESETS, isoToIstText, istTextToIso, resolveColors, seoWarnings, blockingPublishMessage,
 } from '@/lib/popup-config';
 
 const TABS = [['content', 'Content'], ['design', 'Design'], ['css', 'Custom CSS'], ['rules', 'Display rules']];
-const CSS_CLASSES = ['.kp-root', '.kp-dialog', '.kp-eyebrow', '.kp-heading', '.kp-body', '.kp-image', '.kp-cta', '.kp-cta--secondary', '.kp-close'];
 const LABELS = {
   layout: { modal: 'Modal (centred)', 'slide-in': 'Slide-in (corner card)', 'top-bar': 'Top bar', 'bottom-bar': 'Bottom bar', fullscreen: 'Full screen' },
   preset: { brand: 'Brand green', light: 'Light', dark: 'Dark', amber: 'Amber' },
@@ -322,15 +325,25 @@ export default function PopupEditor({ id }) {
 
             {tab === 'css' && (
               <>
-                <p className={styles.hint} style={{ marginBottom: 8 }}>Classes you can style (rules are automatically limited to this pop-up):</p>
-                <div className={ps.classList}>{CSS_CLASSES.map((k) => <code key={k}>{k}</code>)}<code>.kp-root.kp-mobile</code></div>
+                <p className={styles.hint} style={{ marginBottom: 8 }}>Classes you can style (every rule is automatically limited to this pop-up):</p>
+                <div className={ps.classList}>{POPUP_CSS_CLASSES.map((k) => <code key={k}>{k}</code>)}</div>
+                <p className={styles.hint} style={{ margin: '8px 0' }}>
+                  States: {POPUP_CSS_PSEUDO_CLASSES.join(' ')} &middot; Pseudo-elements: {POPUP_CSS_PSEUDO_ELEMENTS.join(' ')} &middot;
+                  Inside <code>.kp-body</code> you can also style: {POPUP_CSS_BODY_ELEMENTS.join(' ')} (e.g. <code>.kp-body a:hover</code>).
+                  Combine selectors only with a space or <code>&gt;</code>. Wrap phone styles in <code>@media (max-width: 600px)</code>.
+                </p>
+                <ul className={styles.hint} style={{ margin: '0 0 8px', paddingLeft: 18 }}>
+                  {POPUP_CSS_PROPERTY_GROUPS.map((g) => <li key={g.label}><strong>{g.label}:</strong> {g.props.filter((p) => !/^(border-|outline-|margin-|padding-|text-decoration-|animation-|transition-)/.test(p) || /^(border-radius|outline-offset|text-decoration-thickness)$/.test(p)).join(', ')}{g.label === 'Spacing' ? ` (margins: ${POPUP_CSS_MARGIN_LIMIT}; max-width up to 100%)` : ''}</li>)}
+                  <li><strong>Fonts:</strong> only Plus Jakarta Sans, Inter, system-ui, sans-serif, serif. <strong>Images:</strong> <code>url(/media/&lt;image id&gt;)</code> in background only.</li>
+                  <li><strong>Never allowed:</strong> {POPUP_CSS_FORBIDDEN_PROPERTIES.slice(0, 22).join(', ')}, custom properties (--x), other at-rules (@import, @font-face&hellip;). Pop-up placement and size come from the Design tab.</li>
+                </ul>
                 {[...cssWarnings, ...(preview.fatal ? ['Custom CSS was rejected: see the message above.'] : [])].length > 0 && (
                   <div className={ps.notice} role="status"><strong>Notes from the server</strong>
                     <ul>{cssWarnings.map((w) => <li key={w}>{w}</li>)}</ul></div>
                 )}
                 <FormField as="textarea" className={ps.code} label="Custom CSS" spellCheck={false} value={form.customCss}
                   onChange={(e) => set(['customCss'], e.target.value)}
-                  hint="Max 10 KB. Not allowed: @import, external url() other than https: or /media/, expression(), javascript:, behavior. body/html/:root styles apply to the pop-up itself." />
+                  hint="Max 10 KB. Only the classes, states and properties listed above are applied; anything else is removed and explained under the editor." />
                 <pre className={styles.diff} aria-label="Scoped CSS that will be used">{preview.css || '/* nothing yet */'}</pre>
               </>
             )}

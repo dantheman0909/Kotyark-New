@@ -8,27 +8,34 @@
 }
 .kp-root.kp-preview { position: absolute; z-index: 5; }
 .kp-root style { display: none; }
-.kp-dialog { pointer-events: auto; position: relative; background: var(--kp-bg); color: var(--kp-text);
+/* The frame owns the box: size, radius, shadow and clipping. Author CSS can never target it, and it clips the
+   dialog, so nothing an author is allowed to set (margins, padding, filters) can paint outside it. */
+.kp-frame { pointer-events: auto; display: flex; flex-direction: column; width: 100%; max-height: 100%; min-width: 0;
   border-radius: var(--kp-radius); box-shadow: 0 16px 48px rgba(13, 59, 36, .28), 0 2px 8px rgba(0, 0, 0, .12);
-  overflow: hidden; display: flex; flex-direction: column; width: 100%; max-height: 100%; isolation: isolate; contain: layout paint; }
+  overflow: hidden; contain: layout paint; }
+.kp-dialog { position: relative; background: var(--kp-bg); color: var(--kp-text); border-radius: inherit;
+  overflow: hidden; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; width: 100%; max-width: 100%; isolation: isolate; contain: layout paint; }
 .kp-dialog:focus { outline: none; }
 .kp-root :focus-visible { outline: 3px solid var(--kp-text); outline-offset: 2px; }
 
 /* layouts */
 .kp-layout-modal, .kp-layout-fullscreen { inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--kp-overlay); pointer-events: auto; }
-.kp-layout-modal .kp-dialog { max-width: var(--kp-w); max-height: calc(100% - 8px); overflow-y: auto; }
+.kp-layout-modal .kp-frame { max-width: var(--kp-w); max-height: calc(100% - 8px); }
+.kp-layout-modal .kp-dialog, .kp-layout-slide-in .kp-dialog, .kp-layout-fullscreen .kp-dialog { overflow-y: auto; }
 .kp-layout-fullscreen { padding: 0; }
-.kp-layout-fullscreen .kp-dialog { max-width: none; height: 100%; border-radius: 0; overflow-y: auto; justify-content: center; }
+.kp-layout-fullscreen .kp-frame { max-width: none; height: 100%; border-radius: 0; }
+.kp-layout-fullscreen .kp-dialog { justify-content: center; }
 .kp-layout-fullscreen .kp-content { max-width: 720px; margin: 0 auto; width: 100%; text-align: center; padding: 56px 24px; }
 .kp-layout-fullscreen .kp-actions { justify-content: center; }
 .kp-layout-slide-in { bottom: 20px; width: min(var(--kp-w), calc(100vw - 40px)); }
 .kp-layout-slide-in.kp-pos-bottom-right { right: 20px; }
 .kp-layout-slide-in.kp-pos-bottom-left { left: 20px; }
-.kp-layout-slide-in .kp-dialog { max-height: 80vh; overflow-y: auto; }
-.kp-root.kp-preview.kp-layout-slide-in .kp-dialog { max-height: 100%; }
+.kp-layout-slide-in .kp-frame { max-height: 80vh; }
+.kp-root.kp-preview.kp-layout-slide-in .kp-frame { max-height: 100%; }
 .kp-layout-top-bar, .kp-layout-bottom-bar { left: 0; right: 0; }
 .kp-layout-top-bar { top: 0; } .kp-layout-bottom-bar { bottom: 0; }
-.kp-layout-top-bar .kp-dialog, .kp-layout-bottom-bar .kp-dialog { flex-direction: row; align-items: center; border-radius: 0; box-shadow: 0 4px 24px rgba(0, 0, 0, .18); }
+.kp-layout-top-bar .kp-frame, .kp-layout-bottom-bar .kp-frame { border-radius: 0; box-shadow: 0 4px 24px rgba(0, 0, 0, .18); }
+.kp-layout-top-bar .kp-dialog, .kp-layout-bottom-bar .kp-dialog { flex-direction: row; align-items: center; border-radius: 0; }
 .kp-layout-top-bar .kp-content, .kp-layout-bottom-bar .kp-content { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; padding: 14px 56px 14px 24px; flex: 1; }
 .kp-layout-top-bar .kp-text, .kp-layout-bottom-bar .kp-text { flex: 1 1 320px; min-width: 0; }
 .kp-layout-top-bar .kp-heading, .kp-layout-bottom-bar .kp-heading { font-size: 1.02rem; margin: 0; }
@@ -78,9 +85,9 @@
 
 /* mobile: modal and slide-in become a bottom sheet; fullscreen stays fullscreen; bars stack */
 .kp-mobile.kp-layout-modal { align-items: flex-end; padding: 0; }
-.kp-mobile.kp-layout-modal .kp-dialog { max-width: none; max-height: 88%; border-radius: var(--kp-radius) var(--kp-radius) 0 0; }
+.kp-mobile.kp-layout-modal .kp-frame { max-width: none; max-height: 88%; border-radius: var(--kp-radius) var(--kp-radius) 0 0; }
 .kp-mobile.kp-layout-slide-in { left: 0; right: 0; bottom: 0; width: auto; }
-.kp-mobile.kp-layout-slide-in .kp-dialog { border-radius: var(--kp-radius) var(--kp-radius) 0 0; max-height: 75vh; }
+.kp-mobile.kp-layout-slide-in .kp-frame { border-radius: var(--kp-radius) var(--kp-radius) 0 0; max-height: 75vh; }
 .kp-mobile.kp-img-left .kp-dialog, .kp-mobile.kp-img-right .kp-dialog { flex-direction: column; }
 .kp-mobile.kp-img-left .kp-image, .kp-mobile.kp-img-right .kp-image { width: 100%; height: 150px; min-height: 0; }
 .kp-mobile .kp-content { padding: 22px 20px 20px; }
@@ -104,7 +111,7 @@
 .kp-anim-fade.kp-layout-modal, .kp-anim-slide.kp-layout-modal, .kp-anim-zoom.kp-layout-modal,
 .kp-anim-fade.kp-layout-fullscreen, .kp-anim-slide.kp-layout-fullscreen, .kp-anim-zoom.kp-layout-fullscreen { animation: kp-fade .25s ease both; }
 @media (prefers-reduced-motion: reduce) {
-  .kp-root, .kp-dialog, .kp-cta { animation: none !important; transition: none !important; }
+  .kp-root, .kp-frame, .kp-dialog, .kp-cta { animation: none !important; transition: none !important; }
 }
 
 /* Root placement is enforced: editor CSS (scoped to [data-kp], specificity 0,1,0-0,2,0) cannot move the root

@@ -86,6 +86,8 @@ export default function Popup({ popup, viewport = 'desktop', preview = false, on
     <div className={cls} data-kp={id} style={style}
       onMouseDown={modal && d.layout === 'modal' && !preview ? (e) => { if (e.target === e.currentTarget) onClose?.('dismiss'); } : undefined}>
       {popup.css ? <style>{popup.css}</style> : null}
+      {/* kp-frame clips the dialog (overflow hidden, contain paint), so even allowed margins/padding cannot draw outside it */}
+      <div className="kp-frame">
       <div ref={dialogRef} className="kp-dialog" role="dialog" tabIndex={-1}
         aria-modal={modal ? 'true' : 'false'}
         {...(c.heading ? { 'aria-labelledby': headingId } : { 'aria-label': 'Announcement' })}>
@@ -112,6 +114,7 @@ export default function Popup({ popup, viewport = 'desktop', preview = false, on
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

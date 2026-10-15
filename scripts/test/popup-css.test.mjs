@@ -1,121 +1,229 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { scopePopupCss, MAX_POPUP_CSS_BYTES } from '../../src/lib/popup-css.js';
+import postcss from 'postcss';
+import {
+  scopePopupCss, scopeCss, MAX_POPUP_CSS_BYTES, POPUP_CSS_CLASSES, POPUP_CSS_ALLOWED_PROPERTIES, POPUP_CSS_FORBIDDEN_PROPERTIES, POPUP_CSS_FONT_FAMILIES,
+} from '../../src/lib/popup-css.js';
+import { blockingPublishMessage } from '../../src/lib/popup-config.js';
 
 const ID = '11111111-2222-3333-4444-555555555555';
+const MEDIA_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 const ROOT = `[data-kp="${ID}"]`;
 const run = (css) => scopePopupCss(css, ID);
 
-test('scopes every rule and every selector in a list', () => {
-  const { css, fatal } = run('.kp-heading, .kp-body a { color: red } .kp-cta:hover { opacity: .8 }');
-  assert.equal(fatal, false);
-  assert.match(css, new RegExp(`\\${ROOT.slice(0, 1)}data-kp="${ID}"\\] \\.kp-heading`));
-  assert.ok(css.includes(`${ROOT} .kp-body a`));
-  assert.ok(css.includes(`${ROOT} .kp-cta:hover`));
-  for (const sel of css.match(/[^{}]+(?=\{)/g)) for (const s of sel.split(',')) assert.ok(s.trim().startsWith(ROOT), s);
-});
+test('scopeCss and scopePopupCss are the same function', () => assert.equal(scopeCss, scopePopupCss));
 
-test('scopes rules inside @media and prefixes keyframes', () => {
-  const { css } = run('@media (max-width:600px){.kp-heading{font-size:1rem}} @keyframes pop{from{opacity:0}to{opacity:1}} .kp-dialog{animation:pop 1s}');
-  assert.ok(css.includes(`${ROOT} .kp-heading`));
-  assert.ok(css.includes('@keyframes kp-11111111-pop'));
-  assert.ok(css.includes('animation:kp-11111111-pop 1s'));
-  assert.ok(!/(^|[{}\s])from\s*\{/.test(css) || css.includes('from{') || css.includes('from {'));
-});
-
-test('strips @import, @charset and @namespace with a warning', () => {
-  const r = run('@charset "utf-8"; @import url(https://evil.test/x.css); @namespace svg url(http://x); .kp-body{color:red}');
-  assert.ok(!/@import|@charset|@namespace/.test(r.css));
-  assert.ok(r.css.includes('color:red'));
-  assert.equal(r.warnings.length, 3);
-});
-
-test('strips url(javascript:) and other disallowed urls, keeps only /media', () => {
-  const r = run('.kp-a{background:url(javascript:alert(1))} .kp-b{background:url("data:image/png;base64,xx")} .kp-c{background:url(http://x/y.png)} .kp-d{background:url(/media/abc)} .kp-e{background:url("https://cdn.test/a.png")} .kp-f{background:url(/images/a.png)}');
-  assert.ok(!/javascript|data:|http:\/\/|\/images\//.test(r.css));
-  assert.ok(r.css.includes('url(/media/abc)'));
-  assert.ok(!r.css.includes('cdn.test'));
-  assert.ok(r.warnings.length >= 4);
-});
-
-test('catches CSS-escaped javascript:, expression(), behavior, -moz-binding', () => {
-  const r = run('.a{background:url(\\6a avascript:alert(1))} .b{width:expression(alert(1))} .c{behavior:url(x.htc)} .d{-moz-binding:url(x)} .e{color:red}');
-  assert.ok(!/avascript|expression|behavior|binding/i.test(r.css));
-  assert.ok(r.css.includes('color:red'));
-});
-
-test('rejects </style outright', () => {
-  for (const css of ['.a{color:red}</style><script>alert(1)</script>', '.a{content:"</STYLE"}']) {
+// ---- every reviewer probe is rejected outright (nothing emitted, a warning given) ----
+const REJECTED = {
+  'escaped property name (pos\\ition)': '.kp-dialog{pos\\ition:fixed}',
+  'escaped property name (p\\6fsition)': '.kp-dialog{p\\6fsition:fixed}',
+  'out-specifying the root rules': '.kp-root.kp-root.kp-root.kp-root:not(.kp-preview){position:absolute!important}',
+  'covering the page with the dialog': '.kp-dialog{position:absolute;top:-100vh;left:-100vw;width:300vw;height:300vh}',
+  'leading ~ combinator': '~ main{display:none}',
+  'leading + combinator': '+ *{color:red}',
+  ':not() with a list then sibling': '.kp-root:not(.a, .b) ~ main{}',
+  ':is() then sibling': '.kp-root:is(.kp-root, .z) ~ *{}',
+  'attribute selector then sibling': '.kp-root[data-x="a b"] ~ *{}',
+  'encoded ../ in a media url': '.kp-heading{background:url(/media/%2e%2e/api/popups/x)}',
+  'body selector': 'body{outline:1px solid red}',
+  '@import': '@import url(/x.css); @import "y.css";',
+  '@font-face': '@font-face{font-family:X;src:url(/media/' + MEDIA_ID + ')}',
+  'remote url': '.kp-heading{background:url(https://evil.test/x.png)}',
+  'custom property with remote url': '.kp-dialog{--x:url(https://e)}',
+  'custom property at top level': '--x:url(https://e)',
+  'negative margin': '.kp-dialog{margin:-500px}',
+  'transform': '.kp-dialog{transform:scale(10)}',
+  'content with url()': '.kp-heading{content:url(x)}',
+  'root class': '.kp-root{color:red}',
+  'html / :root': 'html{color:red} :root{color:red}',
+  'universal selector': '*{color:red}',
+  'id selector': '#x{color:red}',
+  'attribute selector': '.kp-cta[href]{color:red}',
+  'sibling combinators between allowed compounds': '.kp-heading ~ .kp-body{color:red} .kp-heading + .kp-body{color:red}',
+  'element outside .kp-body': 'a{color:red} .kp-heading a{color:red}',
+  'escaped selector hiding body': 'b\\6fdy{color:red}',
+  ':where / :has': '.kp-dialog:where(.a){color:red} .kp-dialog:has(a){color:red}',
+  'position': '.kp-dialog{position:relative}',
+  'width / height': '.kp-dialog{width:300vw} .kp-dialog{height:100vh}',
+  'z-index / inset': '.kp-dialog{z-index:99999} .kp-dialog{inset:0}',
+  'display:none': '.kp-close{display:none}',
+  'pointer-events': '.kp-dialog{pointer-events:none}',
+  'margin above the cap': '.kp-dialog{margin:65px} .kp-dialog{margin:5rem} .kp-dialog{margin:0 0 0 -1px} .kp-dialog{margin:calc(1px)}',
+  'max-width above 100%': '.kp-dialog{max-width:101%} .kp-dialog{max-width:500px}',
+  'font outside the site stacks': '.kp-heading{font-family:Comic Sans MS}',
+  'content on a non-pseudo element': '.kp-heading{content:"x"}',
+  'content with attr()': '.kp-heading::before{content:attr(title)}',
+  'vendor property': '.kp-dialog{-moz-binding:url(x)} .kp-dialog{-webkit-text-fill-color:red} .kp-dialog{-webkit-mask:red}',
+  'expression()': '.kp-dialog{color:expression(alert(1))}',
+  'javascript url': '.kp-dialog{background:url(javascript:alert(1))}',
+  'url with a trailing path': '.kp-dialog{background:url(/media/' + MEDIA_ID + '/x)} .kp-dialog{background:url(/media/' + MEDIA_ID.replace('a', '%') + ')}',
+  'url on a property other than background': '.kp-dialog{border-image:url(/media/' + MEDIA_ID + ')} .kp-dialog{cursor:url(/media/' + MEDIA_ID + '),auto}',
+  'filter url': '.kp-dialog{filter:url(#x)} .kp-dialog{backdrop-filter:url(/x)}',
+  'filter with a non-filter function': '.kp-dialog{filter:invert(1)}',
+  'animation naming something undefined': '.kp-dialog{animation:spin 1s}',
+  'keyframes with a bad name': '@keyframes Pop{from{opacity:0}} @keyframes "a b"{from{opacity:0}}',
+  '@media with other conditions': '@media (min-height:1px){.kp-heading{color:red}} @media print{.kp-heading{color:red}} @media (max-width:600px) and (pointer:fine){.kp-heading{color:red}}',
+  '@supports / @container / @layer / @page': '@supports (display:grid){.kp-heading{color:red}} @container (min-width:1px){.kp-heading{color:red}} @layer a{.kp-heading{color:red}} @page{margin:0}',
+  'nested @media': '@media (max-width:600px){@media (max-width:300px){.kp-heading{color:red}}}',
+  'keyframes inside @media': '@media (max-width:600px){@keyframes a{from{opacity:0}}}',
+  'empty selector in a list': '.kp-heading,,.kp-body{color:red}',
+};
+for (const [name, css] of Object.entries(REJECTED)) {
+  test(`rejects: ${name}`, () => {
     const r = run(css);
-    assert.equal(r.fatal, true);
+    // The accepted pieces of the probe (none) must not appear; what matters is that nothing dangerous is emitted.
+    assert.equal(r.fatal, false);
+    assert.equal(r.css, '', `emitted: ${r.css}`);
+    assert.ok(r.warnings.length > 0, 'a warning is expected');
+  });
+}
+
+test('CSS nesting is dropped with a warning; the outer declarations stay', () => {
+  const r = run('.kp-dialog{color:red; .kp-heading{color:blue}}');
+  assert.equal(r.css, `${ROOT} .kp-dialog{color:red}`);
+  assert.equal(r.warnings.length, 1);
+});
+
+test('a rejected rule does not take down its accepted neighbours', () => {
+  const r = run('body{color:red} .kp-heading{color:#fff} .kp-heading{position:fixed;color:blue}');
+  assert.equal(r.css, `${ROOT} .kp-heading{color:#fff}\n${ROOT} .kp-heading{color:blue}`);
+  assert.equal(r.warnings.length, 2);
+});
+
+// ---- accepted cases and their exact scoped output ----
+test('accepts letter-spacing and colour', () => {
+  assert.equal(run('.kp-heading{letter-spacing:2px;color:#0b5d3b}').css, `${ROOT} .kp-heading{letter-spacing:2px;color:#0b5d3b}`);
+});
+test('accepts a gradient on :hover', () => {
+  const r = run('.kp-cta:hover{background:linear-gradient(90deg,#0b5d3b,#22c55e)}');
+  assert.equal(r.css, `${ROOT} .kp-cta:hover{background:linear-gradient(90deg,#0b5d3b,#22c55e)}`);
+  assert.deepEqual(r.warnings, []);
+});
+test('accepts descendant elements inside .kp-body', () => {
+  assert.equal(run('.kp-body a:hover{text-decoration:underline}').css, `${ROOT} .kp-body a:hover{text-decoration:underline}`);
+  assert.equal(run('.kp-body > ul li:first-child{margin:0 0 4px}').css, `${ROOT} .kp-body > ul li:first-child{margin:0 0 4px}`);
+  assert.equal(run('.kp-dialog .kp-content > .kp-heading{color:red}').css, `${ROOT} .kp-dialog .kp-content > .kp-heading{color:red}`);
+});
+test('scopes every selector in a list, each as a descendant of the root', () => {
+  const r = run('.kp-heading, .kp-eyebrow:hover, .kp-cta::before{color:red}');
+  assert.equal(r.css, `${ROOT} .kp-heading,${ROOT} .kp-eyebrow:hover,${ROOT} .kp-cta::before{color:red}`);
+});
+test('escaped selectors are decoded then rebuilt canonically', () => {
+  assert.equal(run('.kp-he\\61 ding{color:red}').css, `${ROOT} .kp-heading{color:red}`);
+});
+test('accepts @media with allowed conditions', () => {
+  assert.equal(run('@media (max-width:600px){.kp-heading{font-size:20px}}').css, `@media (max-width:600px){${ROOT} .kp-heading{font-size:20px}}`);
+  const r = run('@media (prefers-reduced-motion: reduce) and (hover:none){.kp-cta{transition:none}} @media (orientation:landscape),(prefers-color-scheme:dark){.kp-body{opacity:.9}}');
+  assert.equal(r.warnings.length, 0);
+  assert.ok(r.css.includes('@media (prefers-reduced-motion:reduce) and (hover:none){'));
+  assert.ok(r.css.includes('@media (orientation:landscape),(prefers-color-scheme:dark){'));
+});
+test('keyframes and the animation that uses them are both rewritten to the prefixed name', () => {
+  const r = run('@keyframes pop{from{opacity:0}to{opacity:1}} .kp-dialog{animation:pop .3s}');
+  assert.equal(r.css, `@keyframes kp-11111111-pop{from{opacity:0}to{opacity:1}}\n${ROOT} .kp-dialog{animation:kp-11111111-pop .3s}`);
+  assert.equal(run('@keyframes a\\62 c{from{opacity:0}} .kp-dialog{animation-name:abc;animation-duration:1s;animation-timing-function:cubic-bezier(.1,.7,1,.1)}').css.includes('animation-name:kp-11111111-abc'), true);
+});
+test('accepts a /media/<uuid> background in every quoting', () => {
+  for (const u of [`url(/media/${MEDIA_ID})`, `url("/media/${MEDIA_ID}")`, `url('/media/${MEDIA_ID}')`]) {
+    assert.equal(run(`.kp-image{background-image:${u}}`).css, `${ROOT} .kp-image{background-image:${u}}`);
+  }
+});
+test('accepts ::before content as a plain string, strips !important, lower-cases property names', () => {
+  assert.equal(run('.kp-heading::before{content:"* ";COLOR:red !important}').css, `${ROOT} .kp-heading::before{content:"* ";color:red}`);
+});
+test('accepts margins within the cap and the site font stacks', () => {
+  assert.equal(run('.kp-body{margin:0 auto 4rem;font-family:"Plus Jakarta Sans", Inter, sans-serif;max-width:100%}').css,
+    `${ROOT} .kp-body{margin:0 auto 4rem;font-family:"Plus Jakarta Sans", Inter, sans-serif;max-width:100%}`);
+  assert.deepEqual(POPUP_CSS_FONT_FAMILIES.sort(), ['inter', 'plus jakarta sans', 'sans-serif', 'serif', 'system-ui']);
+});
+test('accepts filters with allowed functions', () => {
+  assert.equal(run('.kp-image{filter:blur(2px) brightness(.9);backdrop-filter:saturate(1.2)}').css, `${ROOT} .kp-image{filter:blur(2px) brightness(.9);backdrop-filter:saturate(1.2)}`);
+});
+
+// ---- fatal and size cases ----
+test('</style and <!-- are fatal, also escaped', () => {
+  for (const css of ['.a{color:red}</style><script>alert(1)</script>', '.kp-body{content:"</STYLE"}', '<!-- .kp-body{color:red}', '.kp-body{color:red}</st\\79 le>']) {
+    const r = run(css);
+    assert.equal(r.fatal, true, css);
     assert.equal(r.css, '');
   }
 });
-
-test('maps :root, html and body to the popup root', () => {
-  const { css } = run(':root{--x:1} html{color:red} body{margin:0} body .kp-heading{color:blue} html > body{top:0} .kp-root.kp-mobile{gap:2px}');
-  assert.ok(css.includes(`${ROOT}{--x:1}`));
-  assert.ok(css.includes(`${ROOT}{color:red}`));
-  assert.ok(css.includes(`${ROOT}{margin:0}`));
-  assert.ok(css.includes(`${ROOT} .kp-heading{color:blue}`));
-  assert.ok(css.includes(`${ROOT}.kp-mobile{gap:2px}`));
-  assert.ok(!/\sbody|\shtml/.test(css.replace(/\[data-kp[^\]]*\]/g, '')));
-});
-
-test('@font-face is dropped entirely, with a warning', () => {
-  const r = run('@font-face{font-family:X;src:url(/media/abc)} @font-face{font-family:Y;src:local(Arial)} .kp-body{font-family:X}');
-  assert.ok(!/@font-face/.test(r.css));
-  assert.ok(r.warnings.some((w) => /Custom fonts are not allowed; choose fonts in Design\./.test(w)));
-  assert.ok(r.css.includes('.kp-body'));
-});
-
-test('escaped @keyframes names are decoded and prefixed, never emitted as the bare name', () => {
-  const r = run('@keyframes sp\\69n{from{opacity:0}to{opacity:1}} .kp-dialog{animation:sp\\69n 1s} .kp-heading{animation-name:spin}');
-  assert.ok(r.css.includes('@keyframes kp-11111111-spin'));
-  assert.ok(!/@keyframes\s+spin/.test(r.css));
-  assert.ok(r.css.includes('animation:kp-11111111-spin 1s'));
-  assert.ok(r.css.includes('animation-name:kp-11111111-spin'));
-});
-
-test('@keyframes with an invalid decoded name is dropped', () => {
-  const r = run('@keyframes a\\3b b{from{opacity:0}} @keyframes "x y"{from{opacity:0}} .kp-body{color:red}');
-  assert.ok(!/@keyframes/.test(r.css));
-  assert.ok(r.css.includes('color:red'));
-  assert.equal(r.warnings.length, 2);
-});
-
-test('remote url() of any kind is stripped; /media stays', () => {
-  const r = run('.kp-a{background:url(https://tracker/p.gif)} .kp-b{background-image:url("//tracker/p.gif")} .kp-c{background:url(/media/abc)}');
-  assert.ok(!/tracker/.test(r.css));
-  assert.ok(r.css.includes('url(/media/abc)'));
-  assert.equal(r.warnings.length, 2);
-});
-
-test('position fixed/sticky declarations are stripped (also escaped / important)', () => {
-  const r = run('.kp-a{position:fixed;color:red} .kp-b{position:sticky !important} .kp-c{position:\\66ixed} .kp-d{position:absolute} .kp-e{position:relative}');
-  assert.ok(!/fixed|sticky/i.test(r.css));
-  assert.ok(r.css.includes('position:absolute') && r.css.includes('position:relative') && r.css.includes('color:red'));
-  assert.equal(r.warnings.length, 3);
-});
-
-test('sibling combinators directly after the root are rejected', () => {
-  const r = run('body ~ div{display:none} .kp-root + p{color:red} :root+main{x:y} html.a ~ b{x:y} .kp-heading ~ .kp-body{color:red} body > .kp-body{color:blue}');
-  assert.ok(!/ ~ div|\+ p|\+main|~ b/.test(r.css));
-  assert.ok(r.css.includes(`${ROOT} .kp-heading ~ .kp-body`));
-  assert.ok(r.css.includes(`${ROOT} .kp-body`));
-  assert.equal(r.warnings.length, 4);
-});
-
-test('size limit', () => {
-  const big = `.a{color:red}${' '.repeat(MAX_POPUP_CSS_BYTES)}`;
-  const r = run(big);
-  assert.equal(r.fatal, true);
-  assert.equal(run('.a{color:red}').fatal, false);
-});
-
-test('syntax errors are fatal; empty input is fine; nested rules and unknown at-rules dropped', () => {
-  assert.equal(run('.a{color:red').fatal, true);
+test('size limit, syntax errors, empty input', () => {
+  assert.equal(run(`.kp-body{color:red}${' '.repeat(MAX_POPUP_CSS_BYTES)}`).fatal, true);
+  assert.equal(run('.kp-body{color:red}').fatal, false);
+  assert.equal(run('.kp-body{color:red').fatal, true);
   assert.deepEqual(run('   '), { css: '', warnings: [], fatal: false });
-  const r = run('@page{margin:0} .a{color:red; .b{color:blue}}');
-  assert.ok(!/@page/.test(r.css) && !/\.b/.test(r.css));
+  assert.equal(scopePopupCss('.kp-body{color:red}', 'not-a-uuid').fatal, true);
+});
+
+// ---- layout guard and fuzz ----
+test('blockingPublishMessage still guards mobile full-screen interstitials', () => {
+  assert.ok(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'all', trigger: 'load' }));
+  assert.ok(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'mobile', trigger: 'delay', delaySeconds: 2 }));
+  assert.equal(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'desktop', trigger: 'load' }), '');
+  assert.equal(blockingPublishMessage({ layout: 'fullscreen' }, { devices: 'all', trigger: 'delay', delaySeconds: 3 }), '');
+  assert.equal(blockingPublishMessage({ layout: 'modal' }, { devices: 'all', trigger: 'load' }), '');
+});
+
+function rng(seed) { let s = seed >>> 0; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 2 ** 32; }; }
+
+test('fuzz: no accepted CSS can set root/dialog position or size (2,000 random combinations)', () => {
+  const rand = rng(20260915);
+  const pick = (a) => a[Math.floor(rand() * a.length)];
+  const escape = (s) => [...s].map((ch) => (/[a-z]/i.test(ch) && rand() < 0.35 ? (rand() < 0.5 ? `\\${ch}` : `\\${ch.charCodeAt(0).toString(16)} `) : ch)).join('');
+  const SELECTORS = [
+    ...POPUP_CSS_CLASSES, '.kp-dialog:hover', '.kp-cta::before', '.kp-body a', '.kp-body > p', '.kp-dialog .kp-body li:last-child',
+    '.kp-root', '.kp-root.kp-root.kp-root', '.kp-root:not(.kp-preview)', '.kp-root:is(.a,.b) ~ *', 'body', 'html', ':root', '*', '#x', '~ main', '+ *', '> .kp-dialog',
+    '.kp-heading ~ .kp-body', '.kp-heading + .kp-body', '.kp-cta[href]', 'main', '.kp-body:has(a)', 'a', '.kp-dialog:not(.x)', '.kp-layout-modal', '.kp-mobile .kp-dialog', '[data-kp]',
+  ];
+  const FORBIDDEN = [...POPUP_CSS_FORBIDDEN_PROPERTIES, '--x', '-moz-binding', '-webkit-mask', 'behavior', 'content'];
+  const ALLOWED = [...POPUP_CSS_ALLOWED_PROPERTIES];
+  const VALUES = [
+    'fixed', 'absolute', '0', '-100vh', '300vw', '100%', '10px', 'red', '#0b5d3b', 'none', 'scale(10)', 'url(https://e/x)', `url(/media/${MEDIA_ID})`, 'url(/media/%2e%2e/x)',
+    '-500px', '64px', '65px', '4rem', 'auto', 'linear-gradient(red,blue)', 'inherit', '"x"', 'calc(100vw*3)', 'pop 1s', '1s ease', 'blur(3px)', 'attr(x)', 'expression(1)', 'Inter', 'Comic Sans MS',
+  ];
+  const BAD_PROPS = new Set(FORBIDDEN);
+  const forbiddenIn = (prop) => BAD_PROPS.has(prop) && !(prop === 'content');
+  let accepted = 0;
+  for (let i = 0; i < 2000; i += 1) {
+    const rules = [];
+    const nRules = 1 + Math.floor(rand() * 3);
+    for (let r = 0; r < nRules; r += 1) {
+      const sels = Array.from({ length: 1 + Math.floor(rand() * 2) }, () => (rand() < 0.4 ? escape(pick(SELECTORS)) : pick(SELECTORS))).join(',');
+      const decls = Array.from({ length: 1 + Math.floor(rand() * 4) }, () => {
+        const prop = rand() < 0.5 ? pick(FORBIDDEN) : pick(ALLOWED);
+        return `${rand() < 0.4 ? escape(prop) : prop}:${pick(VALUES)}${rand() < 0.2 ? '!important' : ''}`;
+      }).join(';');
+      rules.push(`${sels}{${decls}}`);
+    }
+    let css = rules.join('\n');
+    if (rand() < 0.3) css = `@keyframes pop{from{opacity:0}to{opacity:1}}\n${css}`;
+    if (rand() < 0.3) css = `@media (max-width:600px){${css}}`;
+    const r = run(css);
+    if (r.fatal || !r.css) continue;
+    accepted += 1;
+    const out = postcss.parse(r.css);
+    out.walkRules((rule) => {
+      if (rule.parent.type === 'atrule' && /keyframes$/.test(rule.parent.name)) return;
+      for (const sel of rule.selectors) {
+        assert.ok(sel.startsWith(`${ROOT} `), `unscoped selector ${sel} from ${css}`);
+        const tail = sel.slice(ROOT.length + 1);
+        for (const seg of tail.split(/ > | /)) {
+          const m = /^(\.[a-z-]+|a|p|strong|em|ul|ol|li|h[234])((?::[a-z-]+)*)(::[a-z]+)?$/.exec(seg);
+          assert.ok(m, `bad compound ${seg} in ${sel} from ${css}`);
+          assert.ok(!m[1].startsWith('.') || POPUP_CSS_CLASSES.includes(m[1]), `bad class ${m[1]} from ${css}`);
+        }
+      }
+    });
+    out.walkAtRules((a) => assert.ok(/^(?:media|keyframes)$/.test(a.name), a.name));
+    out.walkDecls((d) => {
+      const rule = d.parent;
+      const isPseudoContent = d.prop === 'content' && rule.selectors?.every((s) => /::(?:before|after)$/.test(s));
+      assert.ok(isPseudoContent || POPUP_CSS_ALLOWED_PROPERTIES.has(d.prop), `property ${d.prop} from ${css}`);
+      assert.ok(!forbiddenIn(d.prop), `forbidden ${d.prop} from ${css}`);
+      assert.ok(!/!|@|\\|url\((?!\/media\/[0-9a-f-]{36}\))|expression|attr\(/.test(d.value), `value ${d.value} from ${css}`);
+      if (/^margin/.test(d.prop)) for (const t of d.value.split(' ')) assert.ok(/^(?:0|auto|\d+(?:\.\d+)?(?:px|rem|em))$/.test(t) && !(parseFloat(t) > 64), `margin ${d.value}`);
+    });
+  }
+  assert.ok(accepted > 100, `fuzz produced too few accepted stylesheets (${accepted}) to be meaningful`);
 });
