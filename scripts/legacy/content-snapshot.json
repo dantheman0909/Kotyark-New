@@ -1,0 +1,2919 @@
+{
+  "_meta": {
+    "generatedBy": "scripts/lib/build-content-snapshot.mjs",
+    "note": "Verbatim extraction of the pre-CMS site. Source of truth for scripts/migrate-to-cms.mjs.",
+    "sources": [
+      "scripts/legacy/legacy-seed.mjs",
+      "src/app/**/page.js",
+      "src/components/{Navbar,Footer,InvestorSubPageLayout,CarbonCreditBadge}.js",
+      "src/app/layout.js"
+    ],
+    "builderNotes": []
+  },
+  "folders": [
+    {
+      "id": "inv-sebi",
+      "parent_id": null,
+      "slug": "sebi-lodr",
+      "name": "Disclosure under Reg. 46 of SEBI (LODR)",
+      "description": "Particulars as per SEBI (LODR) Regulations, 2015 — Regulation 46(2) website disclosures.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 1,
+      "seo": {
+        "metaTitle": "Disclosure Under Reg. 46 of SEBI (LODR)",
+        "metaDescription": "Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) website disclosures for Kotyark Industries Limited."
+      },
+      "pageHeading": "Disclosure Under Reg. 46 of SEBI (LODR)"
+    },
+    {
+      "id": "inv-trading",
+      "parent_id": null,
+      "slug": "closing-trading-window",
+      "name": "Closing of Trading Window",
+      "description": "Trading window closure notices for designated persons as per SEBI Insider Trading Regulations.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 2,
+      "seo": {
+        "metaTitle": "Closing of Trading Window",
+        "metaDescription": "Trading window closure notices for Kotyark Industries Limited as per SEBI Insider Trading Regulations."
+      },
+      "pageHeading": "Closing of Trading Window"
+    },
+    {
+      "id": "inv-misc",
+      "parent_id": null,
+      "slug": "misc-sebi-disclosure",
+      "name": "Misc Disclosure under SEBI",
+      "description": "Corporate governance reports, compliance certificates, and miscellaneous SEBI disclosures.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 3,
+      "seo": {
+        "metaTitle": "Misc Disclosure under SEBI",
+        "metaDescription": "Miscellaneous disclosures under SEBI regulations for Kotyark Industries Limited including corporate governance reports, credit ratings, and newspaper publications."
+      },
+      "pageHeading": "Misc Disclosure under SEBI"
+    },
+    {
+      "id": "inv-board",
+      "parent_id": null,
+      "slug": "board-meetings",
+      "name": "Board Meetings",
+      "description": "Formal notices and outcomes of all board meetings as per SEBI LODR regulations.",
+      "group_by": "fy",
+      "visible": true,
+      "sort_order": 4,
+      "seo": {
+        "metaTitle": "Board Meetings",
+        "metaDescription": "Board meeting notices, outcomes, and financial results for Kotyark Industries Limited across financial years."
+      },
+      "pageHeading": "Board Meetings"
+    },
+    {
+      "id": "inv-audited",
+      "parent_id": null,
+      "slug": "audited-financial-statements",
+      "name": "Audited Financial Statements",
+      "description": "Audited financial statements of subsidiary companies.",
+      "group_by": "fy",
+      "visible": true,
+      "sort_order": 5,
+      "seo": {
+        "metaTitle": "Audited Financial Statements of Subsidiaries",
+        "metaDescription": "Audited financial statements of subsidiary companies of Kotyark Industries Limited."
+      },
+      "pageHeading": "Audited Financial Statements of Subsidiaries"
+    },
+    {
+      "id": "inv-agm",
+      "parent_id": null,
+      "slug": "annual-general-meeting",
+      "name": "Annual General Meeting",
+      "description": "AGM notices, minutes, annual reports, and related documentation.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 6,
+      "seo": {
+        "metaTitle": "Annual General Meeting",
+        "metaDescription": "AGM notices, minutes, annual reports, and related documentation for Kotyark Industries Limited."
+      },
+      "pageHeading": "Annual General Meeting"
+    },
+    {
+      "id": "inv-eogm",
+      "parent_id": null,
+      "slug": "extra-ordinary-general-meetings",
+      "name": "Extra Ordinary General Meeting",
+      "description": "EOGM notices, minutes, and resolutions documentation.",
+      "group_by": "fy",
+      "visible": true,
+      "sort_order": 7,
+      "seo": {
+        "metaTitle": "Extra Ordinary General Meetings",
+        "metaDescription": "Notices and outcomes of Extra Ordinary General Meetings held by Kotyark Industries Limited."
+      },
+      "pageHeading": "Extra Ordinary General Meetings"
+    },
+    {
+      "id": "inv-policies",
+      "parent_id": null,
+      "slug": "company-policies",
+      "name": "Company Policies",
+      "description": "Full set of corporate policies governing operations and governance.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 8,
+      "seo": {
+        "metaTitle": "Company Policies",
+        "metaDescription": "Corporate governance policies of Kotyark Industries Limited including Code of Conduct, Whistle Blower Policy, CSR Policy, and more."
+      },
+      "pageHeading": "Company Policies"
+    },
+    {
+      "id": "inv-merger",
+      "parent_id": null,
+      "slug": "merger-and-amalgamation",
+      "name": "Merger & Amalgamation",
+      "description": "Documents related to merger and amalgamation proceedings.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 9,
+      "seo": {
+        "metaTitle": "Merger & Amalgamation",
+        "metaDescription": "Documents related to merger and amalgamation proceedings of Kotyark Industries Limited."
+      },
+      "pageHeading": "Merger & Amalgamation"
+    },
+    {
+      "id": "inv-migration",
+      "parent_id": null,
+      "slug": "migration-to-main-board",
+      "name": "Migration To Main Board",
+      "description": "Documents related to migration from BSE SME Platform to Main Board.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 10,
+      "seo": {
+        "metaTitle": "Migration To Main Board",
+        "metaDescription": "Documents related to migration from SME platform to Main Board of BSE for Kotyark Industries Limited."
+      },
+      "pageHeading": "Migration To Main Board"
+    },
+    {
+      "id": "inv-odr",
+      "parent_id": null,
+      "slug": "smart-odr",
+      "name": "Smart ODR",
+      "description": "Online Dispute Resolution portal for investor complaints.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 11,
+      "seo": {
+        "metaTitle": "Smart ODR",
+        "metaDescription": "Online Dispute Resolution portal information for investors of Kotyark Industries Limited."
+      },
+      "pageHeading": "Smart ODR"
+    },
+    {
+      "id": "inv-dividend",
+      "parent_id": null,
+      "slug": "unpaid-dividend",
+      "name": "Unpaid Dividend",
+      "description": "Details of unpaid and unclaimed dividends for shareholders.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 12,
+      "seo": {
+        "metaTitle": "Unpaid Dividend",
+        "metaDescription": "Details of unpaid and unclaimed dividends for shareholders of Kotyark Industries Limited."
+      },
+      "pageHeading": "Unpaid Dividend"
+    },
+    {
+      "id": "inv-postal",
+      "parent_id": null,
+      "slug": "postal-ballot",
+      "name": "Postal Ballot",
+      "description": "Postal ballot notices, e-voting results, and scrutinizer reports.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 13,
+      "seo": {
+        "metaTitle": "Postal Ballot",
+        "metaDescription": "Postal ballot notices, voting results, and scrutinizer reports for Kotyark Industries Limited."
+      },
+      "pageHeading": "Postal Ballot"
+    },
+    {
+      "id": "inv-filling",
+      "parent_id": null,
+      "slug": "integrated-filling",
+      "name": "Integrated Filling",
+      "description": "Consolidated view of governance and financial compliance filings.",
+      "group_by": "fy",
+      "visible": true,
+      "sort_order": 14,
+      "seo": {
+        "metaTitle": "Integrated Filling",
+        "metaDescription": "Integrated filings for governance and financial compliance by Kotyark Industries Limited."
+      },
+      "pageHeading": "Integrated Filling"
+    },
+    {
+      "id": "inv-moa",
+      "parent_id": null,
+      "slug": "moa-aoa",
+      "name": "MOA - AOA",
+      "description": "Founding documents defining the company's constitution and governance.",
+      "group_by": "none",
+      "visible": true,
+      "sort_order": 15,
+      "seo": {
+        "metaTitle": "Memorandum & Articles of Association (MOA - AOA)",
+        "metaDescription": "Memorandum of Association and Articles of Association of Kotyark Industries Limited."
+      },
+      "pageHeading": "Memorandum & Articles of Association"
+    }
+  ],
+  "folderIntros": {
+    "sebi-lodr": "Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) for website disclosures by Kotyark Industries Limited.",
+    "closing-trading-window": "Notices regarding closure of trading window for designated persons as per SEBI (Prohibition of Insider Trading) Regulations, 2015.",
+    "misc-sebi-disclosure": "Miscellaneous regulatory disclosures including corporate governance reports, secretarial compliance reports, and certificates filed as per SEBI regulations.",
+    "board-meetings": "Board meeting notices, outcomes, and financial results filed with BSE. Select a financial year to view related documents.",
+    "audited-financial-statements": "Audited financial statements of subsidiary companies as per Regulation 46(2)(l)(iv) of SEBI (LODR) Regulations, 2015.",
+    "annual-general-meeting": "Annual General Meeting notices, minutes, annual reports, voting results, and related documentation as per the Companies Act, 2013.",
+    "extra-ordinary-general-meetings": "Notices, minutes, and voting results of Extra Ordinary General Meetings held by Kotyark Industries Limited.",
+    "company-policies": "Corporate governance policies adopted by Kotyark Industries Limited in compliance with the Companies Act, 2013 and SEBI (LODR) Regulations, 2015.",
+    "merger-and-amalgamation": "All documents related to the scheme of merger and amalgamation proceedings under the Companies Act, 2013 and applicable SEBI regulations.",
+    "migration-to-main-board": "Documents related to the migration of Kotyark Industries Limited from BSE SME Platform to the Main Board.",
+    "smart-odr": "SEBI has introduced the Smart Online Dispute Resolution (ODR) portal to facilitate resolution of disputes between investors and listed companies. Investors can file complaints through the ODR mechanism.",
+    "unpaid-dividend": "Details of unpaid and unclaimed dividends as per Section 124 of the Companies Act, 2013. Shareholders are requested to verify and claim their unpaid dividends.",
+    "postal-ballot": "Postal ballot notices, e-voting results, and scrutinizer reports for resolutions passed through postal ballot mechanism.",
+    "integrated-filling": "Consolidated view of integrated filings made with regulatory authorities covering both governance and financial compliance.",
+    "moa-aoa": "The Memorandum of Association (MOA) and Articles of Association (AOA) are the founding constitutional documents of Kotyark Industries Limited, defining the company's objectives, powers, and internal governance rules."
+  },
+  "folderIntroExtraHtml": {
+    "smart-odr": "<h3>How to file a complaint?</h3><ol><li>Visit the Smart ODR portal at <a href=\"https://smartodr.in\">smartodr.in</a></li><li>Register as an investor/complainant</li><li>Select the relevant market intermediary</li><li>Submit your complaint with supporting documents</li><li>Track the resolution progress online</li></ol>"
+  },
+  "folderPlaceholders": {
+    "board-meetings": [
+      {
+        "title": "FY 2025-26",
+        "body": "Board meeting documents for FY 2025-26"
+      },
+      {
+        "title": "FY 2024-25",
+        "body": "Board meeting documents for FY 2024-25"
+      },
+      {
+        "title": "FY 2023-24",
+        "body": "Board meeting documents for FY 2023-24"
+      },
+      {
+        "title": "FY 2022-23",
+        "body": "Board meeting documents for FY 2022-23"
+      },
+      {
+        "title": "FY 2021-22",
+        "body": "Board meeting documents for FY 2021-22"
+      }
+    ],
+    "audited-financial-statements": [
+      {
+        "title": "Kotyark Agro Pvt Ltd",
+        "body": "View audited financial statements"
+      },
+      {
+        "title": "Kotyark Bio Specialities Ltd",
+        "body": "View audited financial statements"
+      },
+      {
+        "title": "Semani Industries Ltd",
+        "body": "View audited financial statements"
+      }
+    ],
+    "extra-ordinary-general-meetings": [
+      {
+        "title": "EOGM - January 2024",
+        "body": "Extra Ordinary General Meeting documents and resolutions passed."
+      },
+      {
+        "title": "EOGM - September 2022",
+        "body": "Extra Ordinary General Meeting documents and resolutions passed."
+      }
+    ],
+    "integrated-filling": [
+      {
+        "title": "Governance & Compliance Filings",
+        "body": "Corporate governance reports, compliance certificates, and related regulatory filings."
+      },
+      {
+        "title": "Financial & Annual Filings",
+        "body": "Annual returns, financial statements, and other periodic filings with regulatory authorities."
+      }
+    ]
+  },
+  "documents": [
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 11.02.2025",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_72f5b70b54a2483e892be2b1b2b6eee3.pdf",
+      "fy": null,
+      "doc_date": "2025-02-11",
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of trading Window - Board Meeting 27.01.2025",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_ecbcfa5a3ea746bbaaedcc2ac2a2bdbc.pdf",
+      "fy": null,
+      "doc_date": "2025-01-27",
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board meeting 14.11.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_e24f21f5b0ef41b1a94da25a2ed6e7a9.pdf",
+      "fy": null,
+      "doc_date": "2024-11-14",
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 03.09.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_1daab3b9f7b94cdea81e7dde0b8b5ede.pdf",
+      "fy": null,
+      "doc_date": "2024-09-03",
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 14.08.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_fe9b21e3f9b3452bbb0301e2fe84e5e3.pdf",
+      "fy": null,
+      "doc_date": "2024-08-14",
+      "sort_order": 5,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 30.05.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_30f32c7b1e3541f1886ecc13ebd5f1f3.pdf",
+      "fy": null,
+      "doc_date": "2024-05-30",
+      "sort_order": 6,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 14.02.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_ec20b2bb1c3d405fa1f5ef3f24b2e56c.pdf",
+      "fy": null,
+      "doc_date": "2024-02-14",
+      "sort_order": 7,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 10.11.2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_199e2b19e77b4b1a804e8e5e94ac6e5f.pdf",
+      "fy": null,
+      "doc_date": "2023-11-10",
+      "sort_order": 8,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 12.08.2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_da20e2dc0c064ea0b87a06e64e3bc61f.pdf",
+      "fy": null,
+      "doc_date": "2023-08-12",
+      "sort_order": 9,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 29.05.2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_0a5df5b3b75245f18f3b6d94b33fbb88.pdf",
+      "fy": null,
+      "doc_date": "2023-05-29",
+      "sort_order": 10,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-trading",
+      "folder_slug": "closing-trading-window",
+      "title": "Closing of Trading Window - Board Meeting 10.02.2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_6a3f3d25d2ea4c7fa2131e18cdfd49da.pdf",
+      "fy": null,
+      "doc_date": "2023-02-10",
+      "sort_order": 11,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Certificate under Regulation 74(5) H1 FY 2024-25",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_f1c84deafc7d4e47bec07eef04b22eff.pdf",
+      "fy": "FY 2024-25",
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Secretarial Compliance Report FY 2023-2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_f741683e098243cf8b7b522e2bb3a64b.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Certificate under Regulation 74(5) H2 FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_b3520e65133e453985b56e9acf2206eb.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": [
+        "Certificate under Regulation 74(5) H1 FY 2023-24"
+      ]
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q3 FY 2024-25",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_bcef2a33b8d54f4e9a9e1f5c236d2b5c.pdf",
+      "fy": "FY 2024-25",
+      "doc_date": null,
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q2 FY 2024-25",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_050c0c9d8e3f4ec699aa4ac32a12cae4.pdf",
+      "fy": "FY 2024-25",
+      "doc_date": null,
+      "sort_order": 5,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q1 FY 2024-25",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_c9e4a6fc0a0545efbe8d72b8e26ae9f2.pdf",
+      "fy": "FY 2024-25",
+      "doc_date": null,
+      "sort_order": 6,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q4 FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_bfa9a1f3d09c4bb3b89b9c5aec41b3be.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 7,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q3 FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_6c0f3a5e31be44d6b45f4ca11e03fa5f.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 8,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q2 FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_7f5fa2f9cfc3482aabf21b3c2e7c12e0.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 9,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Corporate Governance Report Q1 FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_d283a2d0e88e4f2c97ea47f78f1a4ee6.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 10,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Secretarial Compliance Report FY 2022-2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_d9c0a2e3b01c4a3ba97e4b5dd9f4c6a7.pdf",
+      "fy": "FY 2022-23",
+      "doc_date": null,
+      "sort_order": 11,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-misc",
+      "folder_slug": "misc-sebi-disclosure",
+      "title": "Certificate under Regulation 74(5) H2 FY 2022-23",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_22d2f8f0cf6f4c39ab5b9a22c7ee2d29.pdf",
+      "fy": "FY 2022-23",
+      "doc_date": null,
+      "sort_order": 12,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Notice of 2nd AGM - September 2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_5a7d3b2c1f8e4a31b9c2d4e6f8a1b3c5.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Annual Report FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_3b8c7d4e2f1a5b6c9d0e3f8a2b5c7d4e.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "AGM Minutes - September 2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Scrutinizer Report - 2nd AGM",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "e-Voting Results - 2nd AGM",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 5,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Notice of 1st AGM - September 2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 6,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Annual Report FY 2022-23",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a.pdf",
+      "fy": "FY 2022-23",
+      "doc_date": null,
+      "sort_order": 7,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "AGM Minutes - September 2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 8,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Scrutinizer Report - 1st AGM",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 9,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "e-Voting Results - 1st AGM",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 10,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Book Closure / Record Date Notice - 2nd AGM",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 11,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Book Closure / Record Date Notice - 1st AGM",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 12,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Newspaper Publication - 2nd AGM Notice",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 13,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Newspaper Publication - 1st AGM Notice",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 14,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "AGM Proceedings Video - September 2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 15,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "AGM Proceedings Video - September 2023",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 16,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Annual Return FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 17,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-agm",
+      "folder_slug": "annual-general-meeting",
+      "title": "Annual Return FY 2022-23",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3.pdf",
+      "fy": "FY 2022-23",
+      "doc_date": null,
+      "sort_order": 18,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Code Of Conduct for Prevention of Insider Trading",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_7d735d5bd9f24e118ad7a3e3dbdb23c1.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "HR & Remuneration Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_5e4f2a9bfc7245c0a8bf09d2af75ba79.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Code of Conduct for Board & Senior Management",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_6c1e11acbc7c4697a3e26a7b7b85e92f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Vigil Mechanism / Whistle Blower Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_fd41f2e8c27f43cbb98d6b6e35e10bea.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Related Party Transaction Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_0b79ab697d814f178d68db8d3dcebf8c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 5,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Criteria for Making Payment to Non-Executive Directors",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_4d33cf8b6da0464a960b4f979a27d7be.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 6,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Familiarization Programme for Independent Directors",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_5419cbc6e7ae4c8f8f1de5f53a05f8e0.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 7,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Policy on Material Subsidiaries",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_a0f26b58fadb4f2c8c7dac95a26c7f4f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 8,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Terms & Conditions of Appointment of Independent Directors",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_f30fc83d57d04bd29ee2d27e5ae39f0c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 9,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Dividend Distribution Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_e5db2c82a8084abcb3c18cb6bcfcb2c3.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 10,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "CSR Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_d3c9c7f77e7444a58dae23c3b4f91e0c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 11,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Board Diversity Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_d27c04f8f00e4b3e8ffaae42e4f685b8.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 12,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Policy on Determination of Materiality",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_3d9c4c889a1d4d94a3f15d25a3eceaaa.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 13,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Preservation of Documents and Archival Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_d4cfba0ecc444b2d92f8d3b5f8b3b3d5.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 14,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Risk Management Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_e9f84e85f6234e079b44b3281ec1a6cf.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 15,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Policy for Procedure of Inquiry in Case of Leak of UPSI",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_5f5a1d0e10664f0a9b4fd59c2f6bc2c0.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 16,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Policy on Succession Planning",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_bfa44e1b5cbf47ae8ed8dbed4ab8c0f8.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 17,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Fair Disclosure Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_ad5ea2f4c96b4e6d896b4cf5b7c4d5b3.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 18,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Code of Practices & Procedures for Fair Disclosure of UPSI",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_afc2fb2d02d842a7bcf39d3d5f8c6e3c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 19,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Sexual Harassment Policy (POSH)",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_72f89a41dbbd46058bf3f621e42e0e3d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 20,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Quality Control Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_c7f4f9e3a8b0417ba35e2c5f8d8c1e0a.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 21,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Environment & Sustainability Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_a3b8d1d5f0c64a3e91e4d8c7b5f2a1e0.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 22,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-policies",
+      "folder_slug": "company-policies",
+      "title": "Data Privacy Policy",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_b2c9e0d4f1a74b3f92f5e9d8c6a3b0f1.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 23,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Scheme of Amalgamation - Final Order",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "NCLT Order - Scheme Approval",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Appointed Date Notification",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Board Approval of Draft Scheme",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Observation Letter from BSE",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 5,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Fairness Opinion on Share Swap Ratio",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 6,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Valuation Report",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 7,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Scheme of Amalgamation - Draft",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 8,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "NCLT Convening Order",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 9,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Notice to Shareholders",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 10,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Notice to Creditors",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 11,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Newspaper Publication - Scheme Notice (English)",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 12,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Newspaper Publication - Scheme Notice (Hindi)",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 13,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "NCLT Order for Shareholder Meeting",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 14,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Shareholders Meeting Minutes",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 15,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Scrutinizer Report",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 16,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "e-Voting Results",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 17,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Compliance Certificate",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 18,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Report of the Chairman",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 19,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Proxy Form",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 20,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Attendance Slip",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 21,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Pre-Merger Shareholding Pattern",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 22,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Post-Merger Shareholding Pattern",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 23,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Outcome of Board Meeting - Scheme Approval",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 24,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": [
+        "Effective Date Notification"
+      ]
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Independent Directors Committee Report",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 25,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": [
+        "Filing with Registrar of Companies"
+      ]
+    },
+    {
+      "folder_id": "inv-merger",
+      "folder_slug": "merger-and-amalgamation",
+      "title": "Audit Committee Recommendation",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 26,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": [
+        "Allotment of Shares Post-Merger"
+      ]
+    },
+    {
+      "folder_id": "inv-migration",
+      "folder_slug": "migration-to-main-board",
+      "title": "Outcome of Board Meeting held on 24.12.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_4378176ba9ad4653adc48adad8078009.pdf",
+      "fy": null,
+      "doc_date": "2024-12-24",
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-migration",
+      "folder_slug": "migration-to-main-board",
+      "title": "Postal Ballot Notice - 24.12.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_fc211479d9b24b8f8adfd4b61f1719eb.pdf",
+      "fy": null,
+      "doc_date": "2024-12-24",
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-migration",
+      "folder_slug": "migration-to-main-board",
+      "title": "Postal Ballot Voting Results - 25.01.2025",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_4636ad8f06ea4290a9aae644ca208f6e.pdf",
+      "fy": null,
+      "doc_date": "2025-01-25",
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-migration",
+      "folder_slug": "migration-to-main-board",
+      "title": "Proceeding of Postal Ballot - 25.01.2025",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_16e47e67cbb7434c81dd3c02b48ff4b8.pdf",
+      "fy": null,
+      "doc_date": "2025-01-25",
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-odr",
+      "folder_slug": "smart-odr",
+      "title": "Smart ODR - Circular & Details",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_d2e8c3f6a91e4b2f8c7a1d5b3e9f0a4c.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-dividend",
+      "folder_slug": "unpaid-dividend",
+      "title": "Unpaid / Unclaimed Dividend - FY 2023-24",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9.pdf",
+      "fy": "FY 2023-24",
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-dividend",
+      "folder_slug": "unpaid-dividend",
+      "title": "Unpaid / Unclaimed Dividend - FY 2022-23",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0.pdf",
+      "fy": "FY 2022-23",
+      "doc_date": null,
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-postal",
+      "folder_slug": "postal-ballot",
+      "title": "Postal Ballot Notice - 24.12.2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_fc211479d9b24b8f8adfd4b61f1719eb.pdf",
+      "fy": null,
+      "doc_date": "2024-12-24",
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-postal",
+      "folder_slug": "postal-ballot",
+      "title": "Postal Ballot Voting Results - 25.01.2025",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_4636ad8f06ea4290a9aae644ca208f6e.pdf",
+      "fy": null,
+      "doc_date": "2025-01-25",
+      "sort_order": 2,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-postal",
+      "folder_slug": "postal-ballot",
+      "title": "Proceeding of Postal Ballot - 25.01.2025",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_16e47e67cbb7434c81dd3c02b48ff4b8.pdf",
+      "fy": null,
+      "doc_date": "2025-01-25",
+      "sort_order": 3,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-postal",
+      "folder_slug": "postal-ballot",
+      "title": "Postal Ballot Notice - August 2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 4,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-postal",
+      "folder_slug": "postal-ballot",
+      "title": "Postal Ballot Voting Results - September 2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 5,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-postal",
+      "folder_slug": "postal-ballot",
+      "title": "Scrutinizer Report - Postal Ballot Sept 2024",
+      "external_url": "https://www.kotyark.com/_files/ugd/e196d6_e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 6,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    },
+    {
+      "folder_id": "inv-moa",
+      "folder_slug": "moa-aoa",
+      "title": "MOA - AOA (Memorandum & Articles of Association)",
+      "external_url": "https://www.kotyark.com/_files/ugd/510267_e38ad21a33454ce1b57355f32228f284.pdf",
+      "fy": null,
+      "doc_date": null,
+      "sort_order": 1,
+      "sources": [
+        "page",
+        "seed"
+      ],
+      "alt_titles": []
+    }
+  ],
+  "documentConflicts": [
+    {
+      "folder": "misc-sebi-disclosure",
+      "url": "https://www.kotyark.com/_files/ugd/510267_b3520e65133e453985b56e9acf2206eb.pdf",
+      "kept": "Certificate under Regulation 74(5) H2 FY 2023-24",
+      "dropped": "Certificate under Regulation 74(5) H1 FY 2023-24",
+      "keptFrom": "page",
+      "droppedFrom": "page"
+    },
+    {
+      "folder": "merger-and-amalgamation",
+      "url": "https://www.kotyark.com/_files/ugd/e196d6_e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c.pdf",
+      "kept": "Outcome of Board Meeting - Scheme Approval",
+      "dropped": "Effective Date Notification",
+      "keptFrom": "page",
+      "droppedFrom": "seed"
+    },
+    {
+      "folder": "merger-and-amalgamation",
+      "url": "https://www.kotyark.com/_files/ugd/e196d6_f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d.pdf",
+      "kept": "Independent Directors Committee Report",
+      "dropped": "Filing with Registrar of Companies",
+      "keptFrom": "page",
+      "droppedFrom": "seed"
+    },
+    {
+      "folder": "merger-and-amalgamation",
+      "url": "https://www.kotyark.com/_files/ugd/e196d6_a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e.pdf",
+      "kept": "Audit Committee Recommendation",
+      "dropped": "Allotment of Shares Post-Merger",
+      "keptFrom": "page",
+      "droppedFrom": "seed"
+    }
+  ],
+  "pages": [
+    {
+      "path": "/",
+      "slug": "",
+      "parentPath": null,
+      "title": "Home",
+      "show_in_nav": true,
+      "nav_order": 1,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Kotyark Industries - Leading Biodiesel Manufacturer India",
+        "metaDescription": "India's approved biodiesel manufacturer. 480,000 KL capacity. Carbon neutral fuel for transport & industry. BSE listed. Get a quote today."
+      },
+      "blocks": [
+        {
+          "id": "2b0d7b1a-a33e-5136-a881-6aa9fc63773b",
+          "type": "hero",
+          "props": {
+            "variant": "full",
+            "eyebrow": "BSE Listed · Government Approved Biofuel Manufacturer",
+            "heading": "Powering India's Future With Clean Biodiesel",
+            "subheading": "India's leading biodiesel manufacturer with 480,000 KL annual capacity. We convert non-edible vegetable oils into premium B100 biodiesel — delivering 86% less greenhouse emissions and a carbon-neutral fuel alternative.",
+            "image": "/images/hero-forest.jpg",
+            "imageAlt": "Aerial view of lush green forest canopy representing renewable energy",
+            "ctas": [
+              {
+                "label": "Contact Our Team →",
+                "href": "/contact",
+                "style": "primary"
+              },
+              {
+                "label": "Explore Products",
+                "href": "/products",
+                "style": "outline"
+              }
+            ]
+          }
+        },
+        {
+          "id": "a9352314-2918-5e09-a886-28dda70a1091",
+          "type": "rich_text",
+          "props": {
+            "width": "narrow",
+            "html": "<p><strong>First Indian Company</strong> to receive <strong>Verra Carbon Credits</strong></p>"
+          }
+        },
+        {
+          "id": "d2a0ce17-0b16-5bc0-a6a7-02d467f46520",
+          "type": "card_grid",
+          "props": {
+            "columns": "4",
+            "items": [
+              {
+                "title": "Government Approved",
+                "body": "Bio-Fuel Authority, Govt. of Rajasthan"
+              },
+              {
+                "title": "BSE Listed",
+                "body": "Publicly traded, SEBI compliant"
+              },
+              {
+                "title": "480,000 KL Capacity",
+                "body": "Annual biodiesel production"
+              },
+              {
+                "title": "Zero Discharge",
+                "body": "Environmentally responsible plants"
+              }
+            ]
+          }
+        },
+        {
+          "id": "774643a3-a071-58d2-acbf-e255748783fd",
+          "type": "image_text",
+          "props": {
+            "eyebrow": "What is Biodiesel?",
+            "heading": "A Cleaner Fuel For a Greener Tomorrow",
+            "html": "<p>Biodiesel is a renewable, clean-burning diesel alternative produced through the trans-esterification of non-edible vegetable oils. As a <strong>mono alkyl ester</strong>, it is chemically similar to conventional High-Speed Diesel (HSD) but produces <strong>86% fewer greenhouse gas emissions</strong>.</p><p>At Kotyark Industries, we manufacture premium <strong>B100 biodiesel</strong> that can be blended at any ratio — from B5 (5%) to B100 (neat) — delivering superior lubricity, higher cetane numbers, more power, and better mileage than conventional diesel.</p><p>Our biodiesel is approved by the <strong>Bio-Fuel Authority under the Rural Development Department and Panchayati Raj, Government of Rajasthan</strong>, ensuring the highest standards of quality and environmental compliance.</p>",
+            "image": "/images/biodiesel-cycle.png",
+            "imageAlt": "Biodiesel production cycle infographic showing feedstocks, biofuel production, renewable fuel usage, and carbon dioxide absorption by biomass",
+            "imagePosition": "right",
+            "cta": [
+              {
+                "label": "Learn About Biodiesel →",
+                "href": "/products/biodiesel"
+              }
+            ]
+          }
+        },
+        {
+          "id": "a7d92c58-0b7f-58c1-a93c-6f7bcca81968",
+          "type": "rich_text",
+          "props": {
+            "eyebrow": "Impact at Scale",
+            "heading": "India's Biofuel Capacity Leader",
+            "html": "<p>Operating advanced biodiesel manufacturing facilities across Rajasthan and Gujarat with zero-discharge environmental compliance.</p>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "130ed51d-0bf9-50a9-a44c-29846751f4ba",
+          "type": "stats",
+          "props": {
+            "items": [
+              {
+                "value": "480K",
+                "label": "KL Annual Capacity"
+              },
+              {
+                "value": "210",
+                "label": "KL/Day Production"
+              },
+              {
+                "value": "86%",
+                "label": "Less GHG Emissions"
+              },
+              {
+                "value": "Zero",
+                "label": "Discharge Facilities"
+              }
+            ]
+          }
+        },
+        {
+          "id": "74226fd8-087c-5c73-a46f-409057f9969b",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Our Products",
+            "heading": "Renewable Energy Products",
+            "intro": "High-quality biofuels and by-products manufactured at our state-of-the-art facilities in Sirohi, Rajasthan and Anand, Gujarat.",
+            "columns": "2",
+            "items": [
+              {
+                "title": "Biodiesel (B100)",
+                "body": "Premium quality biodiesel manufactured from non-edible vegetable oils through trans-esterification. A clean, renewable diesel alternative with superior lubricity and higher cetane number.",
+                "image": "/images/biodiesel-product.png",
+                "imageAlt": "Premium B100 Biodiesel fuel",
+                "linkLabel": "Explore Biodiesel",
+                "href": "/products/biodiesel"
+              },
+              {
+                "title": "Crude Glycerin",
+                "body": "High-quality crude glycerin produced as a valuable by-product of biodiesel manufacturing. Widely used in food processing, pharmaceuticals, cosmetics, and industrial applications.",
+                "image": "/images/glycerin-product.png",
+                "imageAlt": "Crude Glycerin by-product",
+                "linkLabel": "Explore Glycerin",
+                "href": "/products/crude-glycerin"
+              }
+            ]
+          }
+        },
+        {
+          "id": "1553f5ab-1f8d-51ca-a611-a6a2295705dc",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Why Biodiesel?",
+            "heading": "The Advantages of Biofuel Energy",
+            "intro": "Biodiesel delivers measurable benefits across environmental, economic, and operational dimensions.",
+            "columns": "3",
+            "items": [
+              {
+                "title": "Carbon Neutral",
+                "body": "Biodiesel is produced from biomass that absorbs CO₂ during growth, creating a closed carbon cycle that achieves near-zero net emissions."
+              },
+              {
+                "title": "More Power",
+                "body": "Higher cetane number delivers improved combustion efficiency, more torque, and better mileage compared to conventional HSD diesel fuel."
+              },
+              {
+                "title": "Engine Safe",
+                "body": "Superior lubricity protects engine components and reduces wear. Compatible with all diesel engines without modification at B5-B20 blends."
+              },
+              {
+                "title": "Reduces Imports",
+                "body": "Domestically produced biodiesel reduces India's dependency on imported crude oil, strengthening energy security and saving foreign exchange."
+              },
+              {
+                "title": "Non-Toxic",
+                "body": "Biodegradable and non-toxic. Breaks down naturally in the environment, unlike petroleum diesel, making spills safer to manage."
+              },
+              {
+                "title": "Job Creation",
+                "body": "Biodiesel manufacturing supports rural economies by creating employment in feedstock cultivation, processing, and distribution across India."
+              }
+            ]
+          }
+        },
+        {
+          "id": "9c704358-05f6-5271-a913-96326d319c0f",
+          "type": "image_text",
+          "props": {
+            "eyebrow": "Environmental Impact",
+            "heading": "Building a Carbon-Neutral Future",
+            "html": "<p>Every litre of biodiesel from Kotyark replaces petroleum diesel, reducing greenhouse gas emissions by up to <strong>86%</strong>. With annual capacity of <strong>480,000 kiloliters</strong>, we're making a measurable impact on India's carbon footprint.</p><p>Our zero-discharge manufacturing facilities ensure that the production process itself is environmentally responsible — from feedstock sourcing to final product delivery.</p><p><strong>86%</strong> Less GHG emissions</p><p><strong>100%</strong> Biodegradable fuel</p>",
+            "image": "/images/save-planet.jpg",
+            "imageAlt": "Hands holding a globe made of recycled materials, representing environmental sustainability through biodiesel",
+            "imagePosition": "left"
+          }
+        },
+        {
+          "id": "166ab3a0-42d0-5268-ab00-9812f017ffe4",
+          "type": "cta_banner",
+          "props": {
+            "heading": "Partner With India's Biofuel Leader",
+            "body": "Whether you need bulk biodiesel supply, crude glycerin, or want to discuss investment opportunities — our team is ready to help.",
+            "label": "Contact Our Team →",
+            "href": "/contact",
+            "secondaryLabel": "Investor Relations",
+            "secondaryHref": "/investors"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about",
+      "slug": "about",
+      "parentPath": null,
+      "title": "About Us",
+      "show_in_nav": true,
+      "nav_order": 2,
+      "template": "default",
+      "seo": {
+        "metaTitle": "About Kotyark Industries - India's Biofuel Pioneer",
+        "metaDescription": "Learn about Kotyark Industries Limited, a BSE-listed biodiesel manufacturer with 480,000 KL capacity. Zero discharge facilities in Rajasthan & Gujarat."
+      },
+      "blocks": [
+        {
+          "id": "a4f95f5b-6e14-5e35-a8a8-df2fabe071b5",
+          "type": "hero",
+          "props": {
+            "variant": "page",
+            "heading": "About Kotyark Industries",
+            "subheading": "Pioneering India's clean energy revolution through biodiesel manufacturing since our foundation."
+          }
+        },
+        {
+          "id": "d5fd5ecd-e434-5c42-afaf-7b701ac3ed43",
+          "type": "rich_text",
+          "props": {
+            "eyebrow": "Our Story",
+            "heading": "Building India's Biofuel Future",
+            "html": "<p>Kotyark Industries Limited is a <strong>publicly listed biodiesel manufacturing company</strong> on the Bombay Stock Exchange (BSE). We operate state-of-the-art, zero-discharge biodiesel production facilities in <strong>Sirohi, Rajasthan</strong> and <strong>Anand, Gujarat</strong>.</p><p>With an annual installed capacity of <strong>480,000 kiloliters</strong> and daily production of <strong>210 KL</strong>, Kotyark is one of India's leading biodiesel manufacturers. We convert non-edible vegetable oils into premium B100 biodiesel through advanced trans-esterification processes.</p><p>Our operations are approved by the <strong>Bio-Fuel Authority under the Rural Development Department and Panchayati Raj, Government of Rajasthan</strong>, reflecting our commitment to quality, safety, and environmental responsibility.</p>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "0a649a3a-c80a-5869-a2ca-82c4905a1796",
+          "type": "stats",
+          "props": {
+            "items": [
+              {
+                "value": "480K",
+                "label": "KL Annual Capacity"
+              },
+              {
+                "value": "210",
+                "label": "KL Daily Output"
+              },
+              {
+                "value": "2",
+                "label": "Manufacturing Plants"
+              },
+              {
+                "value": "Zero",
+                "label": "Discharge Facilities"
+              }
+            ]
+          }
+        },
+        {
+          "id": "13213161-1399-57d3-a9d3-4c7524139a59",
+          "type": "card_grid",
+          "props": {
+            "columns": "2",
+            "items": [
+              {
+                "title": "Our Vision",
+                "body": "To be India's most trusted producer of sustainable biofuels, leading the nation's transition to carbon-neutral energy and reducing dependency on imported fossil fuels."
+              },
+              {
+                "title": "Our Mission",
+                "body": "To manufacture premium-quality biodiesel that exceeds industry standards while maintaining zero-discharge operations, supporting rural employment, and delivering value to our shareholders and communities."
+              }
+            ]
+          }
+        },
+        {
+          "id": "b70e425c-f15a-5e98-a596-d1449282f436",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Leadership",
+            "heading": "Board of Directors",
+            "intro": "Experienced professionals driving Kotyark's growth and innovation in India's biofuel sector.",
+            "columns": "3",
+            "items": [
+              {
+                "icon": "GS",
+                "title": "Mr. Gaurang Shah",
+                "role": "Chairman cum Managing Director",
+                "body": "Chairman cum Managing Director\nCommerce Graduate from Maharaja Sayajirao University of Baroda with over 27 years of experience in vegetable oil trading and biofuels. As Promoter and CMD, he leads overall management, strategy formulation, and ensures operations consistently exceed industry standards."
+              },
+              {
+                "icon": "DS",
+                "title": "Mrs. Dhruti Shah",
+                "role": "Whole Time Director & CFO",
+                "body": "Whole Time Director & CFO\nHolds M.Com and MBA degrees with approximately 11 years of industry experience. Appointed CFO and KMP in September 2024, she oversees all financial and operational activities from conceptualization to execution, bringing extensive knowledge of the biofuel industry."
+              },
+              {
+                "icon": "BS",
+                "title": "Mrs. Bhaviniben Shah",
+                "role": "Non-Executive Director",
+                "body": "Non-Executive Director\nDiploma in Mechanical Engineering with approximately 10 years of experience in the biofuels sector. Has made important contributions to the company's operations and growth."
+              },
+              {
+                "icon": "AS",
+                "title": "Mr. Akshay Jayrajbhai Shah",
+                "role": "Non-Executive Independent Director",
+                "body": "Non-Executive Independent Director\nBachelor of Science with 15 years of professional experience. Provides independent oversight and governance, contributing to strategic decision-making and corporate compliance."
+              },
+              {
+                "icon": "HP",
+                "title": "Mr. Harsh Mukeshbhai Parikh",
+                "role": "Non-Executive Independent Director",
+                "body": "Non-Executive Independent Director\nMBA with 21 years of experience across various sectors. Has played an instrumental role in the company's growth since joining, providing strategic and governance guidance."
+              },
+              {
+                "icon": "VM",
+                "title": "Mr. Viral Mamtora",
+                "role": "Additional Independent Director",
+                "body": "Additional Independent Director\nB.Com from Saurashtra University and Associate Member of ICAI with over 15 years of experience in Finance and Accounts. Currently Proprietor of M/s. Viral M. Mamtora & Associates."
+              }
+            ]
+          }
+        },
+        {
+          "id": "7fd413d6-0d1a-595b-a4f6-ed9a3e489b77",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Our Facilities",
+            "heading": "Manufacturing Plants",
+            "columns": "2",
+            "items": [
+              {
+                "icon": "Rajasthan Plant",
+                "title": "Sirohi, Rajasthan",
+                "body": "Primary manufacturing facility located at F-20, RICCO Industrial Area, Swaroopganj, Sirohi District, Rajasthan 307026. Equipped with advanced trans-esterification technology and zero-discharge systems."
+              },
+              {
+                "icon": "Gujarat Plant",
+                "title": "Anand, Gujarat",
+                "body": "Second manufacturing facility in Anand, Gujarat, expanding Kotyark's production capacity and geographical reach to serve clients across western India efficiently."
+              }
+            ]
+          }
+        },
+        {
+          "id": "9925bfba-8867-58b8-a038-a6583f1e441f",
+          "type": "cta_banner",
+          "props": {
+            "heading": "Ready to Partner With Us?",
+            "body": "Join India's biofuel revolution. Contact us for biodiesel supply, partnership opportunities, or investor inquiries.",
+            "label": "Contact Us →",
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/products",
+      "slug": "products",
+      "parentPath": null,
+      "title": "Our Products",
+      "show_in_nav": true,
+      "nav_order": 3,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Biodiesel & Glycerin Products",
+        "metaDescription": "Explore Kotyark's range of biofuel products: B100 Biodiesel, Crude Glycerin, and more. Government approved. Available across India."
+      },
+      "blocks": [
+        {
+          "id": "761b708d-d6bd-591f-a904-1613c4a71d2a",
+          "type": "hero",
+          "props": {
+            "variant": "page",
+            "heading": "Our Products",
+            "subheading": "High-quality biofuels and by-products manufactured at our zero-discharge facilities in Rajasthan and Gujarat."
+          }
+        },
+        {
+          "id": "56faa242-6d2e-5add-ae25-a428f11fddca",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Available Now",
+            "heading": "Current Product Range",
+            "columns": "2",
+            "items": [
+              {
+                "title": "Biodiesel (B100)",
+                "body": "Premium quality biodiesel manufactured from non-edible vegetable oils through advanced trans-esterification processes. A clean-burning, renewable diesel alternative that delivers 86% fewer greenhouse gas emissions, superior lubricity, and higher cetane number than conventional HSD.",
+                "image": "/images/biodiesel-product.png",
+                "imageAlt": "Premium B100 Biodiesel fuel",
+                "tags": [
+                  "Carbon Neutral",
+                  "Non-Toxic",
+                  "Engine Safe",
+                  "High Cetane"
+                ],
+                "linkLabel": "View Details",
+                "href": "/products/biodiesel"
+              },
+              {
+                "title": "Crude Glycerin",
+                "body": "High-quality crude glycerin produced as a valuable by-product of biodiesel manufacturing. Also known as glycerol, it finds extensive applications in food processing, pharmaceuticals, cosmetics, and industrial sectors worldwide.",
+                "image": "/images/glycerin-product.png",
+                "imageAlt": "Crude Glycerin by-product",
+                "tags": [
+                  "Food Grade",
+                  "Pharma Grade",
+                  "Industrial",
+                  "Cosmetics"
+                ],
+                "linkLabel": "View Details",
+                "href": "/products/crude-glycerin"
+              }
+            ]
+          }
+        },
+        {
+          "id": "20bc10e8-9fc1-5ddd-af84-c33733c0ec8f",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Expanding",
+            "heading": "Upcoming Products",
+            "intro": "Kotyark is expanding its product portfolio to serve broader renewable energy needs.",
+            "columns": "3",
+            "items": [
+              {
+                "title": "CBFS",
+                "body": "Carbon Black Feed Stock — a high-demand industrial raw material for the rubber and tyre manufacturing industry."
+              },
+              {
+                "title": "Light Petroleum Oil (LPO)",
+                "body": "Light petroleum oil derivatives for specialized industrial and energy applications."
+              },
+              {
+                "title": "Dewatering Fluid",
+                "body": "Specialized dewatering fluids for industrial processes and environmental management applications."
+              }
+            ]
+          }
+        },
+        {
+          "id": "1e68856e-f980-5a8d-aa8a-71c8f9d4598b",
+          "type": "cta_banner",
+          "props": {
+            "heading": "Need Bulk Biodiesel Supply?",
+            "body": "Contact us for pricing, availability, and customized supply agreements for your business needs.",
+            "label": "Request a Quote →",
+            "href": "/contact"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/products/biodiesel",
+      "slug": "biodiesel",
+      "parentPath": "/products",
+      "title": "Biodiesel (B100)",
+      "show_in_nav": false,
+      "nav_order": 1,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Biodiesel B100 - Renewable Diesel Fuel",
+        "metaDescription": "Clean-burning B100 biodiesel from non-edible vegetable oil. 86% less greenhouse gas. More power, better mileage. Order biodiesel now."
+      },
+      "blocks": [
+        {
+          "id": "d81d0f6e-b484-5715-a4e0-ae8f764b8559",
+          "type": "hero",
+          "props": {
+            "variant": "page",
+            "heading": "Biodiesel (B100)",
+            "subheading": "Premium renewable diesel fuel — cleaner burning, carbon neutral, and superior performance."
+          }
+        },
+        {
+          "id": "2dcb3411-ea3f-5a87-a09c-c4f1aa17959c",
+          "type": "image_text",
+          "props": {
+            "eyebrow": "Product Overview",
+            "heading": "What is B100 Biodiesel?",
+            "html": "<p>Biodiesel is a <strong>renewable, clean-burning diesel replacement</strong> produced through the trans-esterification of non-edible vegetable oils. Chemically classified as a mono alkyl ester, biodiesel is functionally equivalent to petroleum-based High-Speed Diesel (HSD) but with dramatically lower environmental impact.</p><p>At Kotyark Industries, we manufacture <strong>B100 (neat/pure) biodiesel</strong> at our Government-approved, zero-discharge facilities. B100 can be used directly or blended with petroleum diesel at varying ratios — from <strong>B5 (5% biodiesel)</strong> to <strong>B20 (20% biodiesel)</strong> — without requiring engine modifications.</p><p>Our biodiesel meets all quality standards set by the Bureau of Indian Standards (BIS) and is approved by the <strong>Bio-Fuel Authority under the Government of Rajasthan</strong>.</p>",
+            "image": "/images/biodiesel-cycle.png",
+            "imageAlt": "Biodiesel production cycle showing feedstocks, biofuel production, renewable fuel, and CO2 absorption",
+            "imagePosition": "right"
+          }
+        },
+        {
+          "id": "a1f0dd67-1a60-5209-a7d1-b86a14e5ecdd",
+          "type": "rich_text",
+          "props": {
+            "eyebrow": "Advantages",
+            "heading": "Benefits of Biodiesel",
+            "html": "<p>Biodiesel delivers measurable advantages across environmental, economic, and operational dimensions.</p><ul><li>86% less greenhouse gas emissions compared to petroleum diesel</li><li>Higher cetane number for improved combustion and engine performance</li><li>Superior lubricity that protects fuel system components and reduces wear</li><li>More power and better mileage than conventional HSD diesel</li><li>Carbon neutral — CO₂ absorbed during biomass growth offsets emissions</li><li>Non-toxic and biodegradable — environmentally safe in case of spills</li><li>Reduces India's dependency on imported crude oil</li><li>Creates rural employment through feedstock cultivation and processing</li></ul>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "9f1ce53a-1c32-5be2-a676-8ffa360c2a55",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Use Cases",
+            "heading": "Biodiesel Applications",
+            "intro": "B100 biodiesel and its blends serve diverse sectors across India's economy.",
+            "columns": "3",
+            "items": [
+              {
+                "title": "Transport & Logistics",
+                "body": "Commercial fleets, trucks, and heavy vehicles. B5–B20 blends require no engine modifications and provide cleaner emissions."
+              },
+              {
+                "title": "Industrial Power",
+                "body": "Backup power generators, boilers, and industrial heating systems. Biodiesel provides reliable, cleaner-burning energy."
+              },
+              {
+                "title": "Agriculture",
+                "body": "Farm equipment, tractors, and irrigation pump sets. Biodiesel supports rural India's energy needs sustainably."
+              }
+            ]
+          }
+        },
+        {
+          "id": "a0c34edf-ec58-5894-a23f-67029a239b3b",
+          "type": "rich_text",
+          "props": {
+            "eyebrow": "Specifications",
+            "heading": "Technical Data",
+            "html": "<table><thead><tr><th>Parameter</th><th>Specification</th></tr></thead><tbody><tr><td>Chemical Type</td><td>Mono Alkyl Ester (FAME)</td></tr><tr><td>Feedstock</td><td>Non-edible vegetable oils</td></tr><tr><td>Process</td><td>Trans-esterification</td></tr><tr><td>GHG Reduction</td><td>86% vs. petroleum diesel</td></tr><tr><td>Blending Range</td><td>B5 (5%) to B100 (neat)</td></tr><tr><td>Engine Compatibility</td><td>All diesel engines (B5–B20 without modification)</td></tr><tr><td>Cetane Number</td><td>Higher than conventional HSD</td></tr><tr><td>Biodegradability</td><td>100% biodegradable, non-toxic</td></tr><tr><td>Lubricity</td><td>Superior to petroleum diesel</td></tr><tr><td>Approval</td><td>Bio-Fuel Authority, Govt. of Rajasthan</td></tr></tbody></table>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "a2555602-8e9d-5950-a13e-27e9315f0b20",
+          "type": "cta_banner",
+          "props": {
+            "heading": "Order Biodiesel Today",
+            "body": "Get in touch for bulk supply, custom blending ratios, and delivery across India.",
+            "label": "Request a Quote →",
+            "href": "/contact",
+            "secondaryLabel": "View Crude Glycerin",
+            "secondaryHref": "/products/crude-glycerin"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/products/crude-glycerin",
+      "slug": "crude-glycerin",
+      "parentPath": "/products",
+      "title": "Crude Glycerin",
+      "show_in_nav": false,
+      "nav_order": 2,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Crude Glycerin Supplier India",
+        "metaDescription": "High-quality crude glycerin from biodiesel production. Applications in food, pharmaceuticals & cosmetics. 210 KL/day capacity at Sirohi."
+      },
+      "blocks": [
+        {
+          "id": "69e57e8c-8b42-50e6-afb9-b870c1416d9e",
+          "type": "hero",
+          "props": {
+            "variant": "page",
+            "heading": "Crude Glycerin",
+            "subheading": "Premium by-product of biodiesel manufacturing — versatile applications across industries."
+          }
+        },
+        {
+          "id": "07488852-c645-5c63-a24b-95b892f1a581",
+          "type": "rich_text",
+          "props": {
+            "eyebrow": "Product Overview",
+            "heading": "What is Crude Glycerin?",
+            "html": "<p>Crude glycerin (also known as glycerol) is a <strong>valuable by-product</strong> generated during the trans-esterification process of biodiesel manufacturing. For every 10 parts of biodiesel produced, approximately 1 part of crude glycerin is obtained.</p><p>At Kotyark Industries, our crude glycerin is produced alongside our premium B100 biodiesel at our zero-discharge facilities. The glycerin undergoes quality checks to ensure it meets industry standards for various downstream applications.</p><p>Crude glycerin serves as a versatile raw material across multiple industries — from <strong>food processing and pharmaceuticals</strong> to <strong>cosmetics, soaps, and industrial chemicals</strong>. After refinement, it becomes a high-value ingredient in thousands of consumer and industrial products.</p>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "5a6ece7b-9d15-5134-ace3-5368512704ff",
+          "type": "stats",
+          "props": {
+            "items": [
+              {
+                "value": "210",
+                "label": "KL/Day Biodiesel Capacity (glycerin proportional)"
+              },
+              {
+                "value": "~10%",
+                "label": "Glycerin yield per biodiesel batch"
+              }
+            ]
+          }
+        },
+        {
+          "id": "e3ec0d3d-3a33-5d4c-aa55-cad2cce02ea5",
+          "type": "card_grid",
+          "props": {
+            "eyebrow": "Applications",
+            "heading": "Crude Glycerin Uses",
+            "intro": "Our crude glycerin finds applications across diverse industries after appropriate processing and refinement.",
+            "columns": "3",
+            "items": [
+              {
+                "title": "Food Processing",
+                "body": "Used as a humectant, sweetener, and solvent in food products. Refined glycerin is GRAS (Generally Recognized As Safe) approved."
+              },
+              {
+                "title": "Pharmaceuticals",
+                "body": "Essential ingredient in syrups, cough medicines, capsules, and topical formulations for its moisturizing and solvent properties."
+              },
+              {
+                "title": "Cosmetics & Personal Care",
+                "body": "Key ingredient in skincare, haircare, and personal hygiene products for its moisturizing, emollient, and humectant properties."
+              },
+              {
+                "title": "Soap & Detergents",
+                "body": "Traditional and modern soap manufacturing uses glycerin as a base ingredient, providing moisturizing properties to the finished product."
+              },
+              {
+                "title": "Industrial Chemicals",
+                "body": "Used as a raw material in producing alkyd resins, polyurethanes, and various industrial chemicals and solvents."
+              },
+              {
+                "title": "Animal Feed",
+                "body": "Crude glycerin is used as an energy supplement in livestock and poultry feed formulations, adding caloric value."
+              }
+            ]
+          }
+        },
+        {
+          "id": "acf079d1-74aa-52c8-a22c-5accea0ce022",
+          "type": "cta_banner",
+          "props": {
+            "heading": "Enquire About Crude Glycerin Supply",
+            "body": "Contact us for pricing, specifications, and bulk supply of crude glycerin from our manufacturing facilities.",
+            "label": "Contact Sales →",
+            "href": "/contact",
+            "secondaryLabel": "View Biodiesel",
+            "secondaryHref": "/products/biodiesel"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "slug": "contact",
+      "parentPath": null,
+      "title": "Contact Us",
+      "show_in_nav": true,
+      "nav_order": 5,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Contact Kotyark Industries - Biodiesel Enquiries",
+        "metaDescription": "Get in touch with Kotyark Industries for biodiesel supply, investor queries or partnerships. Plants in Rajasthan & Gujarat. Reach out today."
+      },
+      "blocks": [
+        {
+          "id": "2047c2d1-997a-5e1e-a116-001b538073cd",
+          "type": "hero",
+          "props": {
+            "variant": "page",
+            "heading": "Contact Us",
+            "subheading": "Get in touch for biodiesel supply, partnerships, investor queries, or any other enquiries."
+          }
+        },
+        {
+          "id": "58bb886c-6c09-5922-ae36-a04766081ec0",
+          "type": "rich_text",
+          "props": {
+            "heading": "Send Us a Message",
+            "html": "<p>Fill out the form below and our team will respond within 24 business hours.</p>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "ce11b32f-04b7-53d3-a601-5a01148deadc",
+          "type": "contact_info",
+          "props": {
+            "heading": "Our Offices",
+            "showForm": true,
+            "items": [
+              {
+                "label": "Head Office — Rajasthan",
+                "value": "F-20, RICCO Industrial Area, Swaroopganj,\nSirohi District, Rajasthan 307026, India"
+              },
+              {
+                "label": "Gujarat Plant",
+                "value": "Anand, Gujarat, India"
+              },
+              {
+                "label": "Email",
+                "value": "info@kotyark.com"
+              }
+            ]
+          }
+        },
+        {
+          "id": "233aa687-640d-5c1a-a17d-e254020ab95c",
+          "type": "rich_text",
+          "props": {
+            "heading": "Company Details",
+            "html": "<p><strong>Company:</strong> Kotyark Industries Limited</p><p><strong>CIN:</strong> L15149RJ2023PLC091598</p><p><strong>Listed On:</strong> BSE (Bombay Stock Exchange)</p><p><strong>Sector:</strong> Biodiesel &amp; Biofuels</p>",
+            "width": "normal"
+          }
+        },
+        {
+          "id": "b3a3ad8b-006b-5cc0-a972-84c8a82cf654",
+          "type": "rich_text",
+          "props": {
+            "heading": "Approved Manufacturer",
+            "html": "<p>Approved by Bio-Fuel Authority under the Rural Development Department and Panchayati Raj, Government of Rajasthan.</p>",
+            "width": "normal"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/investors",
+      "slug": "investors",
+      "parentPath": null,
+      "title": "Investor Relations",
+      "show_in_nav": false,
+      "nav_order": 4,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Investor Relations - BSE Listed",
+        "metaDescription": "Access SEBI filings, board meetings, financial statements & company policies for Kotyark Industries Limited. BSE listed biofuel company."
+      },
+      "blocks": [
+        {
+          "id": "514f0450-48cd-50a3-a2bb-54a45abe28cd",
+          "type": "rich_text",
+          "props": {
+            "html": "<p>Complete regulatory filings, financial statements, and governance documents for Kotyark Industries Limited (BSE Listed).</p>",
+            "width": "normal"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/investors/sebi-lodr",
+      "slug": "sebi-lodr",
+      "parentPath": "/investors",
+      "title": "Disclosure Under Reg. 46 of SEBI (LODR)",
+      "show_in_nav": false,
+      "nav_order": 1,
+      "template": "default",
+      "seo": {
+        "metaTitle": "Disclosure Under Reg. 46 of SEBI (LODR)",
+        "metaDescription": "Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) website disclosures for Kotyark Industries Limited."
+      },
+      "blocks": [
+        {
+          "id": "f5957f3b-f0b4-5a27-aff5-62c9183dfece",
+          "type": "hero",
+          "props": {
+            "variant": "page",
+            "heading": "Disclosure Under Reg. 46 of SEBI (LODR)"
+          }
+        },
+        {
+          "id": "aca14507-9c6b-5f7e-add0-db4c7a9d8785",
+          "type": "compliance_table",
+          "props": {
+            "intro": "Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) for website disclosures by Kotyark Industries Limited.",
+            "rows": [
+              {
+                "sr": "A",
+                "particular": "Details of Business",
+                "regulation": "Reg. 46(2)(a)",
+                "href": "/about"
+              },
+              {
+                "sr": "B",
+                "particular": "Terms and Conditions of Appointment of Independent Directors",
+                "regulation": "Reg. 46(2)(b)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "C",
+                "particular": "Composition of Various Committees of Board of Directors",
+                "regulation": "Reg. 46(2)(c)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "D",
+                "particular": "Code of Conduct for Board of Directors and Senior Management Personnel",
+                "regulation": "Reg. 46(2)(d)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "E",
+                "particular": "Details of Establishment of Vigil Mechanism / Whistle Blower Policy",
+                "regulation": "Reg. 46(2)(e)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "F",
+                "particular": "Criteria of Making Payments to Non-Executive Directors",
+                "regulation": "Reg. 46(2)(f)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "G",
+                "particular": "Policy on Dealing with Related Party Transactions",
+                "regulation": "Reg. 46(2)(g)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "H",
+                "particular": "Policy for Determining \"Material\" Subsidiaries",
+                "regulation": "Reg. 46(2)(h)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "I",
+                "particular": "Details of Familiarization Programmes Imparted to Independent Directors",
+                "regulation": "Reg. 46(2)(i)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "J",
+                "particular": "Email Address for Grievance Redressal and Other Relevant Details",
+                "regulation": "Reg. 46(2)(j)",
+                "href": "/contact"
+              },
+              {
+                "sr": "K",
+                "particular": "Contact Information of Designated Officials for Investor Grievances",
+                "regulation": "Reg. 46(2)(k)",
+                "href": "/contact"
+              },
+              {
+                "sr": "L(i)",
+                "particular": "Notice of Board Meeting for Discussing Financial Results",
+                "regulation": "Reg. 46(2)(l)(i)",
+                "href": "/investors/board-meetings"
+              },
+              {
+                "sr": "L(ii)",
+                "particular": "Financial Results (Upon Conclusion of Board Meeting)",
+                "regulation": "Reg. 46(2)(l)(ii)",
+                "href": "/investors/board-meetings"
+              },
+              {
+                "sr": "L(iii)",
+                "particular": "Complete Copy of Annual Report (Balance Sheet, P&L, Directors' Report, Corporate Governance Report)",
+                "regulation": "Reg. 46(2)(l)(iii)",
+                "href": "/investors/annual-general-meeting"
+              },
+              {
+                "sr": "L(iv)",
+                "particular": "Audited Financial Statements of Each Subsidiary",
+                "regulation": "Reg. 46(2)(l)(iv)",
+                "href": "/investors/audited-financial-statements"
+              },
+              {
+                "sr": "M",
+                "particular": "Shareholding Pattern",
+                "regulation": "Reg. 46(2)(m)",
+                "href": "/investors/misc-sebi-disclosure"
+              },
+              {
+                "sr": "N",
+                "particular": "Details of Agreements with Media Companies and/or their Associates",
+                "regulation": "Reg. 46(2)(n)",
+                "href": ""
+              },
+              {
+                "sr": "O",
+                "particular": "Schedule of Analysts or Institutional Investors Meet and Presentations",
+                "regulation": "Reg. 46(2)(o)",
+                "href": ""
+              },
+              {
+                "sr": "P",
+                "particular": "Audio/Video Recordings and Transcripts of Post-Earnings/Quarterly Calls",
+                "regulation": "Reg. 46(2)(p)",
+                "href": ""
+              },
+              {
+                "sr": "Q",
+                "particular": "New Name and Old Name of the Listed Entity (if changed in last 1 year)",
+                "regulation": "Reg. 46(2)(q)",
+                "href": ""
+              },
+              {
+                "sr": "R",
+                "particular": "All Credit Ratings Obtained for Outstanding Instruments",
+                "regulation": "Reg. 46(2)(r)",
+                "href": "/investors/misc-sebi-disclosure"
+              },
+              {
+                "sr": "S",
+                "particular": "Advertisements Published in Newspapers as per Regulation 47(1)",
+                "regulation": "Reg. 46(2)(s)",
+                "href": "/investors/misc-sebi-disclosure"
+              },
+              {
+                "sr": "T",
+                "particular": "Secretarial Compliance Report",
+                "regulation": "Reg. 46(2)(t)",
+                "href": "/investors/misc-sebi-disclosure"
+              },
+              {
+                "sr": "U",
+                "particular": "Policy for Determination of Materiality of Events or Information",
+                "regulation": "Reg. 46(2)(u)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "V",
+                "particular": "Contact Details of Key Managerial Personnel Authorized for Determining Materiality",
+                "regulation": "Reg. 46(2)(v)",
+                "href": "/contact"
+              },
+              {
+                "sr": "W",
+                "particular": "Disclosures under Sub-regulation (8) of Regulation 30",
+                "regulation": "Reg. 46(2)(w)",
+                "href": "/investors/misc-sebi-disclosure"
+              },
+              {
+                "sr": "X",
+                "particular": "Statements of Deviation(s) or Variation(s) as specified in Regulation 32",
+                "regulation": "Reg. 46(2)(x)",
+                "href": ""
+              },
+              {
+                "sr": "Y",
+                "particular": "Dividend Distribution Policy",
+                "regulation": "Reg. 46(2)(y)",
+                "href": "/investors/company-policies"
+              },
+              {
+                "sr": "Z",
+                "particular": "Annual Return as provided under Section 92 of Companies Act, 2013",
+                "regulation": "Reg. 46(2)(z)",
+                "href": "/investors/annual-general-meeting"
+              },
+              {
+                "sr": "ZA",
+                "particular": "Employee Benefit Scheme Documents (Excluding Commercial Secrets)",
+                "regulation": "Reg. 46(2)(za)",
+                "href": ""
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "nav": [
+    {
+      "menu": "header",
+      "label": "Home",
+      "url": "/",
+      "children": []
+    },
+    {
+      "menu": "header",
+      "label": "About Us",
+      "url": "/about",
+      "children": []
+    },
+    {
+      "menu": "header",
+      "label": "Products",
+      "url": "/products",
+      "children": [
+        {
+          "label": "Biodiesel",
+          "url": "/products/biodiesel"
+        },
+        {
+          "label": "Crude Glycerin",
+          "url": "/products/crude-glycerin"
+        }
+      ]
+    },
+    {
+      "menu": "header",
+      "label": "Investors",
+      "url": "/investors",
+      "children": []
+    },
+    {
+      "menu": "header",
+      "label": "Contact",
+      "url": "/contact",
+      "children": []
+    },
+    {
+      "menu": "footer",
+      "label": "Company",
+      "url": "",
+      "children": [
+        {
+          "label": "About Us",
+          "url": "/about"
+        },
+        {
+          "label": "Products",
+          "url": "/products"
+        },
+        {
+          "label": "Biodiesel",
+          "url": "/products/biodiesel"
+        },
+        {
+          "label": "Crude Glycerin",
+          "url": "/products/crude-glycerin"
+        },
+        {
+          "label": "Investors",
+          "url": "/investors"
+        }
+      ]
+    },
+    {
+      "menu": "footer",
+      "label": "Resources",
+      "url": "",
+      "children": [
+        {
+          "label": "SEBI LODR Filings",
+          "url": "/investors"
+        },
+        {
+          "label": "Financial Statements",
+          "url": "/investors"
+        },
+        {
+          "label": "Board Meetings",
+          "url": "/investors"
+        },
+        {
+          "label": "Contact Us",
+          "url": "/contact"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "org": {
+      "legalName": "Kotyark Industries Limited",
+      "name": "Kotyark Industries",
+      "cin": "L15149RJ2023PLC091598",
+      "listing": "BSE (Bombay Stock Exchange)",
+      "sector": "Biodiesel & Biofuels",
+      "tagline": "India's leading biodiesel manufacturer committed to building a carbon-neutral future through renewable energy solutions.",
+      "approval": "Approved by Bio-Fuel Authority, Govt. of Rajasthan",
+      "address": "F-20, RICCO Industrial Area, Swaroopganj, Sirohi, Rajasthan 307026",
+      "addressContactPage": "F-20, RICCO Industrial Area, Swaroopganj,\nSirohi District, Rajasthan 307026, India",
+      "secondaryLocation": "Anand, Gujarat, India",
+      "email": "info@kotyark.com",
+      "phone": null,
+      "logo": "/images/kotyark-logo.png"
+    },
+    "social": {},
+    "seo_defaults": {
+      "titleDefault": "Kotyark Industries - Leading Biodiesel Manufacturer India",
+      "titleTemplate": "%s | Kotyark Industries",
+      "description": "India's approved biodiesel manufacturer. 480,000 KL capacity. Carbon neutral fuel for transport & industry. BSE listed. Get a quote today.",
+      "keywords": [
+        "biodiesel manufacturer India",
+        "biofuel",
+        "biodiesel",
+        "crude glycerin",
+        "renewable energy India",
+        "Kotyark Industries",
+        "B100 biodiesel",
+        "carbon neutral fuel"
+      ],
+      "author": "Kotyark Industries Limited",
+      "metadataBase": "https://kotyark.com",
+      "openGraph": {
+        "title": "Kotyark Industries - Leading Biodiesel Manufacturer India",
+        "description": "India's approved biodiesel manufacturer with 480,000 KL capacity. Carbon neutral fuel solutions.",
+        "siteName": "Kotyark Industries",
+        "locale": "en_IN",
+        "type": "website"
+      },
+      "robots": {
+        "index": true,
+        "follow": true
+      }
+    }
+  },
+  "redirects": []
+}
