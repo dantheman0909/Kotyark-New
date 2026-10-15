@@ -16,6 +16,7 @@ const NAV = [
   { href: '/admin/media', label: 'Media', cap: 'media:write' },
   { href: '/admin/navigation', label: 'Navigation', cap: 'nav:write' },
   { href: '/admin/redirects', label: 'Redirects', cap: 'redirects:write' },
+  { href: '/admin/popups', label: 'Pop-ups', cap: 'popups:write' },
   { section: 'Administration' },
   { href: '/admin/settings', label: 'Settings', cap: 'settings:write' },
   { href: '/admin/users', label: 'Users', cap: 'users:manage' },

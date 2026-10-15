@@ -18,6 +18,7 @@ export const PERMISSIONS = {
   'media:write':      ['owner', 'editor', 'compliance'],
   'nav:write':        ['owner', 'editor'],
   'redirects:write':  ['owner', 'editor'],
+  'popups:write':     ['owner', 'editor'],
   'settings:write':   ['owner'],
   'users:manage':     ['owner'],
   'audit:read':       ['owner', 'compliance'],

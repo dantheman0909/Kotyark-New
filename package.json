@@ -10,7 +10,8 @@
     "migrate:content": "node scripts/migrate-to-cms.mjs",
     "audit:links": "node scripts/link-audit.mjs",
     "verify:seo": "node scripts/verify-seo.mjs",
-    "admin:reset": "node scripts/create-admin.mjs"
+    "admin:reset": "node scripts/create-admin.mjs",
+    "test:popups": "node --test scripts/test/popup-css.test.mjs"
   },
   "dependencies": {
     "@replit/object-storage": "^1.0.0",
@@ -23,6 +24,7 @@
     "next": "16.1.6",
     "pdf-parse": "^1.1.1",
     "pg": "^8.23.1",
+    "postcss": "^8.4.31",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "sanitize-html": "^2.18.1",

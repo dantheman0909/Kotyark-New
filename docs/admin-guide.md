@@ -18,6 +18,7 @@ For everyone who edits www.kotyark.com. Read once end to end; afterwards use the
 | Media library (images) | ✓ | ✓ | ✓ |
 | Header / footer menus | ✓ | ✓ |  |
 | Redirects | ✓ | ✓ |  |
+| Pop-ups (create, design, publish, delete) | ✓ | ✓ |  |
 | Site settings (company details, social, SEO defaults, GA4) | ✓ | read only | read only |
 | Users | ✓ |  |  |
 | Audit log | ✓ |  | ✓ |
@@ -153,6 +154,44 @@ Add users with a role and a temporary password (12+ characters); ask them to cha
 Filter by section, action, user and date. Expand a row for the before/after detail. Use it to answer "who changed this disclosure and when".
 
 ---
+
+## 13. Pop-ups
+
+Sidebar: **Pop-ups** (Owner, Editor). A pop-up is an on-brand announcement, offer or notice that appears on the public site. It does not change any page; it is a separate layer shown on top.
+
+### 13.1 Create and publish
+1. Pop-ups → **New pop-up**. Fill the four tabs (below), watching the **Live preview** on the right (Desktop / Mobile toggle).
+2. **Save draft** keeps it off the site. **Publish** puts it live within seconds (the site refreshes automatically). **Unpublish** takes it down. Saving a *published* pop-up changes the live site immediately.
+3. Leaving the editor with unsaved changes asks for confirmation. Every create, edit, publish and delete is in the Audit log.
+4. **Duplicate** makes a draft copy (handy for a variant); **Delete** also removes its statistics.
+
+### 13.2 Content tab
+Eyebrow (small label), heading, body (the same formatting toolbar as pages), image, up to two buttons (a label and a link: `/page` on this site or `https://...`; nothing else is accepted), and the dismiss text (e.g. "No thanks"; empty = close button only). **Images are uploaded or picked from the Media library, and alt text is required** whenever an image is set. Image position: top, left, right or background.
+
+### 13.3 Design tab
+Preset (Brand green, Light, Dark, Amber, all from the site palette), layout (Modal, Slide-in, Top bar, Bottom bar, Full screen), slide-in corner, width, corner radius, button style (solid / outline), animation (fade, slide, zoom, none) and overlay darkness. Colour pickers for background, text and accent override the preset; type a hex such as `#0d3b24` or use **Reset** to return to the preset. Heading and body fonts default to the site fonts. Animation is switched off automatically for visitors who prefer reduced motion.
+
+On phones, modals and slide-ins appear as a **bottom sheet** (full-width card at the bottom); only **Full screen** takes the whole screen.
+
+### 13.4 Custom CSS tab (optional)
+For anything the Design tab cannot do. Rules you write are automatically limited to this pop-up and can never affect the rest of the site.
+- Style these classes: `.kp-root` (outer box / overlay), `.kp-dialog`, `.kp-eyebrow`, `.kp-heading`, `.kp-body`, `.kp-image`, `.kp-cta`, `.kp-cta--secondary`, `.kp-close`. Add `.kp-mobile` to a selector (e.g. `.kp-root.kp-mobile .kp-heading`) to style the phone layout. Rules written for `body`, `html` or `:root` apply to the pop-up's own box.
+- Not allowed (removed, with a note shown under the editor): `@import`, `@charset`, `@namespace`, `url()` other than `https:` addresses or images from this site's `/media/...`, `@font-face` from a non-https source, `expression()`, `javascript:`, `behavior`, `-moz-binding`. A `</style` anywhere, a syntax error or more than 10 KB rejects the save.
+- The grey box under the editor shows the exact CSS that is used.
+
+### 13.5 Display rules tab
+- **Trigger:** on page load, after N seconds, after scrolling N %, or exit intent (mouse leaves the top of the window; desktop only).
+- **Show on pages / Never show on pages:** one path per line, `*` matches anything. `/` is the home page only; `/products/*` is every product page; `/investors/*` all investor pages. Empty "Show on pages" = every page. "Never show" always wins. Pop-ups never appear in `/admin`, `/login` or previews.
+- **Devices:** all, desktop only or mobile only (mobile = up to 767 px wide).
+- **Frequency:** every page load; once per browser session; once every N days; once ever. Stored in the visitor's browser, so clearing it or using a new browser shows the pop-up again.
+- **Schedule:** start and end as `YYYY-MM-DD HH:mm` in India time (empty = no limit). Outside the window the pop-up is not shown even if published.
+- **Priority:** if several pop-ups match a page, only the one with the highest number is shown.
+
+### 13.6 Search-engine guidance
+Google can demote pages whose content is covered by a full-screen or large pop-up straight after a visitor arrives from search, especially on mobile. The editor warns when a pop-up visible on mobile is a **Modal or Full screen** that opens on page load or within 3 seconds. Prefer a **slide-in or bar**, a delay of 5 seconds or more, or desktop only. New pop-ups default to a 5-second delay slide-in. Always give visitors an easy way to close it (the close button and Esc are built in).
+
+### 13.7 Statistics
+The list shows, for the last 30 days (India calendar days), **views** (pop-up shown), **clicks** (a button pressed) and **CTR** (clicks / views). Counts are approximate (ad blockers and bots) and are only recorded while a pop-up is published.
 
 ## Go-live checklist (Owner)
 1. Replit: PostgreSQL database added; App Storage bucket created (default bucket already set in `.replit`); secrets `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ chars), `SITE_URL=https://www.kotyark.com` set.

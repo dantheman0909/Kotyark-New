@@ -21,6 +21,7 @@ manage menus, redirects, media, settings and users. Every change is audited.
 |---|---|
 | `pages` + `page_revisions` | Block-based pages and sub-pages. The row holds the draft; the latest `Published` revision is live. `live_*` columns feed search and the sitemap. |
 | `document_folders` + `documents` | Investor sections and documents (file in App Storage or legacy external URL), PDF text for search, link-check status |
+| `popups` + `popup_stats` | On-brand pop-ups: content/design/rules as JSON, raw author CSS plus the postcss-scoped CSS that is the only CSS rendered; per-day views/clicks/dismissals. Active ones load in `LayoutShell` (path-filtered via the `x-kp-path` header set in `src/proxy.js`), shown by `PopupHost`; the shared renderer is `components/popups/Popup.js` |
 | `nav_items`, `redirects`, `site_settings`, `media` | Menus, 301s, company/SEO/GA4 settings, images |
 | `users`, `sessions`, `login_attempts`, `audit_log` | Access control and audit trail |
 
@@ -28,9 +29,9 @@ manage menus, redirects, media, settings and users. Every change is audited.
 - Public: `/`, `/about`, `/products/*`, `/contact` (CMS page if published, else the original page),
   `/[...slug]` (CMS pages), `/investors`, `/investors/[section]`, `/investors/[section]/[doc]`,
   `/files/<doc>.pdf`, `/media/<id>`, `/search`, `/sitemap.xml`, `/robots.txt`.
-- Admin: `/admin` (dashboard), `/admin/{pages,documents,media,navigation,redirects,settings,users,audit}`,
+- Admin: `/admin` (dashboard), `/admin/{pages,documents,media,navigation,redirects,popups,settings,users,audit}`,
   `/preview/<token>` (signed-in only, noindex).
-- API: `/api/{auth,pages,documents,folders,media,nav,redirects,settings,users,audit,dashboard,search}`.
+- API: `/api/{auth,pages,documents,folders,media,nav,redirects,popups,settings,users,audit,dashboard,search}`.
 
 ### Directory structure
 - `src/app/` routes · `src/components/blocks/` block renderers · `src/components/admin/` admin shell + UI
