@@ -28,7 +28,7 @@ export default async function sitemap() {
 
   try {
     const [pages, folders, docs] = await Promise.all([
-      query(`SELECT path, updated_at, (coalesce(seo->>'noindex', '') = 'true') AS noindex
+      query(`SELECT path, coalesce(published_at, updated_at) AS updated_at, (coalesce(live_seo->>'noindex', '') = 'true') AS noindex
                FROM pages WHERE status = 'published'`),
       query(`SELECT slug, updated_at FROM document_folders WHERE visible ORDER BY sort_order, name`),
       query(`SELECT d.slug, d.storage_key IS NOT NULL AS has_file, d.updated_at, f.slug AS folder_slug

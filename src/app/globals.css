@@ -326,7 +326,8 @@ img {
   position: relative;
 }
 
-.navbar-nav > li > a {
+.navbar-nav > li > a,
+.navbar-nav > li > .nav-heading {
   font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 500;
   font-size: 15px;
@@ -2547,3 +2548,6 @@ img {
     max-height: 300px;
   }
 }
+
+/* Nav item with children but no link of its own (CMS menus) */
+.navbar-nav > li > .nav-heading { cursor: default; }

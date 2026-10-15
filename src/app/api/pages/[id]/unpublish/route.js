@@ -15,7 +15,8 @@ export async function POST(_req, { params }) {
     const out = await tx(async (client) => {
       const before = await loadPage(client, id, { lock: true });
       await client.query(
-        `UPDATE pages SET status = 'draft', published_at = NULL, updated_by = $2, updated_at = now() WHERE id = $1`, [id, user.id]);
+        `UPDATE pages SET status = 'draft', published_at = NULL, updated_by = $2, updated_at = now(),
+                live_title = '', live_search_text = '', live_seo = '{}'::jsonb WHERE id = $1`, [id, user.id]);
       return { before, after: await loadPage(client, id) };
     });
     await audit(user, 'unpublish', 'page', id, `Unpublished "${out.after.title}" (${out.after.path})`, { before: { status: out.before.status }, after: { status: 'draft' } });

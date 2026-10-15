@@ -20,7 +20,9 @@ export async function POST(_req, { params }) {
       const { errors } = cleanBlocks(page.blocks);
       if (errors.length) return { invalid: errors };
       await client.query(
-        `UPDATE pages SET status = 'published', published_at = now(), updated_by = $2, updated_at = now() WHERE id = $1`, [id, user.id]);
+        `UPDATE pages SET status = 'published', published_at = now(), updated_by = $2, updated_at = now(),
+                live_title = title, live_search_text = search_text, live_seo = seo
+          WHERE id = $1`, [id, user.id]);
       await client.query(
         `INSERT INTO page_revisions(page_id, title, blocks, seo, note, created_by) VALUES ($1,$2,$3,$4,$5,$6)`,
         [id, page.title, JSON.stringify(page.blocks), JSON.stringify(page.seo), PUBLISHED_NOTE, user.id]);

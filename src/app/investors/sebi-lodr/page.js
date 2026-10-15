@@ -1,11 +1,13 @@
+import { buildMetadata } from '@/lib/seo';
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
+export const metadata = buildMetadata({
   title: 'Disclosure Under Reg. 46 of SEBI (LODR)',
   description: 'Particulars as per SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 — Regulation 46(2) website disclosures for Kotyark Industries Limited.',
-};
+  path: '/investors/sebi-lodr',
+});
 
 export default function SebiLodrPage() {
   const disclosures = [

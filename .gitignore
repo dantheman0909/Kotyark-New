@@ -49,3 +49,6 @@ attached_assets/_scratch/
 
 # agent worktrees (parallel sub-agent checkouts)
 /.claude/worktrees/
+
+# parallel build dirs (NEXT_DIST_DIR)
+/.next-*/

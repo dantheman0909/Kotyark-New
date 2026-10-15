@@ -33,10 +33,10 @@ function normalizeQuery(q) {
 const TQ = `CASE WHEN $2 = 'prefix' THEN to_tsquery('english', $1) ELSE websearch_to_tsquery('english', $1) END`;
 
 const HITS = `
-  SELECT 'pages'::text AS type, p.id AS id, p.title AS title, p.path AS url,
-         ts_rank_cd(p.search_tsv, q.tq) AS rank, p.updated_at AS date
+  SELECT 'pages'::text AS type, p.id AS id, p.live_title AS title, p.path AS url,
+         ts_rank_cd(p.search_tsv, q.tq) AS rank, p.published_at AS date
     FROM pages p, q
-   WHERE p.status = 'published' AND coalesce(p.seo->>'noindex', '') <> 'true'
+   WHERE p.status = 'published' AND coalesce(p.live_seo->>'noindex', '') <> 'true'
      AND p.search_tsv @@ q.tq
   UNION ALL
   SELECT 'documents'::text, d.id, d.title, '/investors/' || f.slug || '/' || d.slug,
@@ -64,12 +64,12 @@ async function run(term, mode, { limit, offset, type }) {
              ORDER BY rank DESC, date DESC NULLS LAST, title LIMIT $3 OFFSET $4)
      SELECT pg.type, pg.title, pg.url, pg.date, f.name AS folder_name,
             CASE pg.type
-              WHEN 'pages' THEN ts_headline('english', p.search_text, q.tq, $6)
+              WHEN 'pages' THEN ts_headline('english', p.live_search_text, q.tq, $6)
               ELSE ts_headline('english', left(d.extracted_text, 500000), q.tq, $6) END AS hl,
             CASE pg.type
-              WHEN 'pages' THEN ts_headline('english', coalesce(p.seo->>'metaDescription', ''), q.tq, $6)
+              WHEN 'pages' THEN ts_headline('english', coalesce(p.live_seo->>'metaDescription', ''), q.tq, $6)
               ELSE ts_headline('english', d.description, q.tq, $6) END AS hl_alt,
-            CASE pg.type WHEN 'pages' THEN coalesce(p.seo->>'metaDescription', '') ELSE d.description END AS plain_alt
+            CASE pg.type WHEN 'pages' THEN coalesce(p.live_seo->>'metaDescription', '') ELSE d.description END AS plain_alt
        FROM pg CROSS JOIN q
        LEFT JOIN pages p ON pg.type = 'pages' AND p.id = pg.id
        LEFT JOIN documents d ON pg.type = 'documents' AND d.id = pg.id
