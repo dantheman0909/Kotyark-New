@@ -29,7 +29,7 @@ export async function connect() {
   const url = process.env.KOTYARK_DATABASE_URL || process.env.DATABASE_URL;
   if (!url) { console.error('No database configured (KOTYARK_DATABASE_URL / DATABASE_URL).'); process.exit(1); }
   const isLocal = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
-  const client = new pg.Client({ connectionString: url, ssl: isLocal ? false : { rejectUnauthorized: false } });
+  const client = new pg.Client({ connectionString: url, ssl: isLocal || /sslmode=disable/.test(url) ? false : { rejectUnauthorized: false } });
   await client.connect();
   return client;
 }
