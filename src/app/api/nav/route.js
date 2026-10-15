@@ -50,7 +50,7 @@ function cleanItem(raw, depth) {
   } else if (!url) {
     // A top-level heading with sub-items may have no link (stored as url = '').
     if (!(depth === 0 && Array.isArray(raw?.children) && raw.children.length)) throw httpError(400, `"${label}" needs a page or a URL`);
-  } else if (url && !(/^\/(?!\/)/.test(url) || /^https:\/\//i.test(url)) || /\s/.test(url)) {
+  } else if (url && !(/^\/(?![\/\\])/.test(url) || /^https:\/\//i.test(url)) || /[\s\\]/.test(url)) {
     throw httpError(400, `URL for "${label}" must be a relative /path or an https:// URL`);
   }
   const children = Array.isArray(raw?.children) ? raw.children : [];

@@ -2,6 +2,7 @@
 import { getDocumentBySlug, extForMime } from '@/lib/documents';
 import { getObjectStream } from '@/lib/storage';
 import { getCurrentUser, can } from '@/lib/auth';
+import { findRedirect } from '@/lib/pages';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +21,15 @@ export async function GET(_req, { params }) {
         isDraftPreview = Boolean(doc);
       }
     }
-    if (!doc) return new Response('Not found', { status: 404 });
+    if (!doc) {
+      // A renamed document keeps its old file URL working via the redirects table.
+      const r = await findRedirect(`/files/${raw}`);
+      if (r) {
+        const location = r.to; // relative Location is valid and keeps the host
+        return new Response(null, { status: r.code === 302 || r.code === 307 ? r.code : 301, headers: { Location: location, 'Cache-Control': 'public, max-age=300' } });
+      }
+      return new Response('Not found', { status: 404 });
+    }
 
     if (doc.storage_key) {
       const stream = await getObjectStream(doc.storage_key);

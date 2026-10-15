@@ -23,6 +23,7 @@ export async function GET() {
 function cleanFrom(v) {
   const raw = String(v ?? '').trim();
   if (!raw.startsWith('/')) throw httpError(400, 'From path must start with /');
+  if (raw.startsWith('//') || raw.includes('\\')) throw httpError(400, 'From path cannot contain backslashes or start with //');
   if (/[\s?#]/.test(raw)) throw httpError(400, 'From path cannot contain spaces, ? or #');
   const p = normalizePath(raw);
   if (p === '/') throw httpError(400, 'The home page cannot be redirected');
@@ -33,7 +34,7 @@ function cleanFrom(v) {
 function cleanTo(v) {
   const raw = String(v ?? '').trim();
   if (/^https:\/\/[^\s]+$/i.test(raw)) return raw;
-  if (!raw.startsWith('/') || raw.startsWith('//') || /\s/.test(raw)) throw httpError(400, 'To path must be a /path or an https:// URL');
+  if (!raw.startsWith('/') || raw.startsWith('//') || /[\s\\]/.test(raw)) throw httpError(400, 'To path must be a /path or an https:// URL');
   const [pathPart, ...rest] = raw.split(/(?=[?#])/);
   return normalizePath(pathPart) + rest.join('');
 }

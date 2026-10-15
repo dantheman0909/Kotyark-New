@@ -9,6 +9,8 @@ const OPTIONS = {
   allowProtocolRelative: false,
   transformTags: {
     a: (tagName, attribs) => {
+      // '/\evil.com' is read as protocol-relative by browsers: drop any href with a backslash or '//' prefix.
+      if (/\\/.test(attribs.href || '') || /^\s*\/\//.test(attribs.href || '')) { const { href, ...rest } = attribs; attribs = rest; }
       const external = /^https?:\/\//i.test(attribs.href || '');
       return { tagName, attribs: external ? { ...attribs, target: '_blank', rel: 'noopener noreferrer' } : attribs };
     },

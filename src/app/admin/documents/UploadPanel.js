@@ -45,14 +45,15 @@ export default function UploadPanel({ folderId, onUploaded, onError }) {
       if (r.doc_date) fd.append('doc_date', r.doc_date);
       fd.append('status', r.status);
       if (r.file) fd.append('file', r.file); else fd.append('externalUrl', r.url);
-      try { await api('/api/documents', { method: 'POST', formData: fd }); patch(r.key, { done: true, error: '' }); uploaded++; }
+      try { const res = await api('/api/documents', { method: 'POST', formData: fd }); patch(r.key, { done: true, error: '', warning: res.warning || '' }); uploaded++; }
       catch (e) { patch(r.key, { error: e.message }); }
     }
     setBusy(false);
-    if (uploaded) { setRows((r) => r.filter((x) => !x.done)); await onUploaded(uploaded); }
+    if (uploaded) { setRows((r) => r.filter((x) => !x.done || x.warning)); await onUploaded(uploaded); }
   };
 
   const pending = rows.filter((r) => !r.done);
+  const warned = rows.filter((r) => r.done && r.warning);
 
   return (
     <>
@@ -69,6 +70,20 @@ export default function UploadPanel({ folderId, onUploaded, onError }) {
           value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addLink(); } }} />
         <button className="admin-cancel-btn" onClick={addLink}>Add link</button>
       </div>
+
+      {warned.length > 0 && (
+        <div className={s.staged}>
+          {warned.map((r) => (
+            <div className={s.stagedRow} key={r.key}>
+              <div className={s.stagedHead}>
+                <span>{r.title || r.file?.name} · uploaded</span>
+                <button className={s.textBtn} onClick={() => setRows((x) => x.filter((y) => y.key !== r.key))}>Dismiss</button>
+              </div>
+              <div className={s.rowError} role="status">{r.warning}</div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {pending.length > 0 && (
         <div className={s.staged}>

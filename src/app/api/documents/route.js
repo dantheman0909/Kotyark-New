@@ -8,7 +8,7 @@ import { revalidateFolder } from '@/lib/revalidate';
 import {
   getFolderById, listDocuments, listAllDocuments, documentFileUrl, documentLandingPath,
 } from '@/lib/documents';
-import { readInput, parseMetadata, ingestFile, titleFromFilename, DOC_RETURN } from './_lib';
+import { readInput, parseMetadata, ingestFile, titleFromFilename, DOC_RETURN, NO_TEXT_WARNING } from './_lib';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,7 +69,8 @@ export async function POST(req) {
     await audit(user, 'upload', 'document', doc.id, `Added document "${title}" to ${folder.name}`,
       { after: { slug, folder: folder.slug, storage_key: doc.storage_key, external_url: doc.external_url } });
     revalidateFolder(folder.slug);
-    return Response.json({ document: decorate(doc) }, { status: 201 });
+    const warning = file && stored.mime === 'application/pdf' && !String(stored.text || '').trim() ? NO_TEXT_WARNING : undefined;
+    return Response.json({ document: decorate(doc), ...(warning ? { warning } : {}) }, { status: 201 });
   } catch (e) {
     if (storedKey) await deleteObject(storedKey).catch(() => {});
     if (e?.code === '23505') return errorResponse(httpError(409, 'A document with that link already exists in this folder'));

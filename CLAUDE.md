@@ -16,8 +16,8 @@ Entry point for anyone (human or AI agent) working in this repo.
   project's `DATABASE_URL`; never run anything against it.** Prefix commands with `env -u DATABASE_URL KOTYARK_DATABASE_URL=...`.
 - `npm run migrate` applies `src/lib/migrations/*.sql` once each and bootstraps the first owner from `ADMIN_EMAIL` /
   `ADMIN_PASSWORD` (12+ chars) when the users table is empty.
-- Files: `src/lib/storage.js` uses Replit App Storage when `REPL_ID` is set, else `.storage/` (gitignored). Override with
-  `STORAGE_DRIVER=local|replit`.
+- Files: `src/lib/storage.js` uses Replit App Storage only in a production deployment (`REPLIT_DEPLOYMENT` set), else `.storage/` (gitignored),
+  so dev workspaces never write to the production bucket. Override with `STORAGE_DRIVER=local|replit`.
 - Parallel builds: set `NEXT_DIST_DIR` to a unique folder so two builds don't clobber `.next`.
 - DB-backed public routes use `export const dynamic = 'force-dynamic'` (no DB access at build time on Replit).
 

@@ -15,7 +15,7 @@ export function SmartLink({ href, children, ...rest }) {
 export function resolveImage(value) {
   const src = imageSrc(value);
   if (!src) return null;
-  return /^(\/(?!\/)|https:\/\/)/i.test(src) ? src : null;
+  return /^(\/(?![\/\\])|https:\/\/)/i.test(src) && !src.includes("\\") ? src : null;
 }
 
 export function SectionTag({ children }) {

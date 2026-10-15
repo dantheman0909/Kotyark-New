@@ -38,7 +38,9 @@ const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 
 export async function clientIp() {
   const h = await headers();
-  return (h.get('x-forwarded-for') || '').split(',')[0].trim() || h.get('x-real-ip') || null;
+  // Rightmost X-Forwarded-For entry: the one our own proxy appended. Earlier entries are client-supplied.
+  const xff = (h.get('x-forwarded-for') || '').split(',').map(s => s.trim()).filter(Boolean);
+  return xff[xff.length - 1] || h.get('x-real-ip') || null;
 }
 
 /** Create a session row and set the cookie. Call from a route handler / server action. */

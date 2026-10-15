@@ -22,6 +22,7 @@ export async function GET() {
 export async function POST(req) {
   try {
     const user = await requireUser('media:write');
+    if (Number(req.headers.get('content-length')) > MAX_BYTES + 1024 * 1024) throw httpError(413, 'Image is larger than 10 MB');
     let form;
     try { form = await req.formData(); } catch { throw httpError(400, 'Expected multipart form data'); }
     const file = form.get('file');

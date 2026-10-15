@@ -41,7 +41,7 @@ export default async function DocumentList({ props, preview }) {
   let failed = false;
   if (folderId) {
     try {
-      folder = await queryOne('SELECT id, slug, name, group_by FROM document_folders WHERE id = $1', [folderId]);
+      folder = await queryOne('SELECT id, slug, name, group_by FROM document_folders WHERE id = $1 AND visible', [folderId]);
       if (folder) {
         const limit = Number(props.limit) > 0 ? Number(props.limit) : null;
         docs = await query(

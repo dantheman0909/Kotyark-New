@@ -208,9 +208,11 @@ export default function PageEditor({ id }) {
             <button type="button" className="cmsa-btn" onClick={preview} disabled={!!busy}>Preview</button>
             <button type="button" className="cmsa-btn" onClick={save} disabled={!!busy || !dirty}>{busy === 'save' ? 'Saving…' : 'Save draft'}</button>
             {published && <button type="button" className="cmsa-btn danger" onClick={unpublish} disabled={!!busy}>Unpublish</button>}
-            <button type="button" className="cmsa-btn primary" onClick={publish} disabled={!!busy || (published && !dirty && !page.hasUnpublishedChanges)}>
+            <button type="button" className="cmsa-btn primary" onClick={publish} disabled={!!busy || blocks.length === 0 || (published && !dirty && !page.hasUnpublishedChanges)}
+              title={blocks.length === 0 ? 'Add at least one block to publish' : undefined}>
               {busy === 'publish' ? 'Publishing…' : published ? 'Publish changes' : 'Publish'}
             </button>
+            {blocks.length === 0 && <span className="cmsa-hint" style={{ fontSize: 12, alignSelf: 'center' }}>Add at least one block to publish</span>}
           </div>
         </div>
       </div>

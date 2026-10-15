@@ -1,7 +1,8 @@
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect, redirect } from 'next/navigation';
 import InvestorSubPageLayout, { DocumentList } from '@/components/InvestorSubPageLayout';
 import JsonLd from '@/components/JsonLd';
-import { buildMetadata, breadcrumbJsonLd } from '@/lib/seo';
+import { buildMetadata, breadcrumbJsonLd, clampDescription } from '@/lib/seo';
+import { findRedirect } from '@/lib/pages';
 import { sanitizeRichText, htmlToText } from '@/lib/sanitize';
 import { getFolderBySlug, listDocuments, groupDocuments } from '@/lib/documents';
 
@@ -11,15 +12,23 @@ export async function generateMetadata({ params }) {
   const { section } = await params;
   const folder = await getFolderBySlug(section, { visibleOnly: true });
   if (!folder) return { title: 'Not found', robots: { index: false, follow: false } };
-  const description = folder.description || htmlToText(folder.intro_html).slice(0, 160)
+  let description = folder.description || htmlToText(folder.intro_html).slice(0, 160)
     || `${folder.name} documents and filings of Kotyark Industries Limited.`;
+  if (description.length < 90) { // thin: build a richer fallback (stored data is not changed)
+    const d = (folder.description || '').trim().replace(/[.\s]+$/, '');
+    description = clampDescription(`${folder.name}${d ? `: ${d}` : ''}. Official disclosures and documents filed by Kotyark Industries Limited, BSE listed biodiesel manufacturer.`);
+  }
   return buildMetadata({ title: folder.name, description, path: `/investors/${folder.slug}` });
 }
 
 export default async function InvestorSectionPage({ params }) {
   const { section } = await params;
   const folder = await getFolderBySlug(section, { visibleOnly: true });
-  if (!folder) notFound();
+  if (!folder) {
+    const r = await findRedirect(`/investors/${section}`);
+    if (r) (r.code === 301 || r.code === 308 ? permanentRedirect : redirect)(r.to);
+    notFound();
+  }
 
   const documents = await listDocuments(folder.id, { publishedOnly: true });
   const groups = groupDocuments(documents, folder.group_by);

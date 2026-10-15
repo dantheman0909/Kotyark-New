@@ -1,6 +1,7 @@
 // File storage. Server-only.
-// Replit App Storage in production (REPLIT_DEPLOYMENT / REPL_ID present and
-// STORAGE_DRIVER!=local); a local directory outside /public otherwise.
+// Driver: STORAGE_DRIVER=local|replit wins. Otherwise Replit App Storage only in a production
+// deployment (REPLIT_DEPLOYMENT set); dev workspaces use a local directory so they never write into
+// the production bucket. The local directory is outside /public.
 // Never write uploads to /public: next start does not serve files added after build.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,7 +11,7 @@ const LOCAL_ROOT = process.env.LOCAL_STORAGE_DIR || path.join(process.cwd(), '.s
 
 function driverName() {
   if (process.env.STORAGE_DRIVER) return process.env.STORAGE_DRIVER;
-  return process.env.REPL_ID ? 'replit' : 'local';
+  return process.env.REPLIT_DEPLOYMENT ? 'replit' : 'local';
 }
 
 let replitClient;
@@ -48,10 +49,11 @@ export async function getObject(key) {
   safeKey(key);
   if (driverName() === 'replit') {
     const c = await replit();
-    const r = await c.downloadAsBytes(key);
-    if (!r.ok) return null;
-    const v = r.value;
-    return Buffer.isBuffer(v) ? v : Buffer.from(Array.isArray(v) ? v[0] : v);
+    const r = await c.downloadAsBytes(key); // Result<[Buffer]>
+    if (!r || r.ok === false) return null;
+    const v = 'value' in r ? r.value : r;
+    const b = Array.isArray(v) ? v[0] : v;
+    return b == null ? null : Buffer.isBuffer(b) ? b : Buffer.from(b);
   }
   try { return await fs.promises.readFile(path.join(LOCAL_ROOT, key)); }
   catch (e) { if (e.code === 'ENOENT') return null; throw e; }
@@ -61,8 +63,12 @@ export async function getObject(key) {
 export async function getObjectStream(key) {
   safeKey(key);
   if (driverName() === 'replit') {
-    const buf = await getObject(key);
-    return buf ? new Blob([buf]).stream() : null;
+    const c = await replit();
+    const ex = await c.exists(key);
+    if (!ex || ex.ok === false || !ex.value) return null;
+    const src = c.downloadAsStream(key); // Node Readable, not a Result
+    src.on('error', (e) => console.error('App Storage stream error:', e.message)); // don't crash on a mid-stream failure
+    return Readable.toWeb(src);
   }
   const p = path.join(LOCAL_ROOT, key);
   if (!fs.existsSync(p)) return null;

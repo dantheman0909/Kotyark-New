@@ -35,7 +35,7 @@ export async function POST(req) {
       `INSERT INTO login_attempts(email, ip, success) VALUES ($1,$2,$3)`, [email, ip, success]);
 
     if (blocked) {
-      await record(false);
+      // Not recorded: a rejected-by-limiter attempt must not extend the lockout window.
       return Response.json({ error: 'Too many attempts. Please try again later.' },
         { status: 429, headers: { 'Retry-After': '900' } });
     }

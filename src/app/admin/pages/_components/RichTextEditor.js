@@ -36,7 +36,7 @@ export default function RichTextEditor({ value, onChange }) {
     if (href === null) return;
     const trimmed = href.trim();
     if (!trimmed) { editor.chain().focus().extendMarkRange('link').unsetLink().run(); return; }
-    if (!/^(https?:\/\/|\/(?!\/)|mailto:|tel:)/i.test(trimmed)) { window.alert('Links must start with https://, /, mailto: or tel:'); return; }
+    if (!/^(https?:\/\/|\/(?![\/\\])|mailto:|tel:)/i.test(trimmed)) { window.alert('Links must start with https://, /, mailto: or tel:'); return; }
     editor.chain().focus().extendMarkRange('link').setLink({ href: trimmed }).run();
   };
 

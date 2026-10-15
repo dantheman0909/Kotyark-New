@@ -6,9 +6,9 @@ import { autoDescription } from '@/lib/pdf-text';
 import { deleteObject } from '@/lib/storage';
 import { revalidateFolder } from '@/lib/revalidate';
 import {
-  getFolderById, getDocumentById, documentFileUrl, documentLandingPath, addRedirect,
+  getFolderById, getDocumentById, extForMime, documentFileUrl, documentLandingPath, addRedirect,
 } from '@/lib/documents';
-import { readInput, parseMetadata, ingestFile, DOC_RETURN } from '../_lib';
+import { readInput, parseMetadata, ingestFile, DOC_RETURN, NO_TEXT_WARNING } from '../_lib';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +27,8 @@ export async function GET(_req, { params }) {
     const { id } = await params;
     const doc = await loadOr404(id);
     const user = await getCurrentUser();
-    if (doc.status !== 'published' && !(user && can(user, 'documents:write'))) throw httpError(404, 'Document not found');
+    const editor = user && can(user, 'documents:write');
+    if (!editor && (doc.status !== 'published' || !doc.folder_visible)) throw httpError(404, 'Document not found');
     return Response.json({ document: decorate(doc) });
   } catch (e) { return errorResponse(e); }
 }
@@ -38,6 +39,7 @@ export async function GET(_req, { params }) {
 //   multipart `file` = replace the file; URL/slug are kept and the old stored object is deleted.
 export async function PUT(req, { params }) {
   let newKey = null;
+  let ing_noText = false;
   try {
     const user = await requireUser('documents:write');
     const { id } = await params;
@@ -68,6 +70,7 @@ export async function PUT(req, { params }) {
     if (file) {
       const ing = await ingestFile(file, newSlug || before.slug);
       newKey = ing.storage_key;
+      ing_noText = ing.mime === 'application/pdf' && !ing.text.trim();
       Object.assign(set, { storage_key: ing.storage_key, mime: ing.mime, size: ing.size, original_name: ing.original_name, extracted_text: ing.text });
       if (!('description' in set) && !before.description) set.description = autoDescription(ing.text);
       if (!('link_status' in set) && !before.external_url) set.link_status = 'n/a';
@@ -85,6 +88,10 @@ export async function PUT(req, { params }) {
       const oldPath = documentLandingPath(before.folder_slug, before);
       const newPath = documentLandingPath(targetFolder.slug, row);
       await addRedirect(oldPath, newPath, c); // no-op when the path is unchanged
+      // The stable file URL is /files/<slug>.<ext>: a slug change must keep the old one working too.
+      if (before.storage_key && row.storage_key && before.slug !== row.slug) {
+        await addRedirect(`/files/${before.slug}.${extForMime(before.mime)}`, `/files/${row.slug}.${extForMime(row.mime)}`, c);
+      }
       return row;
     });
     if (file && before.storage_key) await deleteObject(before.storage_key).catch((e) => console.warn('Old object delete failed:', e.message));
@@ -96,7 +103,8 @@ export async function PUT(req, { params }) {
         after: { title: doc.title, folder: doc.folder_slug, status: doc.status, fy: doc.fy, doc_date: doc.doc_date, fileReplaced: Boolean(file) } });
     revalidateFolder(before.folder_slug);
     if (targetFolder.slug !== before.folder_slug) revalidateFolder(targetFolder.slug);
-    return Response.json({ document: decorate(doc) });
+    const warning = file && ing_noText ? NO_TEXT_WARNING : undefined;
+    return Response.json({ document: decorate(doc), ...(warning ? { warning } : {}) });
   } catch (e) {
     if (newKey) await deleteObject(newKey).catch(() => {});
     if (e?.code === '23505') return errorResponse(httpError(409, 'A document with that link already exists in the folder'));

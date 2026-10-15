@@ -1,7 +1,8 @@
-import { notFound, permanentRedirect } from 'next/navigation';
+import { notFound, permanentRedirect, redirect } from 'next/navigation';
 import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
 import JsonLd from '@/components/JsonLd';
-import { buildMetadata, breadcrumbJsonLd, documentJsonLd } from '@/lib/seo';
+import { buildMetadata, breadcrumbJsonLd, documentJsonLd, clampDescription } from '@/lib/seo';
+import { findRedirect } from '@/lib/pages';
 import {
   getFolderBySlug, getDocumentBySlug, documentFileUrl, documentLandingPath, labelForMime, formatDocDate,
 } from '@/lib/documents';
@@ -19,9 +20,13 @@ export async function generateMetadata({ params }) {
   const { doc, folder } = await load(section, docSlug);
   if (!doc || !folder) return { title: 'Not found', robots: { index: false, follow: false } };
   // Canonical always names the folder the document currently lives in.
+  let description = doc.description || `${doc.title} - ${doc.folder_name}, Kotyark Industries Limited.`;
+  if (description.length < 90) { // thin: build a richer fallback (stored data is not changed)
+    description = clampDescription(`${doc.title}: ${doc.fy ? `${doc.fy} ` : ''}${doc.folder_name} disclosure by Kotyark Industries Limited (BSE listed). View or download ${doc.mime === 'application/pdf' ? 'the PDF' : 'the file'}.`);
+  }
   return buildMetadata({
     title: doc.title,
-    description: doc.description || `${doc.title} - ${doc.folder_name}, Kotyark Industries Limited.`,
+    description,
     path: documentLandingPath(doc.folder_slug, doc),
     type: 'article',
   });
@@ -29,8 +34,12 @@ export async function generateMetadata({ params }) {
 
 export default async function DocumentPage({ params }) {
   const { section, doc: docSlug } = await params;
-  const { doc } = await load(section, docSlug);
-  if (!doc) notFound();
+  const { doc, folder } = await load(section, docSlug);
+  if (!doc || !folder) {
+    const r = await findRedirect(`/investors/${section}/${docSlug}`);
+    if (r) (r.code === 301 || r.code === 308 ? permanentRedirect : redirect)(r.to);
+    notFound();
+  }
   // Moved to another folder: send old URLs to the current canonical one.
   if (doc.folder_slug !== section) permanentRedirect(documentLandingPath(doc.folder_slug, doc));
 

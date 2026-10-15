@@ -12,8 +12,8 @@ const fmt = (d) => d
 
 export default async function Dashboard() {
   const user = await getCurrentUser();
-  const { counts, recent, broken, staleDrafts } = await loadDashboard();
   const canAudit = can(user, 'audit:read');
+  const { counts, recent, broken, staleDrafts } = await loadDashboard({ includeAudit: canAudit });
 
   const cards = [
     { label: 'Published pages', value: counts.published_pages, href: '/admin/pages' },
@@ -72,6 +72,7 @@ export default async function Dashboard() {
           )}
         </section>
 
+        {canAudit && recent && (
         <section className={styles.card}>
           <h2 className={styles.cardTitle}>Recent activity</h2>
           {recent.length === 0 ? <p className={styles.empty}>Nothing yet.</p> : (
@@ -87,6 +88,7 @@ export default async function Dashboard() {
           )}
           {canAudit && <p style={{ margin: '12px 0 0' }}><Link href="/admin/audit" className={styles.linkBtn}>View full audit log</Link></p>}
         </section>
+        )}
       </div>
     </>
   );

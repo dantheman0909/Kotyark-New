@@ -1,7 +1,7 @@
 // Dashboard queries, shared by the API route and the /admin server component.
 import { query, queryOne } from '@/lib/db';
 
-export async function loadDashboard() {
+export async function loadDashboard({ includeAudit = false } = {}) {
   const [counts, recent, broken, staleDrafts] = await Promise.all([
     queryOne(
       `SELECT
@@ -10,9 +10,9 @@ export async function loadDashboard() {
          (SELECT count(*)::int FROM documents) AS documents,
          (SELECT count(*)::int FROM documents WHERE link_status = 'broken') AS broken_links,
          (SELECT count(*)::int FROM users WHERE active) AS users`),
-    query(
+    includeAudit ? query(
       `SELECT id, user_email, action, entity, entity_id, summary, created_at
-         FROM audit_log ORDER BY id DESC LIMIT 15`),
+         FROM audit_log ORDER BY id DESC LIMIT 15`) : Promise.resolve(null),
     query(
       `SELECT d.id, d.title, d.external_url, d.link_http_code, d.link_checked_at, f.name AS folder_name, f.slug AS folder_slug
          FROM documents d LEFT JOIN document_folders f ON f.id = d.folder_id
@@ -23,5 +23,5 @@ export async function loadDashboard() {
         WHERE status = 'draft' AND updated_at < now() - interval '14 days'
         ORDER BY updated_at ASC LIMIT 10`),
   ]);
-  return { counts, recent, broken, staleDrafts };
+  return { counts, ...(recent ? { recent } : {}), broken, staleDrafts }; // `recent` only for audit:read
 }

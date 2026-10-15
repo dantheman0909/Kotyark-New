@@ -40,8 +40,9 @@ export function shapeFull(r) {
 
 // ---- value checks -------------------------------------------------------------------------
 
-const URL_OK = /^(\/(?!\/)|#|https?:\/\/|mailto:|tel:)/i;
-const IMAGE_OK = /^([0-9a-f-]{36}|\/(?!\/)[^\s]*|https:\/\/[^\s]+)$/i;
+const URL_OK = /^(\/(?![\/\\])|#|https?:\/\/|mailto:|tel:)/i;
+const hasBackslash = (v) => String(v).includes('\\');
+const IMAGE_OK = /^([0-9a-f-]{36}|\/(?![\/\\])[^\s\\]*|https:\/\/[^\s]+)$/i;
 
 /** Coerce raw props to the shape the schema declares and drop unknown keys. */
 function normalizeProps(fields, props) {
@@ -70,7 +71,7 @@ function checkValues(fields, props, where, errs) {
   for (const [k, f] of Object.entries(fields)) {
     const v = props[k];
     if (f.kind === 'list') v.forEach((item, i) => checkValues(f.fields, item, `${where}${f.label} #${i + 1} › `, errs));
-    else if (f.kind === 'url' && v && !URL_OK.test(v)) errs.push(`${where}${f.label}: must start with /, https://, mailto: or tel:`);
+    else if (f.kind === 'url' && v && (hasBackslash(v) || !URL_OK.test(v))) errs.push(`${where}${f.label}: must start with /, https://, mailto: or tel:`);
     else if (f.kind === 'image' && v && !IMAGE_OK.test(v)) errs.push(`${where}${f.label}: must be a media id, a /path or an https:// URL`);
     else if (f.kind === 'text' && typeof v === 'string' && v.length > 500) errs.push(`${where}${f.label}: too long (max 500 characters)`);
   }

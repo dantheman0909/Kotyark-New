@@ -134,11 +134,17 @@ export async function getPageByPreviewToken(token) {
 /** Ancestors of a page from the root down (excluding the page itself): [{ title, path }]. */
 export async function getAncestors(parentId) {
   if (!parentId) return [];
-  return query(
+  const rows = await query(
     `WITH RECURSIVE a AS (
-       SELECT id, parent_id, title, path, 1 AS depth FROM pages WHERE id = $1
-       UNION ALL SELECT p.id, p.parent_id, p.title, p.path, a.depth + 1 FROM pages p JOIN a ON p.id = a.parent_id)
-     SELECT title, path FROM a ORDER BY depth DESC`, [parentId]);
+       SELECT id, parent_id, title, live_title, path, status, 1 AS depth FROM pages WHERE id = $1
+       UNION ALL SELECT p.id, p.parent_id, p.title, p.live_title, p.path, p.status, a.depth + 1 FROM pages p JOIN a ON p.id = a.parent_id)
+     SELECT COALESCE(NULLIF(a.live_title, ''), r.title, a.title) AS title, a.path, a.status
+       FROM a
+       LEFT JOIN LATERAL (SELECT title FROM page_revisions
+         WHERE page_id = a.id AND note = '${PUBLISHED_NOTE}' ORDER BY id DESC LIMIT 1) r ON true
+      ORDER BY a.depth DESC`, [parentId]);
+  // Only published ancestors (or ones a legacy static route serves) may appear: a draft's title must not leak.
+  return rows.filter(a => a.status === 'published' || STATIC_ROUTE_PATHS.has(a.path)).map(({ title, path }) => ({ title, path }));
 }
 
 /** Breadcrumb trail [{ name, path }] from Home to the page. Empty for the home page. */
@@ -191,7 +197,8 @@ export async function overrideMetadata(path, fallback) {
 export function safeHref(href) {
   const h = String(href || '').trim();
   if (!h) return '';
-  if (/^(\/(?!\/)|#|https?:\/\/|mailto:|tel:)/i.test(h)) return h;
+  if (h.includes('\\')) return '#'; // '/\evil.com' is read as '//evil.com' by browsers
+  if (/^(\/(?![\/\\])|#|https?:\/\/|mailto:|tel:)/i.test(h)) return h;
   return '#';
 }
 

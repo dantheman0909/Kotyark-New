@@ -80,7 +80,7 @@ export async function getDocumentBySlug(slug, { publishedOnly = true } = {}) {
 
 export async function getDocumentById(id) {
   return queryOne(
-    `SELECT ${DOC_COLS}, d.created_by, f.slug AS folder_slug
+    `SELECT ${DOC_COLS}, d.created_by, f.slug AS folder_slug, f.visible AS folder_visible
        FROM documents d JOIN document_folders f ON f.id = d.folder_id WHERE d.id = $1`, [id]);
 }
 

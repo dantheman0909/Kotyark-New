@@ -5,10 +5,14 @@ import { putObject } from '@/lib/storage';
 import { extractPdfText } from '@/lib/pdf-text';
 import { detectMime, extForMime, isIsoDate, isHttpUrl, MAX_UPLOAD_BYTES } from '@/lib/documents';
 
+export const NO_TEXT_WARNING = 'No searchable text found in this PDF (scanned image?). It will not appear in site search by its contents.';
+
 /** Read a JSON or multipart body into { fields, file }. */
 export async function readInput(req) {
   const ct = req.headers.get('content-type') || '';
   if (ct.includes('multipart/form-data')) {
+    // Reject on the declared size before buffering the whole body (file limit + 1 MB for the other fields).
+    if (Number(req.headers.get('content-length')) > MAX_UPLOAD_BYTES + 1024 * 1024) throw httpError(413, 'File is larger than 25 MB');
     const fd = await req.formData();
     const fields = {};
     let file = null;

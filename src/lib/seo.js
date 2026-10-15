@@ -14,8 +14,10 @@ import { SITE_URL, SITE_NAME, absoluteUrl } from './site';
 export function buildMetadata({ title, description = '', path = '/', image, noindex = false, type = 'website' }) {
   const desc = String(description || '').slice(0, 300);
   const img = image ? (image.startsWith('http') ? image : absoluteUrl(image)) : absoluteUrl('/images/hero-forest.jpg');
+  // A title that already names the brand must not get the layout's " | Kotyark Industries" appended again.
+  const metaTitle = typeof title === 'string' && title.toLowerCase().includes(SITE_NAME.toLowerCase()) ? { absolute: title } : title;
   return {
-    title,
+    title: metaTitle,
     description: desc || undefined,
     alternates: { canonical: absoluteUrl(path) },
     openGraph: { title, description: desc || undefined, url: absoluteUrl(path), siteName: SITE_NAME, type, images: [{ url: img }], locale: 'en_IN' },
@@ -66,4 +68,13 @@ export function faqJsonLd(items) {
     '@type': 'FAQPage',
     mainEntity: items.map(i => ({ '@type': 'Question', name: i.question, acceptedAnswer: { '@type': 'Answer', text: i.answerText } })),
   };
+}
+
+/** Trim to `max` chars at a word boundary (no ellipsis). */
+export function clampDescription(text, max = 160) {
+  const t = String(text || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max + 1);
+  const i = cut.lastIndexOf(' ');
+  return (i > 40 ? cut.slice(0, i) : t.slice(0, max)).replace(/[\s,;:.-]+$/, '');
 }

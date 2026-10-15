@@ -1,4 +1,4 @@
-import { query } from '@/lib/db';
+import { query, tx } from '@/lib/db';
 import { requireUser, errorResponse, httpError } from '@/lib/auth';
 import { audit } from '@/lib/audit';
 import { revalidateFolder } from '@/lib/revalidate';
@@ -25,9 +25,11 @@ export async function POST(req) {
         WHERE d.id = ANY($1::uuid[])`, [ids]);
     const toMove = before.filter((d) => d.folder_id !== target.id);
     if (toMove.length) {
-      await query('UPDATE documents SET folder_id = $1, updated_by = $2, updated_at = now() WHERE id = ANY($3::uuid[])',
-        [target.id, user.id, toMove.map((d) => d.id)]);
-      for (const d of toMove) await addRedirect(`/investors/${d.folder_slug}/${d.slug}`, `/investors/${target.slug}/${d.slug}`);
+      await tx(async (c) => {
+        await c.query('UPDATE documents SET folder_id = $1, updated_by = $2, updated_at = now() WHERE id = ANY($3::uuid[])',
+          [target.id, user.id, toMove.map((d) => d.id)]);
+        for (const d of toMove) await addRedirect(`/investors/${d.folder_slug}/${d.slug}`, `/investors/${target.slug}/${d.slug}`, c);
+      });
     }
     await audit(user, 'update', 'document', null, `Moved ${toMove.length} document(s) to ${target.name}`,
       { after: { ids: toMove.map((d) => d.id), folder: target.slug } });

@@ -6,7 +6,7 @@ import { imageSrc } from '@/lib/blocks/schemas';
 //   import MediaPicker from '@/components/admin/MediaPicker';  ->  <MediaPicker value={value} onChange={onChange} />
 export default function ImageField({ value, onChange, id, placeholder = 'Media id, /images/... path or https:// URL' }) {
   const src = imageSrc(value);
-  const previewable = src && /^(\/(?!\/)|https:\/\/)/.test(src);
+  const previewable = src && /^(\/(?![\/\\])|https:\/\/)/.test(src);
   return (
     <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
       {previewable && (
