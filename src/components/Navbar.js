@@ -40,7 +40,7 @@ export default function Navbar({ items }) {
         <ul className="navbar-nav">
           {navItems.map((item) => (
             <li key={item.id || item.href}>
-              <Link href={item.href}>
+              {item.href ? <Link href={item.href}>
                 {item.label}
                 {item.children && (
                   <svg
@@ -57,7 +57,7 @@ export default function Navbar({ items }) {
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 )}
-              </Link>
+              </Link> : <span className="nav-heading">{item.label}</span>}
               {item.children && (
                 <div className="dropdown-menu">
                   {item.children.map((child) => (
@@ -151,6 +151,7 @@ export default function Navbar({ items }) {
         >
           {navItems.map((item) => (
             <div key={item.id || item.href}>
+              {item.href ? (
               <Link
                 href={item.href}
                 style={{
@@ -165,6 +166,9 @@ export default function Navbar({ items }) {
               >
                 {item.label}
               </Link>
+              ) : (
+                <span style={{ display: "block", padding: "12px 16px", fontSize: "16px", fontWeight: 600 }}>{item.label}</span>
+              )}
               {item.children &&
                 item.children.map((child) => (
                   <Link

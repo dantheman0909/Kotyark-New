@@ -3,7 +3,7 @@ import Link from 'next/link';
 // nav: footer menu from the CMS ([{ label, href, children? }]) or null for the original hard-coded columns.
 // Top-level items without children are gathered under "Company"; items with children become their own column.
 function footerColumns(nav) {
-  const loose = nav.filter((i) => !i.children?.length);
+  const loose = nav.filter((i) => !i.children?.length && i.href);
   const groups = nav.filter((i) => i.children?.length);
   const cols = [];
   if (loose.length) cols.push({ title: 'Company', links: loose });

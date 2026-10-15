@@ -11,6 +11,9 @@ export default function CtaBanner({ props }) {
             {props.body && <p>{props.body}</p>}
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
               <SmartLink href={props.href} className="btn btn-primary btn-lg">{props.label}</SmartLink>
+              {props.secondaryLabel && props.secondaryHref && (
+                <SmartLink href={props.secondaryHref} className="btn btn-outline-light btn-lg">{props.secondaryLabel}</SmartLink>
+              )}
             </div>
           </div>
         </ScrollReveal>

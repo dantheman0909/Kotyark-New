@@ -1,13 +1,16 @@
 import { CmsOrLegacy } from '@/components/blocks/PageView';
 import LegacyProducts from '@/components/legacy/Products';
 import { overrideMetadata } from '@/lib/pages';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-const FALLBACK = {
+const FALLBACK = buildMetadata({
+  path: '/products',
+
   title: 'Biodiesel & Glycerin Products',
   description: "Explore Kotyark's range of biofuel products: B100 Biodiesel, Crude Glycerin, and more. Government approved. Available across India.",
-};
+});
 
 export async function generateMetadata() {
   return overrideMetadata('/products', FALLBACK);

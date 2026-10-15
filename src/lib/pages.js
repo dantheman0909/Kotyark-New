@@ -11,6 +11,10 @@ import { blocksToText, imageSrc } from './blocks/schemas';
 import { htmlToText } from './sanitize';
 import { DEFAULT_HEADER_NAV } from './nav-defaults';
 
+// Paths also served by a legacy static route: a nav link to a DRAFT page here must stay, or the nav empties.
+export const STATIC_ROUTE_PATHS = new Set(['/', '/about', '/products', '/products/biodiesel', '/products/crude-glycerin',
+  '/contact', '/investors', '/investors/sebi-lodr']);
+
 export const PUBLISHED_NOTE = 'Published';
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -197,18 +201,20 @@ function buildNavTree(rows) {
   const items = rows.map(r => ({
     id: r.id,
     label: r.label,
-    href: r.page_id ? (r.page_status === 'published' ? r.page_path : null) : r.url,
+    href: r.page_id
+      ? (r.page_status === 'published' || STATIC_ROUTE_PATHS.has(r.page_path) ? r.page_path : null)
+      : r.url,
     parentId: r.parent_id,
     children: [],
-  })).filter(i => i.href); // unpublished / deleted page links drop out
+  })).filter(i => i.href || i.href === ''); // draft page links (with no static route) drop out; '' = non-link heading
   const byId = new Map(items.map(i => [i.id, i]));
   const roots = [];
   for (const i of items) {
     if (!i.parentId) roots.push(i);
-    else byId.get(i.parentId)?.children.push(i); // orphaned children (parent skipped) drop out
+    else if (i.href) byId.get(i.parentId)?.children.push(i); // orphaned children (parent skipped) drop out
   }
   const clean = i => ({ id: i.id, label: i.label, href: i.href, ...(i.children.length ? { children: i.children.map(clean) } : {}) });
-  return roots.map(clean);
+  return roots.filter(i => i.href || i.children.length).map(clean);
 }
 
 /** Header and footer menus in one query: { header: [...], footer: [...] } (nested one level). */

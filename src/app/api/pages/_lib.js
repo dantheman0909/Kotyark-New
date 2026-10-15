@@ -51,6 +51,8 @@ function normalizeProps(fields, props) {
     const v = src[k];
     if (f.kind === 'list') {
       out[k] = (Array.isArray(v) ? v : []).filter(i => i && typeof i === 'object').map(item => normalizeProps(f.fields, item));
+    } else if (f.kind === 'tags') {
+      out[k] = (Array.isArray(v) ? v : []).map(t => String(t ?? '').trim()).filter(Boolean).slice(0, 20).map(t => t.slice(0, 60));
     } else if (f.kind === 'boolean') {
       out[k] = v === true || v === 'true';
     } else if (f.kind === 'number') {

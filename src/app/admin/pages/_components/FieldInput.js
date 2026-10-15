@@ -1,10 +1,11 @@
 'use client';
+import { useState } from 'react';
 import ImageField from './ImageField';
 import RichTextEditor from './RichTextEditor';
 
 /** Default value for a field definition (mirrors defaultProps() in src/lib/blocks/schemas.js, for list items). */
 export function fieldDefault(f) {
-  if (f.kind === 'list') return [];
+  if (f.kind === 'list' || f.kind === 'tags') return [];
   return f.default ?? (f.kind === 'boolean' ? false : f.kind === 'number' ? 0 : '');
 }
 export const itemDefaults = (fields) => Object.fromEntries(Object.entries(fields).map(([k, f]) => [k, fieldDefault(f)]));
@@ -67,6 +68,32 @@ function ListField({ field, value, onChange, folders, idPrefix, editorKey }) {
   );
 }
 
+function TagsField({ id, value, onChange }) {
+  const tags = Array.isArray(value) ? value : [];
+  const [draft, setDraft] = useState('');
+  const add = () => {
+    const t = draft.trim();
+    if (t && !tags.includes(t)) onChange([...tags, t]);
+    setDraft('');
+  };
+  return (
+    <div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: tags.length ? 6 : 0 }}>
+        {tags.map((t) => (
+          <span key={t} className="cmsa-badge published" style={{ textTransform: 'none', display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+            {t}
+            <button type="button" aria-label={`Remove ${t}`} onClick={() => onChange(tags.filter((x) => x !== t))}
+              style={{ border: 0, background: 'transparent', cursor: 'pointer', fontSize: 14, lineHeight: 1, padding: 0 }}>×</button>
+          </span>
+        ))}
+      </div>
+      <input id={id} type="text" value={draft} placeholder="Type a tag and press Enter" onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); add(); } else if (e.key === 'Backspace' && !draft && tags.length) onChange(tags.slice(0, -1)); }}
+        onBlur={add} />
+    </div>
+  );
+}
+
 /** One form control driven by a BLOCKS field definition. */
 export default function FieldInput({ field, value, onChange, folders = [], idPrefix = 'f', fieldKey = '', editorKey = '' }) {
   const id = `${idPrefix}-${fieldKey || field.label}`.replace(/\s+/g, '-');
@@ -108,6 +135,9 @@ export default function FieldInput({ field, value, onChange, folders = [], idPre
       break;
     case 'list':
       control = <ListField field={field} value={value} onChange={onChange} folders={folders} idPrefix={id} editorKey={editorKey} />;
+      break;
+    case 'tags':
+      control = <TagsField id={id} value={value} onChange={onChange} />;
       break;
     case 'url':
       control = <input id={id} type="text" inputMode="url" value={value ?? ''} onChange={(e) => onChange(e.target.value)} placeholder="/page, https://…, mailto:, tel:" />;

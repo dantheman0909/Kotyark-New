@@ -1,13 +1,16 @@
 import { CmsOrLegacy } from '@/components/blocks/PageView';
 import LegacyBiodiesel from '@/components/legacy/Biodiesel';
 import { overrideMetadata } from '@/lib/pages';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-const FALLBACK = {
+const FALLBACK = buildMetadata({
+  path: '/products/biodiesel',
+
   title: 'Biodiesel B100 - Renewable Diesel Fuel',
   description: "Clean-burning B100 biodiesel from non-edible vegetable oil. 86% less greenhouse gas. More power, better mileage. Order biodiesel now.",
-};
+});
 
 export async function generateMetadata() {
   return overrideMetadata('/products/biodiesel', FALLBACK);

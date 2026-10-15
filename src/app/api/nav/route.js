@@ -48,8 +48,9 @@ function cleanItem(raw, depth) {
   if (pageId) {
     if (!UUID_RE.test(pageId)) throw httpError(400, `Invalid page for "${label}"`);
   } else if (!url) {
-    throw httpError(400, `"${label}" needs a page or a URL`);
-  } else if (!(/^\/(?!\/)/.test(url) || /^https:\/\//i.test(url)) || /\s/.test(url)) {
+    // A top-level heading with sub-items may have no link (stored as url = '').
+    if (!(depth === 0 && Array.isArray(raw?.children) && raw.children.length)) throw httpError(400, `"${label}" needs a page or a URL`);
+  } else if (url && !(/^\/(?!\/)/.test(url) || /^https:\/\//i.test(url)) || /\s/.test(url)) {
     throw httpError(400, `URL for "${label}" must be a relative /path or an https:// URL`);
   }
   const children = Array.isArray(raw?.children) ? raw.children : [];

@@ -6,9 +6,12 @@ export default function Stats({ props }) {
   return (
     <section className="section section-alt">
       <div className="container">
-        {props.heading && (
+        {(props.heading || props.eyebrow) && (
           <ScrollReveal>
-            <div className="section-header"><h2>{props.heading}</h2></div>
+            <div className="section-header">
+              {props.eyebrow && <span className="section-tag">{props.eyebrow}</span>}
+              {props.heading && <h2>{props.heading}</h2>}
+            </div>
           </ScrollReveal>
         )}
         <ScrollReveal>

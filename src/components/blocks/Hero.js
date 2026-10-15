@@ -20,7 +20,7 @@ export default function Hero({ props }) {
   if (props.variant === 'full') {
     return (
       <section className="hero">
-        {img && <div className="hero-bg" style={{ backgroundImage: `url(${img})` }} role="img" aria-label={props.heading || ''} />}
+        {img && <div className="hero-bg" style={{ backgroundImage: `url(${img})` }} role="img" aria-label={props.imageAlt || props.heading || ''} />}
         <div className="hero-overlay" />
         <div className="hero-content">
           {props.eyebrow && <div className="hero-badge">{props.eyebrow}</div>}

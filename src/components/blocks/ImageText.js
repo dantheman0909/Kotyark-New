@@ -1,6 +1,6 @@
 import ScrollReveal from '@/components/ScrollReveal';
 import { sanitizeRichText } from '@/lib/sanitize';
-import { SmartLink, resolveImage } from './shared';
+import { SectionTag, SmartLink, resolveImage } from './shared';
 
 export default function ImageText({ props }) {
   const img = resolveImage(props.image);
@@ -12,6 +12,7 @@ export default function ImageText({ props }) {
         <ScrollReveal>
           <div className={`split${props.imagePosition === 'left' ? ' split-reverse' : ''}`}>
             <div style={props.imagePosition === 'left' ? { direction: 'ltr' } : undefined}>
+              {props.eyebrow && <SectionTag>{props.eyebrow}</SectionTag>}
               {props.heading && <h2 style={{ marginBottom: '16px' }}>{props.heading}</h2>}
               <div className="cms-rich" dangerouslySetInnerHTML={{ __html: sanitizeRichText(props.html) }} />
               {cta?.label && cta?.href && (
