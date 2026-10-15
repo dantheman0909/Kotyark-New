@@ -42,3 +42,7 @@ next-env.d.ts
 
 # claude / scratch outputs
 attached_assets/_scratch/
+
+# legacy sqlite (never commit) + local file storage
+/data/*.db*
+/.storage/

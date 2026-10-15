@@ -10,6 +10,45 @@ Entry point for anyone (human or AI agent) working in this repo.
 - Commands: `npm run dev` · `npm run build` · `npm run start` · `npm run migrate` (once added).
 - Architecture narrative: [`replit.md`](./replit.md). CMS plan and phases: tracked in the PR description and `docs/` as they land.
 
+## Local development
+
+- Database: `KOTYARK_DATABASE_URL` (local) wins over `DATABASE_URL` (Replit). **A Claude cloud shell may export another
+  project's `DATABASE_URL`; never run anything against it.** Prefix commands with `env -u DATABASE_URL KOTYARK_DATABASE_URL=...`.
+- `npm run migrate` applies `src/lib/migrations/*.sql` once each and bootstraps the first owner from `ADMIN_EMAIL` /
+  `ADMIN_PASSWORD` (12+ chars) when the users table is empty.
+- Files: `src/lib/storage.js` uses Replit App Storage when `REPL_ID` is set, else `.storage/` (gitignored). Override with
+  `STORAGE_DRIVER=local|replit`.
+- Parallel builds: set `NEXT_DIST_DIR` to a unique folder so two builds don't clobber `.next`.
+- DB-backed public routes use `export const dynamic = 'force-dynamic'` (no DB access at build time on Replit).
+
+## Shared contracts (import these; do not re-implement)
+
+| Module | Provides |
+|---|---|
+| `src/lib/db.js` | `query`, `queryOne`, `tx`, `getPool` |
+| `src/lib/auth.js` | `getCurrentUser`, `requireUser(capability)`, `can`, `PERMISSIONS`, `createSession`, `destroySession`, `errorResponse`, `httpError` |
+| `src/lib/audit.js` | `audit(user, action, entity, entityId, summary, diff)` |
+| `src/lib/storage.js` | `putObject`, `getObject`, `getObjectStream`, `deleteObject`, `objectExists` |
+| `src/lib/slug.js` | `slugify`, `uniqueSlug` |
+| `src/lib/sanitize.js` | `sanitizeRichText`, `htmlToText`, `isAllowedEmbed` |
+| `src/lib/pdf-text.js` | `extractPdfText`, `autoDescription` |
+| `src/lib/seo.js` + `src/components/JsonLd.js` | `buildMetadata`, `organizationJsonLd`, `breadcrumbJsonLd`, `documentJsonLd`, `faqJsonLd` |
+| `src/lib/site.js` | `SITE_URL`, `absoluteUrl`, `getSetting` |
+| `src/lib/revalidate.js` | `revalidatePagePath`, `revalidateFolder` |
+| `src/lib/blocks/schemas.js` | `BLOCKS`, `BLOCK_TYPES`, `defaultProps`, `validateBlock`, `mapRichText`, `blocksToText`, `imageSrc` |
+| `src/lib/migrations/001_init.sql` | Full schema |
+
+Route-handler pattern:
+```js
+export async function POST(req) {
+  try {
+    const user = await requireUser('documents:write');
+    // ...validate, parameterized SQL, audit(user, ...), revalidate...
+    return Response.json({ ok: true });
+  } catch (e) { return errorResponse(e); }
+}
+```
+
 ## Sub-agent model routing
 
 Configured in `.claude/settings.json` (default) and `.claude/agents/*.md` (per-role pins).
