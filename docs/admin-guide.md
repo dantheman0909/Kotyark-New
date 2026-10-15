@@ -118,9 +118,11 @@ What happens automatically:
 Row → **Replace file**. **The URL stays the same**, so links already shared with BSE, investors or in filings keep working.
 
 ### 6.4 Broken links
-- **Check links** tests every document that still points at the old Wix site.
-- Broken rows are flagged red and counted on the Dashboard.
-- **To fix:** Replace file with the original PDF. Then Check links again.
+- **Check links** tests every document that still points at the old Wix site and has no uploaded file. Documents that already hold a file are skipped (they are served from our own storage).
+- The result appears as a **Links needing attention** panel (amber while anything needs action, green when clean), not as an error. It is grouped by section and collapsed; the count beside each section is how many documents still need the original PDF. The panel and the amber counts beside folder names persist after a reload, so you do not need to re-run the check to see them.
+- Per row: **Open** jumps to the section and highlights the row; **Replace file** uploads the original PDF right there. **Download CSV** exports section, title, old URL, status and HTTP code for the whole list.
+- In a section, tick **Show only links needing attention** to hide everything else.
+- **To fix:** upload the original PDF (Replace file). **The flag clears immediately; no re-check is needed**, and the dashboard count falls by one. The old URL is kept on the record and still redirects visitors to the file.
 - Never delete a broken disclosure to make the count go away; the regulation requires the document to be available.
 
 The remediation tracker from the migration (96 broken links at go-live) lists every affected document.

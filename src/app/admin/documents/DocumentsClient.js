@@ -4,6 +4,7 @@ import { api } from './api';
 import FolderPanel from './FolderPanel';
 import DocumentTable from './DocumentTable';
 import UploadPanel from './UploadPanel';
+import LinkHealthPanel from './LinkHealthPanel';
 import s from './documents.module.css';
 
 // Content only: the admin shell (header, logout) is provided by src/app/admin/layout.js.
@@ -14,7 +15,9 @@ export default function AdminDocumentsPage() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [checking, setChecking] = useState(false);
-  const [broken, setBroken] = useState(null);
+  const [result, setResult] = useState(null);
+  const [version, setVersion] = useState(0);
+  const [highlightId, setHighlightId] = useState(null);
 
   const loadFolders = useCallback(async () => {
     const { folders: list } = await api('/api/folders');
@@ -36,18 +39,22 @@ export default function AdminDocumentsPage() {
 
   // After any mutation: refresh counts + current list.
   const refresh = useCallback(async () => {
-    try { await loadFolders(); await loadDocs(selectedId); } catch (e) { setError(e.message); }
+    try { await loadFolders(); await loadDocs(selectedId); setVersion((v) => v + 1); } catch (e) { setError(e.message); }
   }, [loadFolders, loadDocs, selectedId]);
 
   const checkLinks = async () => {
-    setChecking(true); setError(''); setNotice(''); setBroken(null);
+    setChecking(true); setError(''); setNotice('');
     try {
       const r = await api('/api/documents/link-check', { method: 'POST' });
-      setNotice(`Checked ${r.checked} external link${r.checked === 1 ? '' : 's'}: ${r.ok} OK, ${r.broken} broken, ${r.error} unreachable.`);
-      setBroken(r.brokenDocuments);
-      await loadDocs(selectedId);
+      setResult(r);
+      await Promise.all([loadFolders(), loadDocs(selectedId)]);
     } catch (e) { setError(e.message); } finally { setChecking(false); }
   };
+
+  const openDoc = useCallback((d) => {
+    setSelectedId(d.folder_id); setHighlightId(d.id);
+    setTimeout(() => setHighlightId((cur) => (cur === d.id ? null : cur)), 6000);
+  }, []);
 
   const folder = folders?.find((f) => f.id === selectedId) || null;
 
@@ -64,13 +71,10 @@ export default function AdminDocumentsPage() {
         <div style={{ gridColumn: '1 / -1' }}>
           {error && <div className={s.error} style={{ margin: 0 }}>{error}</div>}
           {notice && <div className={s.notice} style={{ margin: 0 }}>{notice}</div>}
-          {broken && broken.length > 0 && (
-            <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: '0.82rem', color: '#b91c1c' }}>
-              {broken.map((b) => <li key={b.id}>{b.title}: {b.external_url} ({b.http_code || b.status})</li>)}
-            </ul>
-          )}
         </div>
       )}
+
+      <LinkHealthPanel result={result} version={version} onError={setError} onChanged={refresh} onOpen={openDoc} />
 
       <FolderPanel folders={folders || []} selectedId={selectedId} onSelect={setSelectedId} onChanged={refresh} onError={setError} />
 
@@ -86,7 +90,7 @@ export default function AdminDocumentsPage() {
             </div>
             <UploadPanel folderId={folder.id} onError={setError}
               onUploaded={async (n) => { setNotice(`Uploaded ${n} item${n === 1 ? '' : 's'}.`); await refresh(); }} />
-            <DocumentTable docs={docs} folders={folders} folderId={folder.id} onChanged={refresh} onError={setError} />
+            <DocumentTable highlightId={highlightId} docs={docs} folders={folders} folderId={folder.id} onChanged={refresh} onError={setError} />
           </>
         ) : (
           <div className="admin-no-selection" style={{ padding: 60 }}>

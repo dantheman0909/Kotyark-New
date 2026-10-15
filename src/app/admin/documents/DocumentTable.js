@@ -1,9 +1,9 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api, formatBytes, DATE_RE, DATE_PATTERN } from './api';
 import s from './documents.module.css';
 
-const LINK_BADGE = { ok: ['ok', 'OK'], broken: ['broken', 'Broken'], error: ['err', 'Unreachable'], unchecked: ['muted', 'Unchecked'], 'n/a': ['muted', 'Stored'] };
+const LINK_BADGE = { ok: ['ok', 'OK'], broken: ['broken', 'Broken: upload original'], error: ['err', 'Unreachable'], unchecked: ['muted', 'Unchecked'], 'n/a': ['muted', 'Stored'] };
 
 function LinkBadge({ doc }) {
   const [cls, label] = LINK_BADGE[doc.link_status] || LINK_BADGE.unchecked;
@@ -80,10 +80,19 @@ function EditRow({ doc, onDone, onError }) {
   );
 }
 
-export default function DocumentTable({ docs, folders, folderId, onChanged, onError }) {
+export default function DocumentTable({ docs: allDocs, folders, folderId, onChanged, onError, highlightId }) {
   const [selected, setSelected] = useState(new Set());
   const [editing, setEditing] = useState(null);
   const [moveTo, setMoveTo] = useState('');
+  const [onlyIssues, setOnlyIssues] = useState(false);
+  const scrolled = useRef(null);
+  const docs = onlyIssues ? allDocs.filter((d) => d.link_status === 'broken' || d.link_status === 'error') : allDocs;
+
+  useEffect(() => {
+    if (!highlightId || scrolled.current === highlightId) return;
+    const el = document.getElementById(`doc-row-${highlightId}`);
+    if (el) { scrolled.current = highlightId; el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  }, [highlightId, allDocs]);
 
   const toggle = (id) => setSelected((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const allSelected = docs.length > 0 && docs.every((d) => selected.has(d.id));
@@ -100,10 +109,16 @@ export default function DocumentTable({ docs, folders, folderId, onChanged, onEr
     catch (e) { onError(e.message); }
   };
 
-  if (docs.length === 0) return <div className={s.empty}>No documents in this folder yet. Drop files above to add some.</div>;
+  if (allDocs.length === 0) return <div className={s.empty}>No documents in this folder yet. Drop files above to add some.</div>;
 
   return (
     <>
+      <div className={s.toolbar}>
+        <label className={s.filterToggle}>
+          <input type="checkbox" checked={onlyIssues} onChange={(e) => setOnlyIssues(e.target.checked)} /> Show only links needing attention
+        </label>
+      </div>
+      {onlyIssues && docs.length === 0 && <div className={s.empty}>No links need attention in this folder.</div>}
       {selected.size > 0 && (
         <div className={s.toolbar}>
           <strong style={{ fontSize: '0.85rem' }}>{selected.size} selected</strong>
@@ -125,7 +140,7 @@ export default function DocumentTable({ docs, folders, folderId, onChanged, onEr
           </thead>
           <tbody>
             {docs.flatMap((d) => [
-              <tr key={d.id}>
+              <tr key={d.id} id={`doc-row-${d.id}`} className={d.id === highlightId ? s.rowHighlight : undefined}>
                 <td><input type="checkbox" aria-label={`Select ${d.title}`} checked={selected.has(d.id)} onChange={() => toggle(d.id)} /></td>
                 <td className={s.titleCell}>
                   {d.title}

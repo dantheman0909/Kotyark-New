@@ -6,7 +6,7 @@ import { autoDescription } from '@/lib/pdf-text';
 import { deleteObject } from '@/lib/storage';
 import { revalidateFolder } from '@/lib/revalidate';
 import {
-  getFolderById, listDocuments, listAllDocuments, documentFileUrl, documentLandingPath,
+  getFolderById, listDocuments, listAllDocuments, listLinkIssues, documentFileUrl, documentLandingPath,
 } from '@/lib/documents';
 import { readInput, parseMetadata, ingestFile, titleFromFilename, DOC_RETURN, NO_TEXT_WARNING } from './_lib';
 
@@ -18,11 +18,17 @@ const decorate = (d) => ({ ...d, url: documentFileUrl(d), landing_path: document
 // Unauthenticated callers only ever see published documents in visible folders.
 export async function GET(req) {
   try {
-    const folderId = new URL(req.url).searchParams.get('folderId');
+    const sp = new URL(req.url).searchParams;
+    const folderId = sp.get('folderId');
+    const linkStatus = sp.get('linkStatus');
     const user = await getCurrentUser();
     const editor = Boolean(user && can(user, 'documents:write'));
     let docs;
-    if (folderId) {
+    // ?linkStatus=broken|error: documents:write only (ignored for everyone else). Lets the admin panel reload the
+    // persisted broken set without re-probing every URL.
+    if (editor && (linkStatus === 'broken' || linkStatus === 'error')) {
+      docs = await listLinkIssues(linkStatus);
+    } else if (folderId) {
       const folder = await getFolderById(folderId);
       if (!folder || (!folder.visible && !editor)) return Response.json({ documents: [] });
       docs = await listDocuments(folderId, { publishedOnly: !editor });
@@ -59,12 +65,12 @@ export async function POST(req) {
 
     const rows = await query(
       `INSERT INTO documents(folder_id, title, slug, description, storage_key, external_url, original_name, mime, size,
-                             fy, doc_date, extracted_text, status, sort_order, link_status, created_by, updated_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$16)
+                             fy, doc_date, extracted_text, status, sort_order, link_status, link_checked_at, created_by, updated_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$17)
        RETURNING ${DOC_RETURN}`,
       [folder.id, title, slug, description, stored.storage_key, meta.external_url ?? null, stored.original_name, stored.mime,
         stored.size, meta.fy ?? null, meta.doc_date ?? null, stored.text, meta.status || 'published', sortOrder,
-        meta.external_url ? 'unchecked' : 'n/a', user.id]);
+        stored.storage_key || !meta.external_url ? 'n/a' : 'unchecked', stored.storage_key ? new Date() : null, user.id]);
     const doc = { ...rows[0], folder_slug: folder.slug };
     await audit(user, 'upload', 'document', doc.id, `Added document "${title}" to ${folder.name}`,
       { after: { slug, folder: folder.slug, storage_key: doc.storage_key, external_url: doc.external_url } });

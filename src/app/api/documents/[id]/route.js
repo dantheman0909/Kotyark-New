@@ -73,7 +73,8 @@ export async function PUT(req, { params }) {
       ing_noText = ing.mime === 'application/pdf' && !ing.text.trim();
       Object.assign(set, { storage_key: ing.storage_key, mime: ing.mime, size: ing.size, original_name: ing.original_name, extracted_text: ing.text });
       if (!('description' in set) && !before.description) set.description = autoDescription(ing.text);
-      if (!('link_status' in set) && !before.external_url) set.link_status = 'n/a';
+      // A stored file is served from App Storage: any legacy external URL no longer matters, so it is never "broken".
+      Object.assign(set, { link_status: 'n/a', link_http_code: null, link_checked_at: new Date() });
     }
     const cols = Object.keys(set);
     if (!cols.length) return Response.json({ document: decorate(before) });

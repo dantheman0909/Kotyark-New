@@ -30,13 +30,14 @@ const DOC_COLS = `d.id, d.folder_id, d.title, d.slug, d.description, d.storage_k
  * Each row carries `document_count` (published documents only unless includeDrafts).
  * `withIntro` adds intro_html (admin editor). The legacy root container is omitted unless includeRoot.
  */
-export async function listFolders({ visibleOnly = false, withIntro = false, includeDrafts = false, includeRoot = false } = {}) {
+export async function listFolders({ visibleOnly = false, withIntro = false, includeDrafts = false, includeRoot = false, withBroken = false } = {}) {
   const where = [];
   if (visibleOnly) where.push('f.visible = true');
   if (!includeRoot) where.push(`f.slug <> '${ROOT_FOLDER_SLUG}'`);
   return query(
     `SELECT ${FOLDER_COLS}${withIntro ? ', f.intro_html' : ''},
-            (SELECT count(*)::int FROM documents d WHERE d.folder_id = f.id${includeDrafts ? '' : " AND d.status = 'published'"}) AS document_count
+            (SELECT count(*)::int FROM documents d WHERE d.folder_id = f.id${includeDrafts ? '' : " AND d.status = 'published'"}) AS document_count${withBroken ? `,
+            (SELECT count(*)::int FROM documents d WHERE d.folder_id = f.id AND d.link_status IN ('broken','error') AND d.storage_key IS NULL) AS broken_count` : ''}
        FROM document_folders f
       ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
       ORDER BY f.sort_order, f.name`);
@@ -69,6 +70,16 @@ export async function listAllDocuments({ publishedOnly = false, limit = 1000 } =
        FROM documents d JOIN document_folders f ON f.id = d.folder_id
       ${publishedOnly ? "WHERE d.status = 'published' AND f.visible = true" : ''}
       ORDER BY d.created_at DESC LIMIT $1`, [Math.min(Math.max(1, limit), 5000)]);
+}
+
+/** Admin: documents whose legacy link last probed broken/unreachable (stored files are never listed). */
+export async function listLinkIssues(linkStatus = 'broken') {
+  const statuses = linkStatus === 'error' ? ['error'] : ['broken', 'error'];
+  return query(
+    `SELECT ${DOC_COLS}, f.slug AS folder_slug, f.name AS folder_name
+       FROM documents d JOIN document_folders f ON f.id = d.folder_id
+      WHERE d.link_status = ANY($1) AND d.storage_key IS NULL
+      ORDER BY f.sort_order, f.name, d.sort_order, d.title LIMIT 1000`, [statuses]);
 }
 
 export async function getDocumentBySlug(slug, { publishedOnly = true } = {}) {

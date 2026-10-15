@@ -18,7 +18,7 @@ export async function GET() {
   try {
     const user = await getCurrentUser();
     if (user && can(user, 'documents:write')) {
-      const folders = await listFolders({ withIntro: true, includeDrafts: true });
+      const folders = await listFolders({ withIntro: true, includeDrafts: true, withBroken: true });
       return Response.json({ folders });
     }
     const folders = (await listFolders({ visibleOnly: true })).map((f) => Object.fromEntries(PUBLIC_FIELDS.map((k) => [k, f[k]])));

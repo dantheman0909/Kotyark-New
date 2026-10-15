@@ -80,7 +80,7 @@ export default function FolderPanel({ folders, selectedId, onSelect, onChanged, 
           ) : (
             <div className={`${s.folderRow} ${selectedId === f.id ? s.folderRowActive : ''}`} onClick={() => onSelect(f.id)}>
               <div className={s.folderMain}>
-                <div className={s.folderName}>{f.name} {!f.visible && <span className="admin-tag hidden-tag">Hidden</span>}</div>
+                <div className={s.folderName}>{f.name} {f.broken_count > 0 && <span className={s.brokenCount} title={`${f.broken_count} link${f.broken_count === 1 ? '' : 's'} need the original PDF`}>{f.broken_count}</span>} {!f.visible && <span className="admin-tag hidden-tag">Hidden</span>}</div>
                 <div className={s.folderMeta}>/investors/{f.slug} · {f.document_count} doc{f.document_count === 1 ? '' : 's'}</div>
               </div>
               <div className={s.folderBtns} onClick={(e) => e.stopPropagation()}>
