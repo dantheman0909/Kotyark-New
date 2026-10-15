@@ -30,11 +30,11 @@ test('strips @import, @charset and @namespace with a warning', () => {
   assert.equal(r.warnings.length, 3);
 });
 
-test('strips url(javascript:) and other disallowed urls, keeps /media and https', () => {
+test('strips url(javascript:) and other disallowed urls, keeps only /media', () => {
   const r = run('.kp-a{background:url(javascript:alert(1))} .kp-b{background:url("data:image/png;base64,xx")} .kp-c{background:url(http://x/y.png)} .kp-d{background:url(/media/abc)} .kp-e{background:url("https://cdn.test/a.png")} .kp-f{background:url(/images/a.png)}');
   assert.ok(!/javascript|data:|http:\/\/|\/images\//.test(r.css));
   assert.ok(r.css.includes('url(/media/abc)'));
-  assert.ok(r.css.includes('https://cdn.test/a.png'));
+  assert.ok(!r.css.includes('cdn.test'));
   assert.ok(r.warnings.length >= 4);
 });
 
@@ -62,11 +62,48 @@ test('maps :root, html and body to the popup root', () => {
   assert.ok(!/\sbody|\shtml/.test(css.replace(/\[data-kp[^\]]*\]/g, '')));
 });
 
-test('@font-face: https and same-origin allowed, others dropped', () => {
-  const ok = run('@font-face{font-family:X;src:url(https://fonts.test/x.woff2)} @font-face{font-family:Y;src:url(/media/abc)}');
-  assert.equal((ok.css.match(/@font-face/g) || []).length, 2);
-  const bad = run('@font-face{font-family:Z;src:url(http://evil/x.woff2)} @font-face{font-family:W;src:url(data:font/woff2;base64,AA)}');
-  assert.ok(!/@font-face/.test(bad.css));
+test('@font-face is dropped entirely, with a warning', () => {
+  const r = run('@font-face{font-family:X;src:url(/media/abc)} @font-face{font-family:Y;src:local(Arial)} .kp-body{font-family:X}');
+  assert.ok(!/@font-face/.test(r.css));
+  assert.ok(r.warnings.some((w) => /Custom fonts are not allowed; choose fonts in Design\./.test(w)));
+  assert.ok(r.css.includes('.kp-body'));
+});
+
+test('escaped @keyframes names are decoded and prefixed, never emitted as the bare name', () => {
+  const r = run('@keyframes sp\\69n{from{opacity:0}to{opacity:1}} .kp-dialog{animation:sp\\69n 1s} .kp-heading{animation-name:spin}');
+  assert.ok(r.css.includes('@keyframes kp-11111111-spin'));
+  assert.ok(!/@keyframes\s+spin/.test(r.css));
+  assert.ok(r.css.includes('animation:kp-11111111-spin 1s'));
+  assert.ok(r.css.includes('animation-name:kp-11111111-spin'));
+});
+
+test('@keyframes with an invalid decoded name is dropped', () => {
+  const r = run('@keyframes a\\3b b{from{opacity:0}} @keyframes "x y"{from{opacity:0}} .kp-body{color:red}');
+  assert.ok(!/@keyframes/.test(r.css));
+  assert.ok(r.css.includes('color:red'));
+  assert.equal(r.warnings.length, 2);
+});
+
+test('remote url() of any kind is stripped; /media stays', () => {
+  const r = run('.kp-a{background:url(https://tracker/p.gif)} .kp-b{background-image:url("//tracker/p.gif")} .kp-c{background:url(/media/abc)}');
+  assert.ok(!/tracker/.test(r.css));
+  assert.ok(r.css.includes('url(/media/abc)'));
+  assert.equal(r.warnings.length, 2);
+});
+
+test('position fixed/sticky declarations are stripped (also escaped / important)', () => {
+  const r = run('.kp-a{position:fixed;color:red} .kp-b{position:sticky !important} .kp-c{position:\\66ixed} .kp-d{position:absolute} .kp-e{position:relative}');
+  assert.ok(!/fixed|sticky/i.test(r.css));
+  assert.ok(r.css.includes('position:absolute') && r.css.includes('position:relative') && r.css.includes('color:red'));
+  assert.equal(r.warnings.length, 3);
+});
+
+test('sibling combinators directly after the root are rejected', () => {
+  const r = run('body ~ div{display:none} .kp-root + p{color:red} :root+main{x:y} html.a ~ b{x:y} .kp-heading ~ .kp-body{color:red} body > .kp-body{color:blue}');
+  assert.ok(!/ ~ div|\+ p|\+main|~ b/.test(r.css));
+  assert.ok(r.css.includes(`${ROOT} .kp-heading ~ .kp-body`));
+  assert.ok(r.css.includes(`${ROOT} .kp-body`));
+  assert.equal(r.warnings.length, 4);
 });
 
 test('size limit', () => {

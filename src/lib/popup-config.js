@@ -82,13 +82,26 @@ export function resolveColors(design = {}) {
 
 export function widthPx(design = {}) { return WIDTHS[design.width] || WIDTHS.md; }
 
+export const MAX_PATTERN_LEN = 100;
+export const MAX_MATCH_PATH_LEN = 512;
+
 /** Does `pathname` match a pattern? `*` matches any characters (including '/'); everything else is literal. */
 export function pathMatches(pattern, pathname) {
   const pat = String(pattern || '').trim();
   if (!pat) return false;
   const norm = (s) => (s.length > 1 ? s.replace(/\/+$/, '') : s) || '/';
-  const re = new RegExp('^' + norm(pat).split('*').map((p) => p.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$');
-  return re.test(norm(String(pathname || '/')));
+  // Linear-time glob (no RegExp, so no catastrophic backtracking): bounded inputs, backtrack only to the last '*'.
+  const p = norm(pat.replace(/\*+/g, '*').slice(0, MAX_PATTERN_LEN));
+  const s = norm(String(pathname || '/').slice(0, MAX_MATCH_PATH_LEN));
+  let pi = 0, si = 0, star = -1, mark = 0;
+  while (si < s.length) {
+    if (pi < p.length && p[pi] === '*') { star = pi++; mark = si; }
+    else if (pi < p.length && p[pi] === s[si]) { pi++; si++; }
+    else if (star >= 0) { pi = star + 1; si = ++mark; }
+    else return false;
+  }
+  while (pi < p.length && p[pi] === '*') pi++;
+  return pi === p.length;
 }
 
 /** include empty = every page; exclude always wins. */
@@ -137,6 +150,16 @@ export function seoWarnings(design = {}, rules = {}) {
     out.push('Exit-intent only works with a mouse, so this pop-up will never appear on mobile.');
   }
   return out;
+}
+
+/** Hard publish blocker: full-screen + visible on mobile + opens before 3 s. Returns a message or ''. */
+export function blockingPublishMessage(design = {}, rules = {}) {
+  const mobileVisible = rules.devices !== 'desktop';
+  const early = rules.trigger === 'load' || (rules.trigger === 'delay' && Number(rules.delaySeconds) < 3);
+  if (design.layout === 'fullscreen' && mobileVisible && early) {
+    return 'A full-screen pop-up cannot open within 3 seconds of page load on mobile (Google treats it as an intrusive interstitial). Delay it by 3 seconds or more, use another trigger, choose a slide-in or bar, or show it on desktop only.';
+  }
+  return '';
 }
 
 export { clamp };

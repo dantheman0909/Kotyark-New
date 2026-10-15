@@ -27,12 +27,18 @@ export default function Popup({ popup, viewport = 'desktop', preview = false, on
     const dialog = dialogRef.current;
     const prev = document.activeElement;
     const prevOverflow = document.body.style.overflow;
+    const main = modal ? document.getElementById('main-content') : null;
+    const wasInert = main?.hasAttribute('inert');
     if (modal) {
       document.body.style.overflow = 'hidden';
       (dialog.querySelector('[data-kp-autofocus]') || dialog).focus({ preventScroll: true });
+      main?.setAttribute('inert', '');
     }
     const onKey = (e) => {
-      if (e.key === 'Escape') { e.preventDefault(); handlers.current.onClose?.('dismiss'); return; }
+      if (e.key === 'Escape') {
+        if (!modal && !dialog.contains(document.activeElement)) return; // a non-modal pop-up must not swallow Esc meant for the page
+        e.preventDefault(); handlers.current.onClose?.('dismiss'); return;
+      }
       if (e.key !== 'Tab' || !modal) return;
       const items = [...dialog.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null || el === document.activeElement);
       if (!items.length) { e.preventDefault(); dialog.focus(); return; }
@@ -44,6 +50,7 @@ export default function Popup({ popup, viewport = 'desktop', preview = false, on
     return () => {
       document.removeEventListener('keydown', onKey, true);
       document.body.style.overflow = prevOverflow;
+      if (main && !wasInert) main.removeAttribute('inert');
       if (prev && prev !== document.body && (modal || document.activeElement === document.body)) prev.focus?.({ preventScroll: true });
     };
   }, [preview, modal]);

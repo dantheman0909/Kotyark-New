@@ -13,7 +13,7 @@ import RichTextEditor from '@/app/admin/pages/_components/RichTextEditor';
 import Popup from '@/components/popups/Popup';
 import { imageSrc } from '@/lib/blocks/schemas';
 import {
-  DEFAULT_CONTENT, DEFAULT_DESIGN, DEFAULT_RULES, POPUP_ENUMS, PRESETS, isoToIstText, istTextToIso, resolveColors, seoWarnings,
+  DEFAULT_CONTENT, DEFAULT_DESIGN, DEFAULT_RULES, POPUP_ENUMS, PRESETS, isoToIstText, istTextToIso, resolveColors, seoWarnings, blockingPublishMessage,
 } from '@/lib/popup-config';
 
 const TABS = [['content', 'Content'], ['design', 'Design'], ['css', 'Custom CSS'], ['rules', 'Display rules']];
@@ -211,6 +211,7 @@ export default function PopupEditor({ id }) {
   const c = form.content, d = form.design, r = form.rules;
   const colors = resolveColors({ preset: d.preset });
   const seo = seoWarnings(d, r);
+  const publishBlock = blockingPublishMessage(d, r);
   const published = meta.status === 'published';
   const modalish = d.layout === 'modal' || d.layout === 'fullscreen';
   const previewPopup = {
@@ -235,7 +236,7 @@ export default function PopupEditor({ id }) {
           <button type="button" className={`${styles.btn} ${styles.btnGhost}`} onClick={save} disabled={!!busy || !dirty || errors.length > 0}>{busy === 'save' ? 'Saving…' : published ? 'Save changes (live)' : 'Save draft'}</button>
           {published && <button type="button" className={`${styles.btn} ${styles.btnGhost}`} onClick={unpublish} disabled={!!busy}>Unpublish</button>}
           {!published && (
-            <button type="button" className={styles.btn} onClick={publish} disabled={!!busy || errors.length > 0}>
+            <button type="button" className={styles.btn} onClick={publish} disabled={!!busy || errors.length > 0 || !!publishBlock} title={publishBlock || undefined}>
               {busy === 'publish' ? 'Publishing…' : 'Publish'}
             </button>
           )}
@@ -244,6 +245,7 @@ export default function PopupEditor({ id }) {
 
       {error && <div className={styles.alert} role="alert">{error}</div>}
       {errors.length > 0 && <div className={styles.alert} role="alert"><ul style={{ margin: 0, paddingLeft: 18 }}>{errors.map((e) => <li key={e}>{e}</li>)}</ul></div>}
+      {publishBlock && !published && <div className={styles.alert} role="alert"><strong>Cannot publish.</strong> {publishBlock}</div>}
       {seo.length > 0 && <div className={ps.notice} role="status"><strong>Search-ranking warning.</strong><ul>{seo.map((w) => <li key={w}>{w}</li>)}</ul></div>}
       {published && dirty && <div className={ps.notice}>This pop-up is live. &ldquo;Save changes (live)&rdquo; updates what visitors see immediately.</div>}
 

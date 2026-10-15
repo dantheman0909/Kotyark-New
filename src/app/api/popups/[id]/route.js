@@ -2,7 +2,7 @@ import { revalidatePath } from 'next/cache';
 import { errorResponse, httpError, requireUser } from '@/lib/auth';
 import { queryOne } from '@/lib/db';
 import { audit } from '@/lib/audit';
-import { assertUuid, cleanPopup, POPUP_COLUMNS, shapePopup } from '@/lib/popups';
+import { assertPublishable, assertUuid, cleanPopup, POPUP_COLUMNS, shapePopup } from '@/lib/popups';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +31,8 @@ export async function PUT(req, { params }) {
     const before = shapePopup(await load(id));
     const body = await req.json().catch(() => null);
     const v = await cleanPopup(body, id, before);
+    // A live pop-up may not be edited into a state that publishing would refuse (mobile interstitial guard).
+    if (before.status === 'published') assertPublishable(v);
     const row = await queryOne(
       `UPDATE popups SET name=$2, priority=$3, content=$4, design=$5, custom_css=$6, scoped_css=$7, rules=$8,
               updated_by=$9, updated_at=now() WHERE id=$1 RETURNING ${POPUP_COLUMNS}`,

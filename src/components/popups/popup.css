@@ -10,7 +10,7 @@
 .kp-root style { display: none; }
 .kp-dialog { pointer-events: auto; position: relative; background: var(--kp-bg); color: var(--kp-text);
   border-radius: var(--kp-radius); box-shadow: 0 16px 48px rgba(13, 59, 36, .28), 0 2px 8px rgba(0, 0, 0, .12);
-  overflow: hidden; display: flex; flex-direction: column; width: 100%; max-height: 100%; isolation: isolate; }
+  overflow: hidden; display: flex; flex-direction: column; width: 100%; max-height: 100%; isolation: isolate; contain: layout paint; }
 .kp-dialog:focus { outline: none; }
 .kp-root :focus-visible { outline: 3px solid var(--kp-text); outline-offset: 2px; }
 
@@ -106,3 +106,15 @@
 @media (prefers-reduced-motion: reduce) {
   .kp-root, .kp-dialog, .kp-cta { animation: none !important; transition: none !important; }
 }
+
+/* Root placement is enforced: editor CSS (scoped to [data-kp], specificity 0,1,0-0,2,0) cannot move the root
+   over the page. Triple class + !important beats anything the scoper can emit. */
+.kp-root.kp-root.kp-root:not(.kp-preview) { position: fixed !important; z-index: 9000 !important; transform: none !important; translate: none !important; margin: 0 !important; }
+.kp-root.kp-root.kp-root.kp-preview { position: absolute !important; z-index: 5 !important; transform: none !important; translate: none !important; margin: 0 !important; }
+.kp-layout-modal.kp-root.kp-root.kp-root, .kp-layout-fullscreen.kp-root.kp-root.kp-root { inset: 0 !important; }
+.kp-layout-top-bar.kp-root.kp-root.kp-root { top: 0 !important; left: 0 !important; right: 0 !important; bottom: auto !important; }
+.kp-layout-bottom-bar.kp-root.kp-root.kp-root { bottom: 0 !important; left: 0 !important; right: 0 !important; top: auto !important; }
+.kp-layout-slide-in.kp-root.kp-root.kp-root { top: auto !important; bottom: 20px !important; }
+.kp-layout-slide-in.kp-pos-bottom-right.kp-root.kp-root.kp-root { right: 20px !important; left: auto !important; }
+.kp-layout-slide-in.kp-pos-bottom-left.kp-root.kp-root.kp-root { left: 20px !important; right: auto !important; }
+.kp-mobile.kp-layout-slide-in.kp-root.kp-root.kp-root { bottom: 0 !important; left: 0 !important; right: 0 !important; }

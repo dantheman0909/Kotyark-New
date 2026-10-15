@@ -176,13 +176,15 @@ On phones, modals and slide-ins appear as a **bottom sheet** (full-width card at
 ### 13.4 Custom CSS tab (optional)
 For anything the Design tab cannot do. Rules you write are automatically limited to this pop-up and can never affect the rest of the site.
 - Style these classes: `.kp-root` (outer box / overlay), `.kp-dialog`, `.kp-eyebrow`, `.kp-heading`, `.kp-body`, `.kp-image`, `.kp-cta`, `.kp-cta--secondary`, `.kp-close`. Add `.kp-mobile` to a selector (e.g. `.kp-root.kp-mobile .kp-heading`) to style the phone layout. Rules written for `body`, `html` or `:root` apply to the pop-up's own box.
-- Not allowed (removed, with a note shown under the editor): `@import`, `@charset`, `@namespace`, `url()` other than `https:` addresses or images from this site's `/media/...`, `@font-face` from a non-https source, `expression()`, `javascript:`, `behavior`, `-moz-binding`. A `</style` anywhere, a syntax error or more than 10 KB rejects the save.
+- Not allowed (removed, with a note shown under the editor): `@import`, `@charset`, `@namespace`, `url()` other than images from this site's `/media/...` (no external addresses), `@font-face` (custom fonts are not allowed; choose fonts in the Design tab), `position: fixed` / `position: sticky`, selectors that use `+` or `~` straight after `body` / `html` / `:root` / `.kp-root`, `expression()`, `javascript:`, `behavior`, `-moz-binding`. A `</style` anywhere, a syntax error or more than 10 KB rejects the save.
+- The pop-up's own box keeps its placement (position, edges and stacking) whatever the CSS says, so Custom CSS cannot move it over the rest of the page.
 - The grey box under the editor shows the exact CSS that is used.
 
 ### 13.5 Display rules tab
 - **Trigger:** on page load, after N seconds, after scrolling N %, or exit intent (mouse leaves the top of the window; desktop only).
 - **Show on pages / Never show on pages:** one path per line, `*` matches anything. `/` is the home page only; `/products/*` is every product page; `/investors/*` all investor pages. Empty "Show on pages" = every page. "Never show" always wins. Pop-ups never appear in `/admin`, `/login` or previews.
 - **Devices:** all, desktop only or mobile only (mobile = up to 767 px wide).
+- **Publish is refused** (error shown in the editor, API answers 400) for a **Full screen** pop-up that is visible on mobile (Devices = All or Mobile) and opens on page load or after less than 3 seconds. Delay it 3 seconds or more, choose another layout, or set Devices to Desktop. Other search-ranking concerns stay as warnings.
 - **Frequency:** every page load; once per browser session; once every N days; once ever. Stored in the visitor's browser, so clearing it or using a new browser shows the pop-up again.
 - **Schedule:** start and end as `YYYY-MM-DD HH:mm` in India time (empty = no limit). Outside the window the pop-up is not shown even if published.
 - **Priority:** if several pop-ups match a page, only the one with the highest number is shown.

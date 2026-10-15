@@ -4,7 +4,7 @@ import { httpError } from './auth';
 import { sanitizeRichText, htmlToText } from './sanitize';
 import { scopePopupCss } from './popup-css';
 import {
-  POPUP_ENUMS, DEFAULT_CONTENT, DEFAULT_DESIGN, DEFAULT_RULES, istTextToIso, seoWarnings, isBlockedRoute, pathAllowed,
+  blockingPublishMessage, POPUP_ENUMS, DEFAULT_CONTENT, DEFAULT_DESIGN, DEFAULT_RULES, istTextToIso, seoWarnings, isBlockedRoute, pathAllowed,
 } from './popup-config';
 import { imageSrc } from './blocks/schemas';
 
@@ -106,9 +106,9 @@ function cleanPaths(v, label) {
   const list = Array.isArray(v) ? v : String(v).split(/\r?\n/);
   const out = [];
   for (const raw of list) {
-    const p = String(raw).trim();
+    const p = String(raw).trim().replace(/\*{2,}/g, '*');
     if (!p) continue;
-    if (p.length > 200 || !/^\/[A-Za-z0-9_\-.~%*\/]*$/.test(p) || p.startsWith('//')) {
+    if (p.length > 100 || !/^\/[A-Za-z0-9_\-.~%*\/]*$/.test(p) || p.startsWith('//')) {
       throw httpError(400, `${label}: "${p.slice(0, 60)}" must start with / and use only letters, digits, - _ . ~ % / and * (wildcard)`);
     }
     if (!out.includes(p)) out.push(p);
@@ -165,6 +165,8 @@ export async function cleanPopup(body, popupId, base = null) {
 
 /** Publishing needs something to show. */
 export function assertPublishable(p) {
+  const block = blockingPublishMessage(p.design, p.rules);
+  if (block) throw httpError(400, block);
   if (!p.content.heading && !htmlToText(p.content.bodyHtml)) throw httpError(400, 'Add a heading or body text before publishing');
 }
 
@@ -191,7 +193,7 @@ export function toPublicPopup(r) {
   return {
     id: r.id,
     content: {
-      eyebrow: c.eyebrow, heading: c.heading, bodyHtml: c.bodyHtml, imageSrc: imageSrc(c.imageId), imageAlt: c.imageAlt,
+      eyebrow: c.eyebrow, heading: c.heading, bodyHtml: sanitizeRichText(String(c.bodyHtml ?? '')), imageSrc: imageSrc(c.imageId), imageAlt: c.imageAlt,
       imagePosition: c.imagePosition, primaryCta: c.primaryCta, secondaryCta: c.secondaryCta, dismissLabel: c.dismissLabel,
     },
     design: d,

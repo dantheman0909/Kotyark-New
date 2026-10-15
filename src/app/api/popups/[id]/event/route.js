@@ -11,6 +11,7 @@ const COLUMN = { view: 'views', click: 'clicks', dismiss: 'dismissals' };
 export async function POST(req, { params }) {
   try {
     const { id } = await params;
+    if (Number(req.headers.get('content-length') || 0) > 200) return new Response(null, { status: 413 });
     const text = await req.text();
     if (!UUID_RE.test(id) || text.length > 200) return new Response(null, { status: 204 });
     let type;
