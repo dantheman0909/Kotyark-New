@@ -9,7 +9,7 @@ import styles from '@/components/admin/admin.module.css';
 const ROLES = ['owner', 'editor', 'compliance'];
 const ROLE_HELP = {
   owner: 'Full access, including users, settings and audit log.',
-  editor: 'Pages, navigation, redirects and media.',
+  editor: 'Pages, investor documents (upload, edit, replace, links), navigation, redirects, media and pop-ups.',
   compliance: 'Investor documents, media and the audit log.',
 };
 const fmt = (d) => d ? new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }).format(new Date(d)) : 'Never';

@@ -13,7 +13,7 @@ export const PERMISSIONS = {
   'pages:write':      ['owner', 'editor'],
   'pages:publish':    ['owner', 'editor'],
   'pages:delete':     ['owner'],
-  'documents:write':  ['owner', 'compliance'],
+  'documents:write':  ['owner', 'editor', 'compliance'],
   'documents:delete': ['owner', 'compliance'],
   'media:write':      ['owner', 'editor', 'compliance'],
   'nav:write':        ['owner', 'editor'],

@@ -13,7 +13,7 @@ For everyone who edits www.kotyark.com. Read once end to end; afterwards use the
 | Create and edit pages, save drafts | ✓ | ✓ |  |
 | Publish / unpublish pages | ✓ | ✓ |  |
 | Delete pages | ✓ |  |  |
-| Upload, edit, replace, move documents; manage investor sections | ✓ |  | ✓ |
+| Upload, edit, replace, move documents; fix links; manage investor sections | ✓ | ✓ | ✓ |
 | Delete documents | ✓ |  | ✓ |
 | Media library (images) | ✓ | ✓ | ✓ |
 | Header / footer menus | ✓ | ✓ |  |
