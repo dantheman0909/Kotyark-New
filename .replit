@@ -34,9 +34,10 @@ localPort = 5000
 externalPort = 80
 
 [deployment]
-deploymentTarget = "autoscale"
+deploymentTarget = "gce"
 run = ["sh", "-c", "npm run migrate || echo 'migrate failed; starting anyway'; npm run start"]
 build = ["sh", "-c", "npm ci --no-audit --no-fund && npm run build"]
+ignorePorts = false
 
 [objectStorage]
 defaultBucketID = "replit-objstore-0e4fb7e7-4b1a-4c62-b022-73b703d6d7cc"
