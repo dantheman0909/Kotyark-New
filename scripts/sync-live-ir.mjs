@@ -14,6 +14,7 @@
 //   --no-check         with --fetch: skip the HEAD check of every document URL (a few minutes saved; link_status left alone).
 //   --manifest <file>  manifest to read / write (default attached_assets/_scratch/ir-sync/live-manifest.json).
 //   --names heading|hub  folder name source: the live page heading (default) or the label on the live hub page.
+//                      NAME_OVERRIDES (below) always wins; add an entry there to keep an owner-chosen name across re-syncs.
 //   --skip-satellites  do not create folders for the extra live pages the SEBI table links to (annual-reports, ...).
 //   --fuzzy <0-1>      OPT-IN. Also pair leftover CMS / live titles greedily by best word overlap (e.g. 0.6). Default off: only file id / URL
 //                      and exact normalised title are matched. Every fuzzy pairing is printed as a flag. Review diff.md first.
@@ -54,6 +55,11 @@ if (has('--help')) { console.log(fs.readFileSync(new URL(import.meta.url), 'utf8
 const APPLY = has('--apply');
 const FETCH = has('--fetch');
 const NAMES = val('--names', 'heading');
+// Section names the owner has chosen (by our folder slug). They win over --names on every run, so a re-sync never
+// reverts them. Owner decision 17 Oct 2026: the live heading "DISCLOSURE UNDER REG 30" reads "Disclosure under Reg 30".
+const NAME_OVERRIDES = {
+  'disclosure-under-reg30': 'Disclosure under Reg 30',
+};
 const FUZZY = Number(val('--fuzzy', 0)) || 0;
 if (FUZZY && !(FUZZY > 0 && FUZZY <= 1)) { console.error('--fuzzy needs a number in (0,1]'); process.exit(1); }
 if (!['heading', 'hub'].includes(NAMES)) { console.error('--names must be heading or hub'); process.exit(1); }
@@ -407,7 +413,7 @@ async function plan(client, manifest) {
     const sd = { liveUrl: s.liveUrl, livePath: s.livePath, kind: s.kind, ours: s.ours, heading: s.heading, flags: [...s.flags], unlinked: s.unlinked, intro: s.intro };
     diff.sections.push(sd);
     let folder = folderBySlug.get(s.ours);
-    const wantName = NAMES === 'hub' && s.hubLabel ? s.hubLabel : s.heading;
+    const wantName = NAME_OVERRIDES[s.ours] ?? (NAMES === 'hub' && s.hubLabel ? s.hubLabel : s.heading);
     const liveHasGroups = s.groups.some((g) => g.label);
     if (!folder) {
       folder = { id: crypto.randomUUID(), slug: s.ours, name: wantName, group_by: liveHasGroups ? 'fy' : 'none', sort_order: ++nextSort, visible: true, category: s.category, isNew: true };

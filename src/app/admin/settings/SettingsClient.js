@@ -59,7 +59,7 @@ function Section({ k, def, initial, canEdit }) {
               key={f} id={`${k}-${f}`} label={spec.label}
               as={spec.multiline ? 'textarea' : 'input'}
               {...(spec.kind === 'number' ? { type: 'number', step: 'any', min: spec.min, max: spec.max, required: spec.required } : {})}
-              value={value[f]} disabled={!canEdit}
+              value={value[f] ?? ''} disabled={!canEdit}
               onChange={(e) => setValue((s) => ({ ...s, [f]: e.target.value }))}
             />
           )
