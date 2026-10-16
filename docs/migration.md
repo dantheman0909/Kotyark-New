@@ -48,6 +48,34 @@ builder reads the legacy page files (other branches delete them), so it cannot b
 committed snapshot. It fails unless every block passes `validateBlock` and every visible text fragment of the six static
 page files is found in the snapshot.
 
+## Syncing from the live Wix site (`npm run sync:ir`)
+
+`scripts/sync-live-ir.mjs` aligns the investor documents with https://www.kotyark.com/investor-relations. Dry-run by default;
+`--apply` writes everything in one transaction, with one `audit_log` row per change (`user_email='sync:live-ir'`). A second
+`--apply` changes nothing. Database: `KOTYARK_DATABASE_URL`, else `DATABASE_URL`.
+
+    npm run sync:ir -- --fetch             # dry run: crawl, HEAD-check every link, print the plan
+    npm run sync:ir -- --apply             # apply the saved manifest
+    npm run sync:ir -- --verify-lodr       # read-only: do the SEBI table hrefs resolve in this database?
+    npm run sync:ir -- --write-lodr        # regenerate src/lib/sebi-lodr-table.js
+
+Flags: `--fetch` re-crawl, `--no-check` skip the link check, `--names heading|hub`, `--skip-satellites`, `--force` (also change
+admin-edited documents), `--fuzzy N` (opt-in title pairing), `--retire-unmatched` (opt-in: broken CMS-only documents to draft).
+
+| Table | Rule |
+|---|---|
+| `document_folders` | `name` := live page heading, `group_by` := 'fy' where live groups, category from the mapping where still 'Other'. Live-only sections are created (slug = live slug, next `sort_order`, visible). Slugs of existing folders never change. |
+| `documents` | Matched in the folder by Wix file id, then by normalised title. `title`, `external_url`, `fy` (live group label), `doc_date` (a dd.mm.yyyy in the title), `sort_order` (live order) are set. `slug` and `storage_key` are never touched (a stored file still wins over `external_url`). Live-only documents are added as published. CMS-only documents are kept and sorted after the live ones. Nothing is deleted or hidden. |
+| `redirects` | `/<live path>` and `/investors/<live slug>` to `/investors/<our slug>`, inserted only when absent. |
+
+Output (gitignored): `attached_assets/_scratch/ir-sync/` (`live-manifest.json`, `diff.md`, `diff.json`, raw HTML).
+The SEBI LODR table (`src/lib/sebi-lodr-table.js`) is generated from the live table, an embedded HTML file on the Wix page.
+It has no regulation or Yes/NA columns on live, so those fields are empty.
+
+Known limits: the same file listed twice in one live section is imported once; live titles without a link are not
+imported; non-PDF links (mp4, Drive, mp3) keep the default mime; extra live pages linked from the SEBI table become
+folders (annual-reports, shareholding-pattern, press-release, ...).
+
 ## What was migrated
 
 | Entity | Count |

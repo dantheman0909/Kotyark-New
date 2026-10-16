@@ -16,6 +16,8 @@ For everyone who edits www.kotyark.com. Read once end to end; afterwards use the
 | Upload, edit, replace, move documents; fix links; manage investor sections | ✓ | ✓ | ✓ |
 | Unpublish a document (set to draft); hide an investor section | ✓ | ✓ | ✓ |
 | Delete documents | ✓ |  | ✓ |
+| Enquiries inbox (read, mark handled or spam, add notes, export CSV) | ✓ | ✓ | ✓ |
+| Delete enquiries | ✓ |  |  |
 | Media library (images) | ✓ | ✓ | ✓ |
 | Header / footer menus | ✓ | ✓ |  |
 | Redirects | ✓ | ✓ |  |
@@ -104,6 +106,7 @@ Navigation → Header or Footer.
 Documents → left panel: create, rename, hide, reorder or delete investor sections (e.g. Company Policies).
 - **Renaming keeps the URL.** Changing the slug creates redirects.
 - **Group by financial year** shows FY headings (Board Meetings, Audited Financial Statements…).
+- **Category** (Regulatory, Financial, Governance or Other) decides which filter chip on the public Investors page lists the section. A new section starts as Other.
 - A section with documents cannot be deleted. Move or delete the documents first.
 
 ### 6.2 Upload
@@ -140,6 +143,13 @@ Every page and document gets title, description, canonical URL, social-share ima
 - Document descriptions: write one sentence on what the document is; it becomes the Google snippet.
 - **Search and AI discovery**: publishing, unpublishing, moving or renaming a page or document also notifies Bing and other IndexNow search engines automatically (when the developer has set the `INDEXNOW_KEY` secret). `/llms.txt` and `/llms-full.txt` list every page and visible investor section for AI assistants and update on their own.
 
+## 7a. Enquiries (Owner, Editor, Compliance)
+Sidebar: **Enquiries**. Every message sent through the contact form lands here; the dashboard shows the count of **New** enquiries. Times are IST.
+- **Statuses:** **New** (needs a reply), **Handled** (shows who and when) and **Spam**. Submissions that fill the hidden honeypot field or are sent in under 3 seconds are filed automatically as Spam (the sender still sees "thank you"); they are kept so a real visitor caught by mistake can be recovered with **Reopen**.
+- Filter by status and subject. **Read** opens the full message; use **Mark handled**, **Mark spam**, **Reopen**, and the **Internal note** (up to 2000 characters, never shown publicly). Every change is in the Audit log.
+- **Export CSV** downloads the rows matching the current filters (up to 10,000). The export contains personal data, so each export is recorded in the Audit log with who took it and the filter used.
+- **Delete** is Owner only and permanent. The audit entry keeps only the id, subject and status, not the sender's details.
+
 ## 8. Media library
 Images only: PNG, JPG, WebP, GIF, up to 10 MB (SVG is blocked for security). Always fill **alt text**. An image used by a page or setting cannot be deleted until it is removed from that page.
 
@@ -148,6 +158,8 @@ Most redirects are created automatically (§4.4, §6.1). Add one manually for ol
 
 ## 10. Settings (Owner)
 Company details (legal name, CIN, address, phone, investor email), social links, SEO defaults, and the **GA4 measurement ID** (`G-XXXXXXX`; analytics loads only when set).
+
+**Stock quote fallback:** the site shows a live NSE: KOTYARK price (Yahoo Finance, delayed). These figures are used only when the live feed fails and the last live quote is older than 15 minutes; while the feed works they are ignored. Enter the last price and previous close; the day change and % are then calculated from them, so they cannot disagree with the price shown. A blank optional field is hidden on the site. Saving takes effect within moments.
 
 ## 11. Users (Owner)
 Add users with a role and a temporary password (12+ characters); ask them to change it at first sign-in. Deactivating a user signs them out everywhere. You cannot demote or deactivate yourself or the last Owner.
