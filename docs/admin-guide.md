@@ -145,6 +145,8 @@ Every page and document gets title, description, canonical URL, social-share ima
 
 ## 7a. Enquiries (Owner, Editor, Compliance)
 Sidebar: **Enquiries**. Every message sent through the contact form lands here; the dashboard shows the count of **New** enquiries. Times are IST.
+
+Owner, Editor and Compliance all see **every** enquiry, whatever its subject (owner decision, 16 Oct 2026). Only the Owner can delete one.
 - **Statuses:** **New** (needs a reply), **Handled** (shows who and when) and **Spam**. Submissions that fill the hidden honeypot field or are sent in under 3 seconds are filed automatically as Spam (the sender still sees "thank you"); they are kept so a real visitor caught by mistake can be recovered with **Reopen**.
 - Filter by status and subject. **Read** opens the full message; use **Mark handled**, **Mark spam**, **Reopen**, and the **Internal note** (up to 2000 characters, never shown publicly). Every change is in the Audit log.
 - **Export CSV** downloads the rows matching the current filters (up to 10,000). The export contains personal data, so each export is recorded in the Audit log with who took it and the filter used.
