@@ -68,3 +68,4 @@
 .brokenCount { background: #fef3c7; color: #92400e; border-radius: 12px; padding: 0 7px; font-size: 0.68rem; font-weight: 700; margin-left: 4px; }
 .filterToggle { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--color-text-secondary); }
 .rowHighlight td { background: #fef9c3 !important; transition: background 0.3s ease; }
+.folderMain:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 4px; }

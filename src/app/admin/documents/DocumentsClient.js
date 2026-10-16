@@ -105,7 +105,7 @@ export default function AdminDocumentsPage() {
             </div>
             <UploadPanel folderId={folder.id} onError={setError}
               onUploaded={async (n) => { setNotice(`Uploaded ${n} item${n === 1 ? '' : 's'}.`); await refresh(); }} />
-            <DocumentTable highlightId={highlightId} docs={docs} folders={folders} folderId={folder.id} onChanged={refresh} onError={setError} />
+            <DocumentTable key={folder.id} highlightId={highlightId} docs={docs} folders={folders} folderId={folder.id} onChanged={refresh} onError={setError} />
           </>
         ) : (
           <div className="admin-no-selection" style={{ padding: 60 }}>
