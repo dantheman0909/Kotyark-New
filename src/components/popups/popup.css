@@ -99,15 +99,15 @@
 .kp-mobile .kp-actions .kp-cta { flex: 1 1 auto; }
 .kp-mobile.kp-layout-fullscreen .kp-content { padding: 64px 20px 32px; }
 
-/* animation (entrance only) */
+/* animation (entrance only): on the frame, so the frame shadow and close button enter with the content */
 @keyframes kp-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes kp-rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 @keyframes kp-drop { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
 @keyframes kp-zoom { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
-.kp-anim-fade .kp-dialog { animation: kp-fade .3s var(--ease-smooth, ease) both; }
-.kp-anim-slide .kp-dialog { animation: kp-rise .35s var(--ease-smooth, ease) both; }
-.kp-anim-slide.kp-layout-top-bar .kp-dialog { animation-name: kp-drop; }
-.kp-anim-zoom .kp-dialog { animation: kp-zoom .3s var(--ease-smooth, ease) both; }
+.kp-anim-fade .kp-frame { animation: kp-fade .3s var(--ease-smooth, ease) both; }
+.kp-anim-slide .kp-frame { animation: kp-rise .35s var(--ease-smooth, ease) both; }
+.kp-anim-slide.kp-layout-top-bar .kp-frame { animation-name: kp-drop; }
+.kp-anim-zoom .kp-frame { animation: kp-zoom .3s var(--ease-smooth, ease) both; }
 .kp-anim-fade.kp-layout-modal, .kp-anim-slide.kp-layout-modal, .kp-anim-zoom.kp-layout-modal,
 .kp-anim-fade.kp-layout-fullscreen, .kp-anim-slide.kp-layout-fullscreen, .kp-anim-zoom.kp-layout-fullscreen { animation: kp-fade .25s ease both; }
 @media (prefers-reduced-motion: reduce) {
@@ -140,3 +140,6 @@
 /* Round 5: the close button is a child of the frame (not of .kp-dialog); bars are tall enough to hold it. */
 .kp-root.kp-root .kp-frame { position: relative !important; }
 .kp-root.kp-root.kp-layout-top-bar .kp-dialog, .kp-root.kp-root.kp-layout-bottom-bar .kp-dialog { min-height: 62px !important; }
+/* Close button clears a classic (Windows/desktop Linux) scrollbar on the scrolling dialog; touch uses overlay scrollbars. */
+.kp-root.kp-root .kp-frame .kp-close { right: 18px !important; }
+.kp-root.kp-root.kp-mobile .kp-frame .kp-close { right: 10px !important; }
