@@ -105,7 +105,8 @@ export async function PUT(req, { params }) {
     await audit(user, file ? 'upload' : 'update', 'document', id,
       file ? `Replaced file for "${doc.title}"` : `Updated document "${doc.title}"`,
       { before: { title: before.title, folder: before.folder_slug, status: before.status, fy: before.fy, doc_date: before.doc_date },
-        after: { title: doc.title, folder: doc.folder_slug, status: doc.status, fy: doc.fy, doc_date: doc.doc_date, fileReplaced: Boolean(file) } });
+        after: { title: doc.title, folder: doc.folder_slug, status: doc.status, fy: doc.fy, doc_date: doc.doc_date, fileReplaced: Boolean(file) },
+        ...(file ? { replacedFile: { storage_key: before.storage_key || null, original_name: before.original_name || null, size: before.size ?? null, external_url: before.external_url || null } } : {}) });
     revalidateFolder(before.folder_slug);
     if (targetFolder.slug !== before.folder_slug) revalidateFolder(targetFolder.slug);
     const warning = file && ing_noText ? NO_TEXT_WARNING : undefined;

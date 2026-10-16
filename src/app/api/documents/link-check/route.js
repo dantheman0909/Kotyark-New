@@ -50,7 +50,7 @@ async function mapWithConcurrency(items, n, fn) {
 
 // POST /api/documents/link-check
 //   -> { checked, ok, broken, error, stored, checkedAt, brokenDocuments: [{id,title,external_url,status,http_code,folder_id,folder_name,folder_slug}] }
-// owner + compliance only (documents:write). Probes documents that have an external_url and no stored file;
+// documents:write (owner, editor, compliance). Probes documents that have an external_url and no stored file;
 // `stored` counts those skipped because a file is held in App Storage (the legacy URL no longer matters).
 export async function POST() {
   try {

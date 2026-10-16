@@ -142,4 +142,4 @@
 .kp-root.kp-root.kp-layout-top-bar .kp-dialog, .kp-root.kp-root.kp-layout-bottom-bar .kp-dialog { min-height: 62px !important; }
 /* Close button clears a classic (Windows/desktop Linux) scrollbar on the scrolling dialog; touch uses overlay scrollbars. */
 .kp-root.kp-root .kp-frame .kp-close { right: 18px !important; }
-.kp-root.kp-root.kp-mobile .kp-frame .kp-close { right: 10px !important; }
+@media (pointer: coarse) { .kp-root.kp-root.kp-mobile .kp-frame .kp-close { right: 10px !important; } } /* touch: overlay scrollbars */
