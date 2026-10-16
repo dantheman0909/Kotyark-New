@@ -63,7 +63,7 @@ html:has(.kd-site), body:has(.kd-site) { background: var(--kd-ink); margin: 0; }
 .kd-eyebrow { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 20px; font-weight: 400; }
 .kd-dark .kd-eyebrow, .kd-eyebrow.on-dark { color: var(--kd-orange); }
 .kd-light .kd-eyebrow, .kd-sand .kd-eyebrow, .kd-eyebrow.on-light { color: var(--kd-green); }
-.kd-eyebrow.hero { margin-bottom: 28px; color: var(--kd-orange); }
+.kd-eyebrow.kd-eb-hero { margin-bottom: 28px; color: var(--kd-orange); }
 .kd-mono { font-family: var(--kd-mono); }
 
 .kd-h1 { margin: 0; font-weight: 800; font-size: clamp(46px,8vw,132px); line-height: .94; letter-spacing: -.045em; font-stretch: 105%; }

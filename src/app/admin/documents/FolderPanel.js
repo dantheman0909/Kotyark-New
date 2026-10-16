@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { api } from './api';
 import s from './documents.module.css';
 
-const EMPTY = { name: '', description: '', group_by: 'none', visible: true, intro_html: '' };
+const EMPTY = { name: '', description: '', group_by: 'none', category: 'Other', visible: true, intro_html: '' };
 
 function FolderForm({ initial, onSave, onCancel, saving, submitLabel }) {
   const [f, setF] = useState({ ...EMPTY, ...initial });
@@ -21,6 +21,11 @@ function FolderForm({ initial, onSave, onCancel, saving, submitLabel }) {
           <option value="none">No grouping</option>
           <option value="fy">Financial year</option>
           <option value="year">Calendar year of document date</option>
+        </select>
+      </label>
+      <label className={s.field}>Category (filter chip on the Investor hub)
+        <select className="admin-select" value={f.category} onChange={up('category')}>
+          {['Regulatory', 'Financial', 'Governance', 'Other'].map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
       </label>
       <label className={s.field}>Intro (HTML; sanitized on save)
@@ -51,7 +56,7 @@ export default function FolderPanel({ folders, selectedId, onSelect, onChanged, 
   });
   const update = (id, f) => run(() => api(`/api/folders/${id}`, {
     method: 'PUT',
-    json: { name: f.name, description: f.description, group_by: f.group_by, visible: f.visible, intro_html: f.intro_html },
+    json: { name: f.name, description: f.description, group_by: f.group_by, category: f.category, visible: f.visible, intro_html: f.intro_html },
   }));
   const toggleVisible = (f) => run(() => api(`/api/folders/${f.id}`, { method: 'PUT', json: { visible: !f.visible } }));
   const remove = (f) => {

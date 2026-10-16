@@ -10,7 +10,8 @@ export async function loadDashboard({ includeAudit = false } = {}) {
          (SELECT count(*)::int FROM pages WHERE status = 'draft') AS draft_pages,
          (SELECT count(*)::int FROM documents) AS documents,
          (SELECT count(*)::int FROM documents d WHERE ${LINK_ATTENTION_SQL}) AS broken_links,
-         (SELECT count(*)::int FROM users WHERE active) AS users`),
+         (SELECT count(*)::int FROM users WHERE active) AS users,
+         (SELECT count(*)::int FROM enquiries WHERE status = 'new') AS new_enquiries`),
     includeAudit ? query(
       `SELECT id, user_email, action, entity, entity_id, summary, created_at
          FROM audit_log ORDER BY id DESC LIMIT 15`) : Promise.resolve(null),

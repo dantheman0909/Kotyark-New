@@ -1,5 +1,5 @@
 import { CmsOrLegacy } from '@/components/blocks/PageView';
-import LegacyBiodiesel from '@/components/legacy/Biodiesel';
+import ProductPage from '@/components/site/ProductPage';
 import { overrideMetadata } from '@/lib/pages';
 import { buildMetadata } from '@/lib/seo';
 
@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic';
 const FALLBACK = buildMetadata({
   path: '/products/biodiesel',
 
-  title: 'Biodiesel B100 - Renewable Diesel Fuel',
-  description: "Clean-burning B100 biodiesel from non-edible vegetable oil. 86% less greenhouse gas. More power, better mileage. Order biodiesel now.",
+  title: { absolute: 'B100 Biodiesel Manufacturer India | Kotyark' },
+  description: 'Kotyark B100 biodiesel: mono alkyl ester from non-edible oils, 86% lower GHG than diesel, B5 to B100 blends, Bio-Fuel Authority approved. Request bulk supply.',
 });
 
 export async function generateMetadata() {
@@ -17,5 +17,5 @@ export async function generateMetadata() {
 }
 
 export default function BiodieselPage() {
-  return <CmsOrLegacy path="/products/biodiesel"><LegacyBiodiesel /></CmsOrLegacy>;
+  return <CmsOrLegacy path="/products/biodiesel"><ProductPage kind="biodiesel" /></CmsOrLegacy>;
 }

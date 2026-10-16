@@ -1,98 +1,79 @@
 // Server component: the sidebar comes from the database (visible folders), the active
-// item is passed in by the page (no usePathname needed).
+// item is passed in by the page (no usePathname needed). Filing-screen chrome: dark hero,
+// paper section with a sticky section sidebar (a labelled select below 900px).
 import Link from 'next/link';
-import { listFolders, labelForMime, formatDocDate, documentLandingPath } from '@/lib/documents';
+import { listFolders } from '@/lib/documents';
+import { getCurrentUser } from '@/lib/auth';
+import FilingSectionSelect from '@/components/site/FilingSectionSelect';
+import styles from './InvestorSubPageLayout.module.css';
 
-function DownloadArrow() {
-  return (
-    <svg className="doc-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" />
-    </svg>
-  );
-}
-
-/** Cards linking to each document's landing page. `folderSlug` is used when rows lack folder_slug. */
-export function DocumentList({ documents, folderSlug }) {
-  if (!documents || documents.length === 0) return null;
-  return (
-    <div className="doc-card-grid">
-      {documents.map((doc) => (
-        <Link key={doc.id || doc.slug} href={documentLandingPath(doc.folder_slug || folderSlug, doc)} className="doc-card">
-          <div className="doc-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-          </div>
-          <div className="doc-card-info">
-            <span className="doc-card-title">
-              {doc.title}
-              {doc.doc_date && (
-                <span style={{ display: 'block', fontSize: '0.78rem', fontWeight: 400, color: 'var(--color-text-muted)', marginTop: 2 }}>
-                  {formatDocDate(doc.doc_date)}
-                </span>
-              )}
-            </span>
-            <span className="doc-card-badge">{labelForMime(doc.mime)}</span>
-          </div>
-          <DownloadArrow />
-        </Link>
-      ))}
-    </div>
-  );
+/** 'YYYY-MM-DD' or ISO -> '04 Oct 2025' (en-GB, UTC-safe). */
+export function formatFilingDate(v) {
+  if (!v) return '';
+  const s = v instanceof Date ? v.toISOString() : String(v);
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+  if (!m) return '';
+  const t = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+  return t.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
 /**
- * @param {string} title           hero heading
+ * @param {string} title           hero heading (h1)
  * @param {string} [activeSlug]    folder slug highlighted in the sidebar
- * @param {{name:string, href:string}} [parent]  optional middle breadcrumb (e.g. the folder on a document page)
+ * @param {{name:string, href:string}} [parent]  document pages: the folder, shown as the second breadcrumb
+ * @param {string[]} [stats]       small mono line under the h1 (e.g. ['12 published', 'Latest 04 Oct 2025'])
  */
-export default async function InvestorSubPageLayout({ title, activeSlug, parent, children }) {
+export default async function InvestorSubPageLayout({ title, activeSlug, parent, stats, children }) {
   let folders = [];
   try { folders = await listFolders({ visibleOnly: true }); } catch (e) { console.error('Sidebar folders failed:', e.message); }
+  let signedIn = false;
+  try { signedIn = Boolean(await getCurrentUser()); } catch { /* anonymous */ }
+
+  const active = folders.find((f) => f.slug === activeSlug);
+  const sections = folders.map((f) => ({ slug: f.slug, name: f.name, count: f.document_count }));
 
   return (
-    <>
-      <section className="page-hero">
-        <div className="container">
-          <nav className="investor-breadcrumb" aria-label="Breadcrumb">
+    <div className={styles.root}>
+      <section className={`kd-dark ${styles.hero}`} data-screen-label="Filing — Hero">
+        <div className="kd-wrap">
+          <nav className={styles.crumbs} aria-label="Breadcrumb">
             <Link href="/investors">Investor Relations</Link>
-            <span className="investor-breadcrumb-sep">›</span>
-            {parent && (<>
-              <Link href={parent.href}>{parent.name}</Link>
-              <span className="investor-breadcrumb-sep">›</span>
-            </>)}
-            <span>{title}</span>
+            <span className={styles.sep} aria-hidden="true">/</span>
+            {parent
+              ? <Link href={parent.href}>{parent.name}</Link>
+              : <span className={styles.cur}>{active?.category || 'Filings'}</span>}
           </nav>
-          <h1>{title}</h1>
+          <h1 className={styles.h1}>{title}</h1>
+          {stats?.length > 0 && <div className={styles.stats}>{stats.map((s) => <span key={s}>{s}</span>)}</div>}
         </div>
       </section>
 
-      <section className="section">
-        <div className="container">
-          <div className="investor-layout">
-            <aside className="investor-sidebar">
-              <h3>Investor Sections</h3>
-              <nav>
-                <ul>
-                  {folders.map((f) => (
-                    <li key={f.id}>
-                      <Link href={`/investors/${f.slug}`} className={f.slug === activeSlug ? 'active' : ''}>
-                        {f.name}
-                      </Link>
-                    </li>
-                  ))}
+      <section className={`kd-light ${styles.paper}`} data-screen-label="Filing — Documents">
+        <div className={`kd-wrap ${styles.grid}`}>
+          <nav className={styles.side} aria-label="Investor sections">
+            {sections.map((s) => (
+              <Link key={s.slug} href={`/investors/${s.slug}`} aria-current={s.slug === activeSlug ? 'page' : undefined}>
+                <span>{s.name}</span><span className={styles.cnt}>{s.count}</span>
+              </Link>
+            ))}
+          </nav>
+          <div className={styles.main}>
+            <div className={styles.mobileNav}>
+              <FilingSectionSelect sections={sections} activeSlug={activeSlug} />
+              <noscript>
+                <ul className={styles.nojs}>
+                  {sections.map((s) => <li key={s.slug}><Link href={`/investors/${s.slug}`}>{s.name} ({s.count})</Link></li>)}
                 </ul>
-              </nav>
-            </aside>
-            <div className="investor-content">
-              {children}
+              </noscript>
+            </div>
+            {children}
+            <div className={styles.foot}>
+              <span>All documents are PDF filings made under SEBI (LODR) Regulations, 2015.</span>
+              {signedIn && <Link href="/admin/documents">Admin: manage documents</Link>}
             </div>
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

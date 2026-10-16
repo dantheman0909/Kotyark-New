@@ -4,7 +4,7 @@ import FormField from '@/components/admin/FormField';
 import { api } from '@/components/admin/api';
 import styles from '@/components/admin/admin.module.css';
 
-const ENTITIES = ['page', 'document', 'folder', 'media', 'nav', 'redirect', 'setting', 'user', 'session'];
+const ENTITIES = ['page', 'document', 'folder', 'media', 'nav', 'redirect', 'setting', 'user', 'session', 'enquiry'];
 const ACTIONS = ['create', 'update', 'delete', 'publish', 'unpublish', 'restore', 'upload', 'login', 'logout'];
 const fmt = (d) => new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'Asia/Kolkata' }).format(new Date(d));
 const EMPTY = { entity: '', action: '', user: '', from: '', to: '' };

@@ -22,6 +22,9 @@ export const PERMISSIONS = {
   'settings:write':   ['owner'],
   'users:manage':     ['owner'],
   'audit:read':       ['owner', 'compliance'],
+  'enquiries:read':   ['owner', 'editor', 'compliance'],
+  'enquiries:write':  ['owner', 'editor', 'compliance'],
+  'enquiries:delete': ['owner'],
 };
 
 export function can(user, capability) {
@@ -37,11 +40,28 @@ export class AuthError extends Error {
 
 const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 
+// Client IP behind the platform proxy. X-Forwarded-For is client-extendable on the left and appended to by each
+// trusted proxy on the right, so the real client is the entry TRUSTED_PROXY_HOPS positions from the right (default 1 =
+// the rightmost, i.e. the entry our own proxy appended). The index is clamped to the list; with no header we fall back
+// to x-real-ip. Shared by login throttling, the audit log and the contact-form limiter.
+function proxyHops() {
+  const n = Number.parseInt(process.env.TRUSTED_PROXY_HOPS ?? '', 10);
+  return Number.isInteger(n) && n >= 1 && n <= 10 ? n : 1;
+}
+let hopLogged = false;
+export function ipFromHeaders(h) {
+  const xff = (h.get('x-forwarded-for') || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const hops = proxyHops();
+  if (!hopLogged && process.env.REPLIT_DEPLOYMENT && xff.length) {
+    hopLogged = true;
+    console.log(`[net] x-forwarded-for has ${xff.length} entries; using hop ${hops}`); // counts only, never IPs
+  }
+  if (xff.length) return xff[Math.max(0, xff.length - hops)];
+  return h.get('x-real-ip') || null;
+}
+
 export async function clientIp() {
-  const h = await headers();
-  // Rightmost X-Forwarded-For entry: the one our own proxy appended. Earlier entries are client-supplied.
-  const xff = (h.get('x-forwarded-for') || '').split(',').map(s => s.trim()).filter(Boolean);
-  return xff[xff.length - 1] || h.get('x-real-ip') || null;
+  return ipFromHeaders(await headers());
 }
 
 /** Create a session row and set the cookie. Call from a route handler / server action. */

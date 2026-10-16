@@ -1,6 +1,20 @@
 // SEO helpers shared by every public route. Server-only.
 import { SITE_URL, SITE_NAME, absoluteUrl } from './site';
 
+// <link rel="alternate" type="text/plain"> to the LLM text files. Repeated here because a page's `alternates`
+// replaces the layout's wholesale.
+const LLM_ALTERNATES = { 'text/plain': [{ url: '/llms.txt', title: 'llms.txt' }, { url: '/llms-full.txt', title: 'llms-full.txt' }] };
+
+// Routes with a file-based card: src/app/{,about,contact,products,products/biodiesel,products/crude-glycerin,investors,
+// investors/[section],investors/[section]/[doc]}/opengraph-image.js
+const OG_FILE_PATHS = new Set(['/', '/about', '/contact', '/products', '/products/biodiesel', '/products/crude-glycerin', '/investors']);
+function hasOgFile(path) {
+  const p = (path || '/').replace(/\/$/, '') || '/';
+  if (OG_FILE_PATHS.has(p)) return true;
+  const m = p.match(/^\/investors\/[^/]+(\/[^/]+)?$/);
+  return Boolean(m);
+}
+
 /**
  * Build a Next.js Metadata object.
  * @param {object} o
@@ -13,15 +27,21 @@ import { SITE_URL, SITE_NAME, absoluteUrl } from './site';
  */
 export function buildMetadata({ title, description = '', path = '/', image, noindex = false, type = 'website' }) {
   const desc = String(description || '').slice(0, 300);
-  const img = image ? (image.startsWith('http') ? image : absoluteUrl(image)) : absoluteUrl('/images/hero-forest.jpg');
+  // An explicit image (e.g. a CMS page's SEO image) wins and beats any file-based image in the same segment.
+  // Otherwise the segment's own opengraph-image.js supplies og:image / twitter:image. Next does NOT inherit a
+  // parent's file once a child sets openGraph, and a catch-all segment cannot hold one, so paths without a
+  // file of their own (CMS pages, search) point at the generated site card.
+  const img = image ? (image.startsWith('http') ? image : absoluteUrl(image)) : hasOgFile(path) ? null : absoluteUrl('/opengraph-image');
   // A title that already names the brand must not get the layout's " | Kotyark Industries" appended again.
-  const metaTitle = typeof title === 'string' && title.toLowerCase().includes(SITE_NAME.toLowerCase()) ? { absolute: title } : title;
+  // { absolute: '...' } is passed through untouched (the exact rendered title).
+  const plainTitle = title && typeof title === 'object' ? title.absolute : title;
+  const metaTitle = typeof title !== 'string' ? title : title.toLowerCase().includes(SITE_NAME.toLowerCase()) ? { absolute: title } : title;
   return {
     title: metaTitle,
     description: desc || undefined,
-    alternates: { canonical: absoluteUrl(path) },
-    openGraph: { title, description: desc || undefined, url: absoluteUrl(path), siteName: SITE_NAME, type, images: [{ url: img }], locale: 'en_IN' },
-    twitter: { card: 'summary_large_image', title, description: desc || undefined, images: [img] },
+    alternates: { canonical: absoluteUrl(path), types: LLM_ALTERNATES },
+    openGraph: { title: plainTitle, description: desc || undefined, url: absoluteUrl(path), siteName: SITE_NAME, type, locale: 'en_IN', ...(img ? { images: [{ url: img }] } : {}) },
+    twitter: { card: 'summary_large_image', title: plainTitle, description: desc || undefined, ...(img ? { images: [img] } : {}) },
     robots: noindex ? { index: false, follow: false } : { index: true, follow: true },
   };
 }

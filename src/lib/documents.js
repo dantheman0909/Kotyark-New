@@ -10,6 +10,9 @@ export const LINK_ATTENTION_SQL = "d.link_status IN ('broken','error') AND d.sto
 
 export const GROUP_BY = ['none', 'fy', 'year'];
 
+/** Investors-hub filter chips; the DB CHECK constraint (005_folder_category.sql) allows exactly these. */
+export const FOLDER_CATEGORIES = ['Regulatory', 'Financial', 'Governance', 'Other'];
+
 // mime -> extension, and the allow-list for uploads.
 export const FILE_TYPES = {
   'application/pdf': { ext: 'pdf', label: 'PDF' },
@@ -21,7 +24,7 @@ export const FILE_TYPES = {
 };
 export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
 
-const FOLDER_COLS = `f.id, f.parent_id, f.slug, f.name, f.description, f.group_by, f.visible, f.sort_order,
+const FOLDER_COLS = `f.id, f.parent_id, f.slug, f.name, f.description, f.group_by, f.visible, f.sort_order, f.category,
   f.created_at, f.updated_at`;
 
 const DOC_COLS = `d.id, d.folder_id, d.title, d.slug, d.description, d.storage_key, d.external_url, d.original_name,

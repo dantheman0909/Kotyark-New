@@ -1,0 +1,19 @@
+/* Filing document list: sub-chips, search and rows. Values copied from the design. */
+.bar { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.bar .chip { padding: 9px 16px; }
+.search { font: inherit; font-size: 15px; padding: 12px 18px; border-radius: 999px; border: 1px solid #121A16; background: transparent; color: #121A16; outline: none; min-width: min(100%,280px); }
+.list { border-top: 1px solid #121A16; }
+.list .row { width: 100%; display: grid; grid-template-columns: 120px minmax(0,1fr) auto; gap: 20px; align-items: center; text-align: left; border-bottom: 1px solid rgba(18,26,22,.14); padding: 20px 8px; color: #121A16; }
+.list .row:hover { background: #E8E4D8; color: #121A16; }
+.when { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .06em; color: #127B62; text-transform: uppercase; }
+.mid { min-width: 0; }
+.title { display: block; font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 1.35; overflow-wrap: anywhere; }
+.meta { display: block; font-family: var(--kd-mono); font-size: 11px; color: #6A746F; margin-top: 6px; letter-spacing: .06em; text-transform: uppercase; }
+.open { font-size: 14px; font-weight: 600; white-space: nowrap; }
+.empty { padding: 48px 8px; display: flex; flex-direction: column; gap: 10px; }
+.emptyT { font-size: 20px; font-weight: 600; }
+.emptyP { font-size: 15px; color: #4A5550; }
+@media (max-width: 639.98px) {
+  .list .row { grid-template-columns: minmax(0,1fr); }
+}

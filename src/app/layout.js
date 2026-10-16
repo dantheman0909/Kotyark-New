@@ -5,7 +5,7 @@ import Script from 'next/script';
 import LayoutShell from '@/components/LayoutShell';
 import JsonLd from '@/components/JsonLd';
 import { organizationJsonLd } from '@/lib/seo';
-import { SITE_URL, SITE_NAME, absoluteUrl, getSetting } from '@/lib/site';
+import { SITE_URL, SITE_NAME, getSetting } from '@/lib/site';
 
 // Redesign typefaces, self-hosted at build time (no runtime request to Google).
 const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], display: 'swap', variable: '--font-archivo' });
@@ -15,8 +15,10 @@ const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], displa
 export const dynamic = 'force-dynamic';
 
 const DEFAULT_TITLE = 'Kotyark Industries - Leading Biodiesel Manufacturer India';
-const DEFAULT_DESCRIPTION = "India's approved biodiesel manufacturer. 480,000 KL capacity. Carbon neutral fuel for transport & industry. BSE listed. Get a quote today.";
-const OG_IMAGE = absoluteUrl('/images/hero-forest.jpg');
+const DEFAULT_DESCRIPTION = 'Kotyark Industries (NSE: KOTYARK) makes B100 biodiesel from non-edible oils: 480,000 KL a year, two zero-discharge plants, 86% lower GHG emissions.';
+const SHORT_DESCRIPTION = DEFAULT_DESCRIPTION;
+
+export const viewport = { themeColor: '#0D1411', width: 'device-width', initialScale: 1 };
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -29,19 +31,19 @@ export const metadata = {
   publisher: 'Kotyark Industries Limited',
   openGraph: {
     title: DEFAULT_TITLE,
-    description: "India's approved biodiesel manufacturer with 480,000 KL capacity. Carbon neutral fuel solutions.",
+    description: SHORT_DESCRIPTION,
     siteName: SITE_NAME,
     locale: 'en_IN',
     type: 'website',
-    images: [{ url: OG_IMAGE }],
   },
   twitter: {
     card: 'summary_large_image',
     title: DEFAULT_TITLE,
-    description: "India's approved biodiesel manufacturer with 480,000 KL capacity. Carbon neutral fuel solutions.",
-    images: [OG_IMAGE],
+    description: SHORT_DESCRIPTION,
   },
-  icons: { icon: '/favicon.ico', apple: '/images/kotyark-logo.png' },
+  // Icons come from the file conventions: src/app/favicon.ico, icon.png, apple-icon.png and manifest.js.
+  // Machine-readable site summary for LLM crawlers (llmstxt.org).
+  alternates: { types: { 'text/plain': [{ url: '/llms.txt', title: 'llms.txt' }, { url: '/llms-full.txt', title: 'llms-full.txt' }] } },
   robots: { index: true, follow: true },
 };
 

@@ -5,6 +5,7 @@ import { slugify } from '@/lib/slug';
 import { autoDescription } from '@/lib/pdf-text';
 import { deleteObject } from '@/lib/storage';
 import { revalidateFolder } from '@/lib/revalidate';
+import { pingIndexNow, publicDocPaths } from '@/lib/indexnow';
 import {
   getFolderById, getDocumentById, extForMime, documentFileUrl, documentLandingPath, addRedirect,
 } from '@/lib/documents';
@@ -52,7 +53,7 @@ export async function PUT(req, { params }) {
       if (k in meta) set[k] = meta[k];
     }
 
-    let targetFolder = { id: before.folder_id, slug: before.folder_slug };
+    let targetFolder = { id: before.folder_id, slug: before.folder_slug, visible: before.folder_visible };
     if (meta.folder_id && meta.folder_id !== before.folder_id) {
       const f = await getFolderById(meta.folder_id);
       if (!f) throw httpError(404, 'Target folder not found');
@@ -108,7 +109,12 @@ export async function PUT(req, { params }) {
         after: { title: doc.title, folder: doc.folder_slug, status: doc.status, fy: doc.fy, doc_date: doc.doc_date, fileReplaced: Boolean(file) },
         ...(file ? { replacedFile: { storage_key: before.storage_key || null, original_name: before.original_name || null, size: before.size ?? null, external_url: before.external_url || null } } : {}) });
     revalidateFolder(before.folder_slug);
-    if (targetFolder.slug !== before.folder_slug) revalidateFolder(targetFolder.slug);
+    if (targetFolder.slug !== before.folder_slug || doc.slug !== before.slug) revalidateFolder(targetFolder.slug);
+    // Ping only URLs public before (old location) or after (new location) the change.
+    pingIndexNow([
+      ...publicDocPaths(before, before.folder_slug, before.folder_visible),
+      ...publicDocPaths(doc, targetFolder.slug, targetFolder.visible),
+    ]);
     const warning = file && ing_noText ? NO_TEXT_WARNING : undefined;
     return Response.json({ document: decorate(doc), ...(warning ? { warning } : {}) });
   } catch (e) {
@@ -129,6 +135,7 @@ export async function DELETE(_req, { params }) {
     await audit(user, 'delete', 'document', id, `Deleted document "${doc.title}"`,
       { before: { slug: doc.slug, folder: doc.folder_slug, storage_key: doc.storage_key, external_url: doc.external_url } });
     revalidateFolder(doc.folder_slug);
+    pingIndexNow(publicDocPaths(doc, doc.folder_slug, doc.folder_visible)); // was public
     return Response.json({ ok: true });
   } catch (e) { return errorResponse(e); }
 }

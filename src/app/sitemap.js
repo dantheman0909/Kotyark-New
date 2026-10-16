@@ -9,6 +9,10 @@ const STATIC_PATHS = [
   '/contact', '/investors', '/investors/sebi-lodr',
 ];
 
+// Static marketing routes have no database row: their lastModified is the date the current copy shipped,
+// not the request time (a lastModified that changes on every crawl is ignored by search engines).
+const MARKETING_UPDATED = new Date('2026-10-16T00:00:00Z');
+
 function priorityFor(path) {
   if (path === '/') return 1.0;
   const depth = path.split('/').filter(Boolean).length;
@@ -16,7 +20,6 @@ function priorityFor(path) {
 }
 
 export default async function sitemap() {
-  const now = new Date();
   /** @type {Map<string, {url:string,lastModified:Date,changeFrequency:string,priority:number}>} */
   const entries = new Map();
   const put = (path, lastModified, changeFrequency, priority) => {
@@ -24,7 +27,7 @@ export default async function sitemap() {
     entries.set(url, { url, lastModified, changeFrequency, priority });
   };
 
-  for (const p of STATIC_PATHS) put(p, now, p === '/' || p === '/investors' ? 'weekly' : 'monthly', priorityFor(p));
+  for (const p of STATIC_PATHS) put(p, MARKETING_UPDATED, p === '/' || p === '/investors' ? 'weekly' : 'monthly', priorityFor(p));
 
   try {
     const [pages, folders, docs] = await Promise.all([
@@ -37,11 +40,25 @@ export default async function sitemap() {
               ORDER BY d.updated_at DESC`),
     ]);
 
+    const cmsPaths = new Set(pages.map((p) => absoluteUrl(p.path)));
     for (const p of pages) {
       if (p.noindex) { entries.delete(absoluteUrl(p.path)); continue; }
       put(p.path, new Date(p.updated_at), 'monthly', priorityFor(p.path));
     }
-    for (const f of folders) put(`/investors/${f.slug}`, new Date(f.updated_at), 'weekly', 0.7);
+    // A folder page changes when any of its documents does: lastModified = max(folder, its published docs).
+    const folderMod = new Map(folders.map((f) => [f.slug, new Date(f.updated_at)]));
+    let latest = MARKETING_UPDATED;
+    for (const d of docs) {
+      const t = new Date(d.updated_at);
+      if (t > (folderMod.get(d.folder_slug) || 0)) folderMod.set(d.folder_slug, t);
+    }
+    for (const f of folders) {
+      const t = folderMod.get(f.slug);
+      if (t > latest) latest = t;
+      put(`/investors/${f.slug}`, t, 'weekly', 0.7);
+    }
+    // The hub lists every folder, so it moves with the newest folder or document (unless a CMS page overrides below).
+    if (!cmsPaths.has(absoluteUrl('/investors'))) put('/investors', latest, 'weekly', priorityFor('/investors'));
     for (const d of docs) {
       put(`/investors/${d.folder_slug}/${d.slug}`, new Date(d.updated_at), 'yearly', 0.5);
       // Only files we host. Legacy external (Wix) URLs are never listed.

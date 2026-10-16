@@ -1,10 +1,12 @@
+import Link from 'next/link';
 import { notFound, permanentRedirect, redirect } from 'next/navigation';
-import InvestorSubPageLayout from '@/components/InvestorSubPageLayout';
+import InvestorSubPageLayout, { formatFilingDate } from '@/components/InvestorSubPageLayout';
+import styles from './doc.module.css';
 import JsonLd from '@/components/JsonLd';
 import { buildMetadata, breadcrumbJsonLd, documentJsonLd, clampDescription } from '@/lib/seo';
 import { findRedirect } from '@/lib/pages';
 import {
-  getFolderBySlug, getDocumentBySlug, documentFileUrl, documentLandingPath, labelForMime, formatDocDate,
+  getFolderBySlug, getDocumentBySlug, documentFileUrl, documentLandingPath, labelForMime,
 } from '@/lib/documents';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +17,13 @@ async function load(section, docSlug) {
   return { doc, folder: await getFolderBySlug(section, { visibleOnly: true }) };
 }
 
+// 30-65 chars: long legal titles are clamped, very short ones get the fuller brand suffix.
+function docTitle(t) {
+  const base = clampDescription(t, 42);
+  const short = `${base} | Kotyark Investors`;
+  return short.length >= 30 ? short : `${base} | Kotyark Industries Investor Relations`;
+}
+
 export async function generateMetadata({ params }) {
   const { section, doc: docSlug } = await params;
   const { doc, folder } = await load(section, docSlug);
@@ -22,10 +31,11 @@ export async function generateMetadata({ params }) {
   // Canonical always names the folder the document currently lives in.
   let description = doc.description || `${doc.title} - ${doc.folder_name}, Kotyark Industries Limited.`;
   if (description.length < 90) { // thin: build a richer fallback (stored data is not changed)
-    description = clampDescription(`${doc.title}: ${doc.fy ? `${doc.fy} ` : ''}${doc.folder_name} disclosure by Kotyark Industries Limited (BSE listed). View or download ${doc.mime === 'application/pdf' ? 'the PDF' : 'the file'}.`);
+    description = clampDescription(`${doc.title}: ${doc.fy ? `${doc.fy} ` : ''}${doc.folder_name} disclosure by Kotyark Industries Limited (NSE listed). View or download ${doc.mime === 'application/pdf' ? 'the PDF' : 'the file'}.`);
   }
+  // Long legal titles are clamped so the rendered <title> stays under ~65 chars; og:title keeps the clamp too.
   return buildMetadata({
-    title: doc.title,
+    title: { absolute: docTitle(doc.title) },
     description,
     path: documentLandingPath(doc.folder_slug, doc),
     type: 'article',
@@ -50,9 +60,20 @@ export default async function DocumentPage({ params }) {
   const isImage = doc.mime.startsWith('image/');
   const label = labelForMime(doc.mime);
 
+  const sizeStr = !doc.size ? '' : doc.size > 1048576 ? `${(doc.size / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(doc.size / 1024))} KB`;
+  const details = [
+    ['Section', doc.folder_name],
+    ['Financial year', doc.fy],
+    ['Date', doc.doc_date ? formatFilingDate(doc.doc_date) : 'Standing'],
+    ['Format', label],
+    ['Size', sizeStr],
+  ].filter(([, v]) => v);
+  const openLabel = `Open ${isPdf ? 'PDF' : label} ↗`;
+
   return (
     <InvestorSubPageLayout title={doc.title} activeSlug={doc.folder_slug}
-      parent={{ name: doc.folder_name, href: `/investors/${doc.folder_slug}` }}>
+      parent={{ name: doc.folder_name, href: `/investors/${doc.folder_slug}` }}
+      stats={[label, doc.doc_date ? formatFilingDate(doc.doc_date) : 'Standing']}>
       <JsonLd data={[
         documentJsonLd(doc, landing, fileUrl),
         breadcrumbJsonLd([
@@ -63,27 +84,30 @@ export default async function DocumentPage({ params }) {
         ]),
       ]} />
 
-      {doc.description && (
-        <p style={{ marginBottom: '16px', color: 'var(--color-text-secondary)' }}>{doc.description}</p>
-      )}
-      <p style={{ marginBottom: '20px', fontSize: '0.88rem', color: 'var(--color-text-muted)' }}>
-        {[doc.fy, doc.doc_date ? formatDocDate(doc.doc_date) : null, label].filter(Boolean).join(' · ')}
-      </p>
-
-      <div style={{ marginBottom: '24px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-        <a href={fileUrl} className="btn btn-primary" {...(stored ? { download: `${doc.slug}.${fileUrl.split('.').pop()}` } : { target: '_blank', rel: 'noopener noreferrer' })}>
-          {stored ? `Download ${label}` : 'Open document'}
-        </a>
-        <a href={`/investors/${doc.folder_slug}`} className="btn btn-secondary">Back to {doc.folder_name}</a>
+      <div className={styles.panel}>
+        {doc.description && <p className={styles.desc}>{doc.description}</p>}
+        <dl className={styles.details}>
+          {details.map(([k, v]) => (
+            <div key={k} className={styles.detail}>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className={styles.actions}>
+          <a href={fileUrl} className="kd-btn kd-btn-dark" {...(stored ? { download: `${doc.slug}.${fileUrl.split('.').pop()}` } : { target: '_blank', rel: 'noopener noreferrer' })}>
+            {openLabel}
+          </a>
+          <Link href={`/investors/${doc.folder_slug}`} className="kd-ulink">Back to {doc.folder_name}</Link>
+        </div>
       </div>
 
       {stored && isPdf && (
-        <iframe src={fileUrl} title={doc.title}
-          style={{ width: '100%', height: '80vh', minHeight: 480, border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', background: '#fff' }} />
+        <iframe src={fileUrl} title={doc.title} className={styles.frame} />
       )}
       {stored && isImage && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={fileUrl} alt={doc.title} style={{ maxWidth: '100%', height: 'auto', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }} />
+        <img src={fileUrl} alt={doc.title} className={styles.img} />
       )}
     </InvestorSubPageLayout>
   );

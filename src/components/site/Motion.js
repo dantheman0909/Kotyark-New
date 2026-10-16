@@ -18,7 +18,7 @@ function reducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 }
 
-function count(el) {
+function count(el, rafs) {
   const target = parseFloat(el.dataset.count);
   if (!Number.isFinite(target)) return;
   const pad = +(el.dataset.pad || 0);
@@ -29,9 +29,9 @@ function count(el) {
     const p = Math.min(1, (now - t0) / dur);
     const e = 1 - Math.pow(2, -10 * p);
     el.textContent = fmt(target * (p === 1 ? 1 : e));
-    if (p < 1) requestAnimationFrame(step);
+    if (p < 1) { const id = requestAnimationFrame(step); rafs.add(id); }
   };
-  requestAnimationFrame(step);
+  rafs.add(requestAnimationFrame(step));
 }
 
 export default function Motion() {
@@ -40,6 +40,7 @@ export default function Motion() {
   useEffect(() => {
     if (reducedMotion() || typeof IntersectionObserver === 'undefined') return undefined;
     const seen = new WeakSet();
+    const rafs = new Set(); // pending count() frames, cancelled on cleanup
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
@@ -47,7 +48,7 @@ export default function Motion() {
         io.unobserve(el);
         if (el.hasAttribute('data-reveal')) { el.style.opacity = '1'; el.style.transform = 'none'; }
         if (el.hasAttribute('data-line') || el.hasAttribute('data-vline')) el.style.transform = 'none';
-        if (el.hasAttribute('data-count')) count(el);
+        if (el.hasAttribute('data-count')) count(el, rafs);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
 
@@ -88,7 +89,7 @@ export default function Motion() {
     // Client-rendered content (filters, chips) can add new elements later.
     const mo = new MutationObserver(() => scan());
     mo.observe(document.body, { childList: true, subtree: true });
-    return () => { clearTimeout(t); mo.disconnect(); io.disconnect(); };
+    return () => { clearTimeout(t); mo.disconnect(); io.disconnect(); rafs.forEach((id) => cancelAnimationFrame(id)); rafs.clear(); };
   }, [pathname]);
 
   return null;

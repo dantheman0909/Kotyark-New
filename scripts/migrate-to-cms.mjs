@@ -59,8 +59,18 @@ async function group(name, fn) {
 }
 
 // ---------------------------------------------------------------- folders
+// Same slug -> category mapping as migration 005 (which only backfills rows that existed when it ran).
+const FOLDER_CATEGORY = {
+  Regulatory: ['sebi-lodr', 'board-meetings', 'closing-trading-window', 'misc-sebi-disclosure'],
+  Financial: ['annual-general-meeting', 'extra-ordinary-general-meetings', 'audited-financial-statements', 'unpaid-dividend'],
+  Governance: ['company-policies', 'moa-aoa', 'merger-and-amalgamation', 'migration-to-main-board'],
+};
+
 async function migrateFolders() {
   const t = T('document_folders');
+  // The category column comes from migration 005; on an older database it may not exist yet.
+  const { rows: [hasCat] } = await client.query(
+    `SELECT 1 AS ok FROM information_schema.columns WHERE table_name = 'document_folders' AND column_name = 'category' AND table_schema = current_schema()`);
   for (const f of snap.folders) {
     const introHtml = sanitizeRichText(`<p>${esc(snap.folderIntros[f.slug] || '')}</p>${snap.folderIntroExtraHtml?.[f.slug] || ''}`);
     const want = {
@@ -74,6 +84,9 @@ async function migrateFolders() {
         `INSERT INTO document_folders(id, parent_id, slug, name, description, intro_html, group_by, visible, sort_order, seo)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb)`,
         [f.id, want.parent_id, want.slug, want.name, want.description, want.intro_html, want.group_by, want.visible, want.sort_order, JSON.stringify(want.seo)]);
+      // Folders this script creates get their category here (005 will not backfill them on a fresh environment).
+      const cat = Object.keys(FOLDER_CATEGORY).find((c) => FOLDER_CATEGORY[c].includes(f.slug));
+      if (hasCat && cat) await client.query(`UPDATE document_folders SET category = $2 WHERE id = $1 AND category = 'Other'`, [f.id, cat]);
       t.inserted++; log(`insert folder ${f.id} (${f.slug})`);
     } else if (same(ex, want)) {
       t.unchanged++;

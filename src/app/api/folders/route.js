@@ -4,12 +4,13 @@ import { audit } from '@/lib/audit';
 import { uniqueSlug } from '@/lib/slug';
 import { sanitizeRichText } from '@/lib/sanitize';
 import { revalidateFolder } from '@/lib/revalidate';
-import { listFolders, getFolderById, GROUP_BY } from '@/lib/documents';
+import { pingIndexNow } from '@/lib/indexnow';
+import { listFolders, getFolderById, GROUP_BY, FOLDER_CATEGORIES } from '@/lib/documents';
 import crypto from 'node:crypto';
 
 export const dynamic = 'force-dynamic';
 
-const PUBLIC_FIELDS = ['id', 'parent_id', 'slug', 'name', 'description', 'group_by', 'sort_order', 'document_count'];
+const PUBLIC_FIELDS = ['id', 'parent_id', 'slug', 'name', 'description', 'group_by', 'category', 'sort_order', 'document_count'];
 
 // GET /api/folders -> { folders: [...] }
 // Unauthenticated: visible folders, public fields only (published document counts).
@@ -26,7 +27,7 @@ export async function GET() {
   } catch (e) { return errorResponse(e); }
 }
 
-// POST /api/folders  JSON { name, slug?, description?, intro_html?, group_by?, visible?, parent_id?, sort_order? } -> 201 { folder }
+// POST /api/folders  JSON { name, slug?, description?, intro_html?, group_by?, category?, visible?, parent_id?, sort_order? } -> 201 { folder }
 export async function POST(req) {
   try {
     const user = await requireUser('documents:write');
@@ -37,6 +38,8 @@ export async function POST(req) {
     if (name.length > 200) throw httpError(400, 'name is too long');
     const groupBy = body.group_by ?? 'none';
     if (!GROUP_BY.includes(groupBy)) throw httpError(400, 'group_by must be none, fy or year');
+    const category = body.category ?? 'Other';
+    if (!FOLDER_CATEGORIES.includes(category)) throw httpError(400, `category must be one of ${FOLDER_CATEGORIES.join(', ')}`);
     const parentId = body.parent_id || null;
     if (parentId && !(await getFolderById(parentId))) throw httpError(400, 'parent_id does not exist');
 
@@ -47,13 +50,14 @@ export async function POST(req) {
     }
     const id = crypto.randomUUID();
     const rows = await query(
-      `INSERT INTO document_folders(id, parent_id, slug, name, description, intro_html, group_by, visible, sort_order)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-       RETURNING id, parent_id, slug, name, description, intro_html, group_by, visible, sort_order, created_at, updated_at`,
+      `INSERT INTO document_folders(id, parent_id, slug, name, description, intro_html, group_by, visible, sort_order, category)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+       RETURNING id, parent_id, slug, name, description, intro_html, group_by, category, visible, sort_order, created_at, updated_at`,
       [id, parentId, slug, name, String(body.description || '').slice(0, 1000), sanitizeRichText(body.intro_html),
-        groupBy, body.visible !== false, sortOrder]);
-    await audit(user, 'create', 'folder', id, `Created folder "${name}"`, { after: { slug, name } });
+        groupBy, body.visible !== false, sortOrder, category]);
+    await audit(user, 'create', 'folder', id, `Created folder "${name}"`, { after: { slug, name, category } });
     revalidateFolder(slug);
+    if (rows[0].visible) pingIndexNow(['/investors', `/investors/${slug}`]);
     return Response.json({ folder: { ...rows[0], document_count: 0 } }, { status: 201 });
   } catch (e) { return errorResponse(e); }
 }

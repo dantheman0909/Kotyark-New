@@ -1,0 +1,11 @@
+/* Document landing panel (paper section). Built from the Filing screen's tokens. */
+.panel { border-top: 1px solid #121A16; padding-top: 28px; }
+.desc { margin: 0 0 24px; font-size: 17px; line-height: 1.6; color: #4A5550; max-width: 720px; }
+.details { margin: 0 0 28px; padding: 0; }
+.detail { display: grid; grid-template-columns: 160px minmax(0,1fr); gap: 20px; align-items: baseline; padding: 14px 8px; border-bottom: 1px solid rgba(18,26,22,.14); }
+.detail dt { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #6A746F; }
+.detail dd { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: #121A16; }
+.actions { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 32px; }
+.frame { width: 100%; height: 80vh; min-height: 480px; border: 1px solid rgba(18,26,22,.25); border-radius: 12px; background: #fff; display: block; }
+.img { max-width: 100%; height: auto; border-radius: 12px; border: 1px solid rgba(18,26,22,.25); }
+@media (max-width: 639.98px) { .detail { grid-template-columns: minmax(0,1fr); gap: 4px; } }

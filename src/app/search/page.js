@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { searchSite, MAX_QUERY_LENGTH } from '@/lib/search';
 import { absoluteUrl } from '@/lib/site';
+import prim from '@/components/site/prim.module.css';
 import styles from './search.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -55,29 +56,30 @@ export default async function SearchPage({ searchParams }) {
 
   return (
     <>
-      <section className="page-hero">
-        <div className="container">
-          <h1>Search</h1>
-          <p>Find pages and investor documents across the Kotyark Industries website.</p>
+      <section className={`kd-dark kd-hero-pad ${styles.hero} ${prim.root}`} aria-labelledby="search-title">
+        <div className="kd-wrap">
+          <div className={`kd-eyebrow ${prim.eb}`}>Kotyark Industries</div>
+          <h1 id="search-title" className={`kd-h1 ${prim.hd}`}>Search</h1>
+          <p className={styles.heroLead}>Find pages and investor documents across the Kotyark Industries website.</p>
           <form className={styles.heroForm} action="/search" method="get" role="search">
             {type !== 'all' && <input type="hidden" name="type" value={type} />}
-            <label htmlFor="site-search" className="sr-only" style={{ position: 'absolute', left: -9999 }}>Search the site</label>
+            <label htmlFor="site-search" className="kd-sr">Search the site</label>
             <input id="site-search" className={styles.input} type="search" name="q" defaultValue={q}
               maxLength={MAX_QUERY_LENGTH} placeholder="Search policies, notices, reports..." autoComplete="off" />
-            <button type="submit" className="btn btn-primary">Search</button>
+            <button type="submit" className="kd-btn kd-btn-primary">Search</button>
           </form>
         </div>
       </section>
 
-      <section className="section">
-        <div className="container-narrow">
+      <section className={`kd-light ${styles.results} ${prim.root}`} aria-label="Search results">
+        <div className="kd-wrap-narrow">
           {!q && (
             <div className={styles.empty}>
               <p>Enter a word or phrase above to search. Use quotes for an exact phrase and a minus sign to exclude a word.</p>
               <div className={styles.links}>
-                <Link href="/investors" className="btn btn-secondary">Investor Relations</Link>
-                <Link href="/products" className="btn btn-secondary">Products</Link>
-                <Link href="/contact" className="btn btn-secondary">Contact</Link>
+                <Link href="/investors" className={styles.pillLink}>Investor Relations</Link>
+                <Link href="/products" className={styles.pillLink}>Products</Link>
+                <Link href="/contact" className={styles.pillLink}>Contact</Link>
               </div>
             </div>
           )}
@@ -86,8 +88,8 @@ export default async function SearchPage({ searchParams }) {
             <div className={styles.empty}>
               <p>Search is temporarily unavailable. Please try again in a moment.</p>
               <div className={styles.links}>
-                <Link href="/investors" className="btn btn-secondary">Investor Relations</Link>
-                <Link href="/contact" className="btn btn-secondary">Contact</Link>
+                <Link href="/investors" className={styles.pillLink}>Investor Relations</Link>
+                <Link href="/contact" className={styles.pillLink}>Contact</Link>
               </div>
             </div>
           )}
@@ -109,8 +111,8 @@ export default async function SearchPage({ searchParams }) {
                   <h2>No results for &ldquo;{q}&rdquo;</h2>
                   <p>Check the spelling, try fewer or more general words, or browse these sections.</p>
                   <div className={styles.links}>
-                    <Link href="/investors" className="btn btn-primary">Investor Relations</Link>
-                    <Link href="/contact" className="btn btn-secondary">Contact us</Link>
+                    <Link href="/investors" className={`${styles.pillLink} ${styles.pillLinkPrimary}`}>Investor Relations</Link>
+                    <Link href="/contact" className={styles.pillLink}>Contact us</Link>
                   </div>
                 </div>
               ) : (

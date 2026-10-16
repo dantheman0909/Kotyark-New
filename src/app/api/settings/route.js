@@ -3,6 +3,7 @@ import { query, queryOne } from '@/lib/db';
 import { requireUser, errorResponse, httpError } from '@/lib/auth';
 import { audit } from '@/lib/audit';
 import { TAGS } from '@/lib/revalidate';
+import { resetManualQuoteCache } from '@/lib/stock';
 import { SETTING_KEYS, SETTINGS, emptySetting, validateSetting } from './schema';
 
 export const dynamic = 'force-dynamic';
@@ -41,6 +42,7 @@ export async function PUT(req) {
 
     await audit(user, 'update', 'setting', key, `Updated ${SETTINGS[key].label} settings`,
       { before: before?.value ?? null, after: value });
+    if (key === 'stock_quote') resetManualQuoteCache();
     revalidatePath('/', 'layout');
     revalidateTag(TAGS.settings, 'max');
     return Response.json({ ok: true, key, value });

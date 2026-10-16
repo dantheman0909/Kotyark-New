@@ -138,6 +138,7 @@ Every page and document gets title, description, canonical URL, social-share ima
 - **OG image**: the image shown when the page is shared on LinkedIn or WhatsApp.
 - **No-index**: hides a page from Google (it stays reachable by link).
 - Document descriptions: write one sentence on what the document is; it becomes the Google snippet.
+- **Search and AI discovery**: publishing, unpublishing, moving or renaming a page or document also notifies Bing and other IndexNow search engines automatically (when the developer has set the `INDEXNOW_KEY` secret). `/llms.txt` and `/llms-full.txt` list every page and visible investor section for AI assistants and update on their own.
 
 ## 8. Media library
 Images only: PNG, JPG, WebP, GIF, up to 10 MB (SVG is blocked for security). Always fill **alt text**. An image used by a page or setting cannot be deleted until it is removed from that page.

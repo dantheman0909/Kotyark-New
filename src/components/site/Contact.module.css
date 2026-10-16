@@ -1,0 +1,48 @@
+/* Contact screen. Values copied from the design's Contact markup ("Kotyark Website.dc.html"). */
+.hero { background: #0D1411; padding: 200px 0 clamp(64px,7vw,100px); }
+.wrap { max-width: 1440px; margin: 0 auto; padding: 0 clamp(20px,4vw,56px); }
+.heroEyebrow { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #F28B30; margin-bottom: 28px; }
+
+.formSection { background: #F2EFE6; color: #121A16; padding: clamp(72px,9vw,128px) 0; }
+.grid { max-width: 1440px; margin: 0 auto; padding: 0 clamp(20px,4vw,56px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,420px),1fr)); gap: clamp(48px,6vw,112px); align-items: start; }
+
+.form { display: flex; flex-direction: column; gap: 28px; }
+.group { display: flex; flex-direction: column; gap: 12px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.label { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #4A5550; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { cursor: pointer; font-size: 15px; font-weight: 500; padding: 10px 18px; border-radius: 999px; border: 1px solid #121A16; background: transparent; color: #121A16; font-family: inherit; }
+.chip[aria-pressed="true"] { background: #121A16; color: #F2EFE6; }
+.err { font-size: 13px; color: #B3261E; min-height: 18px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,240px),1fr)); gap: 20px 32px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.input { font: inherit; font-size: 17px; padding: 14px 0; border: 0; border-bottom: 1.5px solid #121A16; background: transparent; color: #121A16; outline: none; width: 100%; border-radius: 0; }
+.input:focus { border-bottom-color: #127B62; }
+.input[aria-invalid="true"] { border-bottom-color: #B3261E; }
+.textarea { resize: vertical; min-height: 120px; }
+.spacer { min-height: 18px; }
+.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.send { background: #121A16; color: #F2EFE6; border: 0; cursor: pointer; font-weight: 600; font-size: 16px; padding: 18px 32px; border-radius: 999px; font-family: inherit; transition: background .2s; }
+.send:hover { background: #127B62; }
+.send:disabled { opacity: .6; cursor: default; }
+.send:focus-visible { outline: 2px solid #127B62; outline-offset: 3px; }
+.reply { font-size: 14px; color: #4A5550; }
+.sendError { font-size: 14px; color: #B3261E; }
+
+.sent { border-top: 1.5px solid #121A16; padding-top: 40px; }
+.sentEyebrow { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #127B62; margin-bottom: 20px; }
+.sentTitle { margin: 0 0 16px; font-size: clamp(32px,4vw,56px); line-height: 1; letter-spacing: -.035em; font-weight: 700; }
+.sentNote { margin: 0 0 32px; font-size: 18px; line-height: 1.6; color: #4A5550; max-width: 520px; }
+.again { background: none; border: 0; border-bottom: 1px solid #121A16; padding: 6px 0; cursor: pointer; font-weight: 600; font-size: 15px; color: #121A16; font-family: inherit; }
+.again:hover { color: #127B62; border-color: #127B62; }
+
+.offices { display: flex; flex-direction: column; font-style: normal; }
+.office { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 24px 0; border-top: 1px solid rgba(18,26,22,.18); }
+.officeKey { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #127B62; padding-top: 4px; }
+.officeTitle { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
+.officeText { font-size: 15px; color: #4A5550; margin-top: 6px; line-height: 1.5; }
+.formSection a.mail { margin-top: 24px; align-self: flex-start; font-size: clamp(24px,2.4vw,36px); font-weight: 700; letter-spacing: -.025em; color: #127B62; border-bottom: 2px solid #127B62; }
+.formSection a.mail:hover { color: #121A16; border-color: #121A16; }
+/* The legacy globals.css gives h1/h2 a font and a green colour; the design inherits both. */
+.h1 { font-family: inherit; color: inherit; }
+.sentTitle { font-family: inherit; color: #121A16; }

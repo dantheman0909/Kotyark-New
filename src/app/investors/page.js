@@ -1,115 +1,72 @@
 import Link from 'next/link';
-import ScrollReveal from '@/components/ScrollReveal';
-
-import { buildMetadata } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
+import SharePriceCard from '@/components/site/SharePriceCard';
+import InvestorsHub from '@/components/site/InvestorsHub';
+import { buildMetadata, breadcrumbJsonLd, webPageJsonLd } from '@/lib/seo';
 import { listFolders } from '@/lib/documents';
+import { getQuote, getHistory, MANUAL_QUOTE } from '@/lib/stock';
+import styles from './investors.module.css';
 
 export const dynamic = 'force-dynamic';
 
+const DESCRIPTION = 'Investor relations for Kotyark Industries (NSE: KOTYARK): SEBI LODR disclosures, board meetings, AGM papers, policies and financial statements in one library.';
+
 export const metadata = buildMetadata({
-  title: 'Investor Relations - BSE Listed',
-  description: 'Access SEBI filings, board meetings, financial statements & company policies for Kotyark Industries Limited. BSE listed biofuel company.',
+  title: { absolute: 'Investor Relations | Kotyark Industries (NSE: KOTYARK)' },
+  description: DESCRIPTION,
   path: '/investors',
 });
 
+// The price must never hold the page up: a slow feed falls back to the manual figures and no chart.
+async function loadStock() {
+  const fallback = { quote: { ...MANUAL_QUOTE }, history: { range: '1Y', points: [] } };
+  try {
+    return await Promise.race([
+      Promise.all([getQuote(), getHistory('1Y')]).then(([quote, history]) => ({ quote, history })),
+      new Promise((resolve) => setTimeout(() => resolve(fallback), 5000)),
+    ]);
+  } catch { return fallback; }
+}
+
 export default async function InvestorsPage() {
-  let folders = [];
-  try { folders = await listFolders({ visibleOnly: true }); } catch (e) { console.error('Investor hub folders failed:', e.message); }
-  const sections = folders.map((f) => ({
-    title: f.name,
-    desc: f.description || 'View documents and filings in this section.',
-    href: `/investors/${f.slug}`,
+  // Folders (DB) and the stock calls (cached/network) are independent: run them in parallel.
+  const [folders, { quote, history }] = await Promise.all([
+    listFolders({ visibleOnly: true }).catch((e) => { console.error('Investor hub folders failed:', e.message); return []; }),
+    loadStock(),
+  ]);
+  const rows = folders.map((f) => ({
+    slug: f.slug, name: f.name, description: f.description || '', category: f.category || 'Other', count: f.document_count,
   }));
 
-  const docIcon = (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
-    </svg>
-  );
-
-  const renderCards = (docs, icon) => (
-    <div className="category-grid">
-      {docs.map((doc, i) => (
-        <Link href={doc.href} key={i} className="category-card-link">
-          <div className="category-card">
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-              <div className="doc-icon">{icon}</div>
-              <div>
-                <h4>{doc.title}</h4>
-                <p>{doc.desc}</p>
-              </div>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-
   return (
-    <>
-      <section className="page-hero">
-        <div className="container">
-          <h1>Investor Relations</h1>
-          <p>Complete regulatory filings, financial statements, and governance documents for Kotyark Industries Limited (BSE Listed).</p>
+    <div className={styles.root}>
+      <JsonLd data={[
+        webPageJsonLd({ type: 'CollectionPage', name: 'Investor Relations', path: '/investors', description: DESCRIPTION }),
+        breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Investor Relations', path: '/investors' }]),
+      ]} />
+
+      <section className="kd-dark kd-hero-pad" data-screen-label="Investors — Share price">
+        <div className="kd-wrap">
+          <p className="kd-eyebrow" style={{ marginBottom: 28 }}>Investor Relations</p>
+          <h1 className={`kd-h1 ${styles.hd}`} style={{ marginBottom: 64 }}>
+            <span className="kd-line"><span className="kd-kin" data-kin="0">Every filing,</span></span>
+            <span className="kd-line"><span className="kd-kin" data-kin="1">in the open.</span></span>
+          </h1>
+          <SharePriceCard variant="ir" initialQuote={quote} initialHistory={history} />
         </div>
       </section>
 
-      {/* Key Metrics */}
-      <section className="section">
-        <div className="container">
-          <ScrollReveal>
-            <div className="stats-grid investor-stats">
-              <div className="stat-card">
-                <div className="stat-number" style={{ fontSize: '24px' }}>BSE Listed</div>
-                <div className="stat-label">Stock Exchange</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number" style={{ fontSize: '20px', lineHeight: 1.2 }}>L15149RJ2023PLC091598</div>
-                <div className="stat-label">CIN Number</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number" style={{ fontSize: '24px' }}>SEBI Compliant</div>
-                <div className="stat-label">LODR Regulations</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number" style={{ fontSize: '24px' }}>480K KL</div>
-                <div className="stat-label">Annual Capacity</div>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      <InvestorsHub folders={rows} />
 
-      {/* Sections (from the database) */}
-      <section className="section section-alt">
-        <div className="container">
-          <ScrollReveal>
-            <div className="section-header">
-              <span className="section-tag">Disclosures</span>
-              <h2>Investor Sections</h2>
-              <p>Regulatory filings, financial statements, governance documents and other disclosures as per SEBI Listing Obligations and Disclosure Requirements (LODR).</p>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal>
-            {sections.length ? renderCards(sections, docIcon) : (
-              <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Sections will appear here shortly.</p>
-            )}
-          </ScrollReveal>
+      <section className="kd-dark kd-sec-b" data-screen-label="Investors — Desk">
+        <div className={`kd-wrap ${styles.desk}`}>
+          <h2 className={`kd-h2-b ${styles.hd}`} data-reveal="1">Questions for the compliance desk?</h2>
+          <div className={styles.deskCol} data-reveal="1">
+            <p className={styles.deskP}>Shareholder queries go straight to our compliance team. Disputes can also be raised through SEBI&apos;s Smart ODR portal.</p>
+            <Link href="/contact?subject=Investor%20relations" className="kd-btn kd-btn-primary">Contact investor relations →</Link>
+          </div>
         </div>
       </section>
-
-      {/* Contact */}
-      <section className="section section-alt">
-        <div className="container">
-          <ScrollReveal>
-            <div className="cta-section">
-              <h2>Investor Queries?</h2>
-              <p>For any investor-related queries, please reach out to our compliance team.</p>
-              <Link href="/contact" className="btn btn-primary btn-lg">Contact Investor Relations →</Link>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-    </>
+    </div>
   );
 }

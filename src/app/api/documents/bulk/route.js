@@ -2,6 +2,7 @@ import { query, tx } from '@/lib/db';
 import { requireUser, errorResponse, httpError } from '@/lib/auth';
 import { audit } from '@/lib/audit';
 import { revalidateFolder } from '@/lib/revalidate';
+import { pingIndexNow, publicDocPaths } from '@/lib/indexnow';
 import { getFolderById, addRedirect } from '@/lib/documents';
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ export async function POST(req) {
     if (!target) throw httpError(404, 'Target folder not found');
 
     const before = await query(
-      `SELECT d.id, d.slug, d.folder_id, f.slug AS folder_slug FROM documents d JOIN document_folders f ON f.id = d.folder_id
+      `SELECT d.id, d.slug, d.status, d.folder_id, f.slug AS folder_slug, f.visible AS folder_visible FROM documents d JOIN document_folders f ON f.id = d.folder_id
         WHERE d.id = ANY($1::uuid[])`, [ids]);
     const toMove = before.filter((d) => d.folder_id !== target.id);
     if (toMove.length) {
@@ -33,7 +34,13 @@ export async function POST(req) {
     }
     await audit(user, 'update', 'document', null, `Moved ${toMove.length} document(s) to ${target.name}`,
       { after: { ids: toMove.map((d) => d.id), folder: target.slug } });
-    for (const s of new Set([target.slug, ...toMove.map((d) => d.folder_slug)])) revalidateFolder(s);
+    for (const s of new Set([target.slug, ...toMove.map((d) => d.folder_slug)])) {
+      revalidateFolder(s);
+    }
+    pingIndexNow(toMove.flatMap((d) => [
+      ...publicDocPaths(d, d.folder_slug, d.folder_visible),   // old location, if it was public
+      ...publicDocPaths(d, target.slug, target.visible),       // new location, if it is public
+    ]));
     return Response.json({ ok: true, moved: toMove.length });
   } catch (e) {
     if (e?.code === '23505') return errorResponse(httpError(409, 'A moved document duplicates an external link already in the target folder'));

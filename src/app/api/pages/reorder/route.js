@@ -2,6 +2,7 @@ import { errorResponse, httpError, requireUser } from '@/lib/auth';
 import { tx } from '@/lib/db';
 import { audit } from '@/lib/audit';
 import { revalidatePagePath } from '@/lib/revalidate';
+import { pingIndexNow } from '@/lib/indexnow';
 import { assertUuid, loadPage, movePage } from '../_lib';
 
 export const dynamic = 'force-dynamic';
@@ -32,6 +33,7 @@ export async function POST(req) {
     await audit(user, 'update', 'page', null, `Reordered ${items.length} page(s)`, { after: { items: items.map(i => ({ id: i.id, parentId: i.parentId ?? undefined, navOrder: i.navOrder })) } });
     revalidatePagePath('/');
     for (const m of moved) { revalidatePagePath(m.oldPath); revalidatePagePath(m.newPath); }
+    pingIndexNow(moved.filter((m) => m.status === 'published').flatMap((m) => [m.oldPath, m.newPath]));
     return Response.json({ ok: true, moved: moved.length });
   } catch (e) { return errorResponse(e); }
 }

@@ -1,5 +1,5 @@
 import { CmsOrLegacy } from '@/components/blocks/PageView';
-import LegacyAbout from '@/components/legacy/About';
+import About from '@/components/site/About';
 import { overrideMetadata } from '@/lib/pages';
 import { buildMetadata } from '@/lib/seo';
 
@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic';
 const FALLBACK = buildMetadata({
   path: '/about',
 
-  title: "About Kotyark Industries - India's Biofuel Pioneer",
-  description: "Learn about Kotyark Industries Limited, a BSE-listed biodiesel manufacturer with 480,000 KL capacity. Zero discharge facilities in Rajasthan & Gujarat.",
+  title: { absolute: 'About Kotyark | Biodiesel Manufacturer in India' },
+  description: 'Kotyark Industries Limited (NSE: KOTYARK): board, vision and milestones of an Indian B100 biodiesel manufacturer with zero-discharge plants in Sirohi and Anand.',
 });
 
 export async function generateMetadata() {
@@ -17,5 +17,5 @@ export async function generateMetadata() {
 }
 
 export default function AboutPage() {
-  return <CmsOrLegacy path="/about"><LegacyAbout /></CmsOrLegacy>;
+  return <CmsOrLegacy path="/about"><About /></CmsOrLegacy>;
 }

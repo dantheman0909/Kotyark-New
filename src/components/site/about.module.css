@@ -1,0 +1,36 @@
+/* About sections, values from the design mock. */
+.h2 { margin: 0; font-size: clamp(32px,4vw,60px); line-height: 1; letter-spacing: -.035em; font-weight: 700; font-stretch: 108%; }
+.h2Mb56 { margin-bottom: 56px; }
+.h2Mb64 { margin-bottom: 64px; }
+
+.story { margin: 0 0 clamp(64px,8vw,120px); font-size: clamp(26px,3vw,44px); line-height: 1.2; letter-spacing: -.025em; font-weight: 500; max-width: 1100px; text-wrap: pretty; }
+.vm { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: clamp(32px,5vw,80px); }
+.rule { height: 1px; background: #121A16; margin-bottom: 24px; }
+.vmLabel { margin: 0 0 16px; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #127B62; font-weight: 400; line-height: normal; }
+.vmText { margin: 0; font-size: 20px; line-height: 1.5; }
+
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
+.person { background: #F2EFE6; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+.portrait { aspect-ratio: 4/3; background: repeating-linear-gradient(135deg, #DDD8CA 0 10px, #E5E1D4 10px 20px); display: flex; align-items: flex-end; justify-content: space-between; padding: 18px; }
+.initials { font-size: 64px; font-weight: 800; font-stretch: 70%; letter-spacing: -.03em; color: #127B62; line-height: .8; }
+.portraitTag { font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; color: #6A746F; text-transform: uppercase; }
+.personBody { padding: 24px; }
+.personName { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -.015em; line-height: normal; }
+.personRole { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #127B62; margin: 8px 0 14px; }
+.personBio { margin: 0; font-size: 15px; line-height: 1.55; color: #4A5550; }
+
+.timelineWrap { position: relative; padding-left: 40px; }
+.timeline { margin: 0; padding: 0; list-style: none; }
+.vline { position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: #F28B30; }
+.milestone { position: relative; display: grid; grid-template-columns: minmax(120px,180px) minmax(0,1fr); gap: 24px; padding: 0 0 48px; }
+.mDot { position: absolute; left: -40px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: #0D1411; border: 2px solid #F28B30; }
+.mYear { font-family: var(--kd-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: #F28B30; padding-top: 4px; }
+.mTitle { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: normal; }
+.mDesc { overflow-wrap: anywhere; margin: 8px 0 0; font-size: 16px; line-height: 1.55; color: #C9D4CE; }
+
+.plants { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 24px; }
+.plantPh { aspect-ratio: 16/10; border-radius: 20px; background: repeating-linear-gradient(135deg, #E3DED0 0 10px, #EAE6DA 10px 20px); display: flex; align-items: center; justify-content: center; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .1em; color: #6A746F; text-transform: uppercase; text-align: center; padding: 0 12px; }
+.plantHead { display: flex; gap: 16px; align-items: baseline; margin-top: 24px; }
+.plantCode { font-family: var(--kd-mono); font-size: 12px; color: #127B62; letter-spacing: .1em; text-transform: uppercase; }
+.plantName { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: normal; }
+.plantLong { margin: 10px 0 0; font-size: 16px; line-height: 1.55; color: #4A5550; }

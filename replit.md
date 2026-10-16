@@ -44,6 +44,9 @@ manage menus, redirects, media, settings and users. Every change is audited.
 | `DATABASE_URL` | yes | Provided by the Replit PostgreSQL integration |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | first boot | Creates the first Owner when no users exist (password 12+ chars) |
 | `SITE_URL` | yes | `https://www.kotyark.com` (canonical URLs, sitemap) |
+| `INDEXNOW_KEY` | optional | 8-128 letters/digits/dashes. When set in a production deployment, publishing, unpublishing, moving or deleting a page or document that is (or was) public pings IndexNow; drafts, hidden folders and nav saves never do (Bing and partners). The key is served at `/indexnow-key.txt` |
+| `TRUSTED_PROXY_HOPS` | optional (default 1) | Number of trusted reverse proxies in front of the app. The client IP (login throttling, audit log, contact-form rate limit) is the `X-Forwarded-For` entry that many positions from the right, clamped to the list, falling back to `x-real-ip`. On first use in production the app logs `[net] x-forwarded-for has N entries; using hop H` (counts only, never IPs): check that line after deploying and raise the value only if the real client sits further left |
+| `ENQUIRY_PEPPER` | optional | Secret pepper for the `ip_hash` stored with contact enquiries (sha256(ip + pepper)). When unset, no `ip_hash` is stored (NULL): there is no built-in default |
 | `REPLIT_BUCKET_ID` | optional | Overrides the bucket. Default bucket is set in `.replit` (`[objectStorage] defaultBucketID`) |
 
 ## Commands

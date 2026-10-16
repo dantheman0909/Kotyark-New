@@ -10,10 +10,10 @@ export default async function PageView({ page, preview = false }) {
     try { crumbs = await getBreadcrumbs(page); } catch (err) { console.error('[cms] breadcrumbs failed:', err.message); }
   }
   return (
-    <>
+    <div className="kd-cms-page">
       {crumbs.length > 1 && <JsonLd data={breadcrumbJsonLd(crumbs)} />}
       <BlockRenderer blocks={page.blocks} preview={preview} />
-    </>
+    </div>
   );
 }
 

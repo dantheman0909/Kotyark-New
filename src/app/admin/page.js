@@ -20,6 +20,7 @@ export default async function Dashboard() {
     { label: 'Draft pages', value: counts.draft_pages, href: '/admin/pages' },
     { label: 'Documents', value: counts.documents, href: '/admin/documents' },
     { label: 'Broken links', value: counts.broken_links, href: '/admin/documents', warn: counts.broken_links > 0 },
+    ...(can(user, 'enquiries:read') ? [{ label: 'New enquiries', value: counts.new_enquiries, href: '/admin/enquiries' }] : []),
     ...(can(user, 'users:manage') ? [{ label: 'Active users', value: counts.users, href: '/admin/users' }] : []),
   ];
 

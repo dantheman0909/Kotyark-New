@@ -35,6 +35,21 @@ export const SETTINGS = {
       ga4Id: { label: 'GA4 measurement ID', kind: 'ga4' },
     },
   },
+  stock_quote: {
+    label: 'Stock quote fallback',
+    help: 'Shown on the home page, the Investors page and the navigation only when the live NSE feed (Yahoo Finance, delayed) is unavailable. While the live feed works these figures are ignored. Change and change % are calculated from the price and previous close when both are filled in. Leave an optional field blank to hide it.',
+    fields: {
+      price: { label: 'Last price (₹)', kind: 'number', min: 0.01, max: 100000, required: true, default: 31.5 },
+      change: { label: 'Day change (₹)', kind: 'number', min: -100000, max: 100000, default: -0.68 },
+      changePct: { label: 'Day change (%)', kind: 'number', min: -100, max: 1000, default: -2.11 },
+      prevClose: { label: 'Previous close (₹)', kind: 'number', min: 0.01, max: 100000, default: 32.18 },
+      dayLow: { label: 'Day low (₹)', kind: 'number', min: 0.01, max: 100000 },
+      dayHigh: { label: 'Day high (₹)', kind: 'number', min: 0.01, max: 100000 },
+      low52: { label: '52-week low (₹)', kind: 'number', min: 0.01, max: 100000 },
+      high52: { label: '52-week high (₹)', kind: 'number', min: 0.01, max: 100000 },
+      asOf: { label: 'Figures as of', kind: 'datetime', default: '2026-10-16T10:00:00.000Z' },
+    },
+  },
 };
 
 export const SETTING_KEYS = Object.keys(SETTINGS);

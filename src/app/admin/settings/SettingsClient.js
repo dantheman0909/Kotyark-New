@@ -7,6 +7,15 @@ import { api } from '@/components/admin/api';
 import { SETTINGS } from '@/app/api/settings/fields';
 import styles from '@/components/admin/admin.module.css';
 
+// ISO instant <-> the value a datetime-local input understands (browser local time).
+const toLocalInput = (iso) => {
+  const d = iso ? new Date(iso) : null;
+  if (!d || Number.isNaN(d.getTime())) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+};
+const fromLocalInput = (v) => { const d = v ? new Date(v) : null; return d && !Number.isNaN(d.getTime()) ? d.toISOString() : ''; };
+
 function Section({ k, def, initial, canEdit }) {
   const toast = useToast();
   const [value, setValue] = useState(initial);
@@ -28,6 +37,7 @@ function Section({ k, def, initial, canEdit }) {
   return (
     <form className={styles.card} style={{ marginBottom: 16 }} onSubmit={save}>
       <h2 className={styles.cardTitle}>{def.label}</h2>
+      {def.help && <p className={styles.hint} style={{ marginTop: 0 }}>{def.help}</p>}
       {error && <div className={styles.alert} role="alert">{error}</div>}
       <div className={styles.formRow}>
         {Object.entries(def.fields).map(([f, spec]) => (
@@ -38,10 +48,17 @@ function Section({ k, def, initial, canEdit }) {
                 ? <MediaPicker value={value[f]} onChange={(v) => setValue((s) => ({ ...s, [f]: v ? (/^[0-9a-f-]{36}$/i.test(v) ? `/media/${v}` : v) : '' }))} />
                 : <span>{value[f] || '—'}</span>}
             </div>
+          ) : spec.kind === 'datetime' ? (
+            <FormField
+              key={f} id={`${k}-${f}`} label={spec.label} type="datetime-local"
+              value={toLocalInput(value[f])} disabled={!canEdit}
+              onChange={(e) => setValue((s) => ({ ...s, [f]: fromLocalInput(e.target.value) }))}
+            />
           ) : (
             <FormField
               key={f} id={`${k}-${f}`} label={spec.label}
               as={spec.multiline ? 'textarea' : 'input'}
+              {...(spec.kind === 'number' ? { type: 'number', step: 'any', min: spec.min, max: spec.max, required: spec.required } : {})}
               value={value[f]} disabled={!canEdit}
               onChange={(e) => setValue((s) => ({ ...s, [f]: e.target.value }))}
             />

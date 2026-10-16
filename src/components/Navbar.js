@@ -1,202 +1,136 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { DEFAULT_HEADER_NAV } from "@/lib/nav-defaults";
+import { useStockQuote, formatQuote } from "@/components/site/useStockQuote";
+import s from "./Navbar.module.css";
 
-export default function Navbar({ items }) {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+function isActive(pathname, href) {
+  if (!href || !pathname) return false;
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
+// Fixed 2026 nav: transparent at the top, blurred dark bar after 40px of scroll.
+// items: top-level CMS nav ([{ id, label, href, children? }]) or null for the hard-coded menu.
+export default function Navbar({ items, quote = null }) {
+  const [solid, setSolid] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropId, setDropId] = useState(null);
   const pathname = usePathname();
+  const navRef = useRef(null);
+  const { quote: live } = useStockQuote(quote);
+  const q = formatQuote(live);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setSolid(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    setMobileOpen(false);
+    setMenuOpen(false);
+    setDropId(null);
   }, [pathname]);
 
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      setMenuOpen(false);
+      setDropId(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
   const navItems = items && items.length ? items : DEFAULT_HEADER_NAV;
+  const keyOf = (i) => i.id || i.href || i.label;
 
   return (
-    <>
-      <nav
-        className={`navbar${scrolled ? " scrolled" : ""}`}
-        role="navigation"
-        aria-label="Main Navigation"
-      >
-        <Link
-          href="/"
-          className="navbar-logo"
-          aria-label="Kotyark Industries Home"
-        >
-          <img src="/images/kotyark-logo.png" alt="Kotyark Industries" />
+    <nav ref={navRef} className={`${s.nav} ${solid || menuOpen ? s.solid : ""} ${solid ? s.line : ""}`} aria-label="Main">
+      <div className={s.bar}>
+        <Link href="/" className={s.logo} aria-label="Kotyark Industries Limited home">
+          <img src="/images/kil-logo-white-trim.png" alt="Kotyark Industries Limited" width="73" height="46" />
         </Link>
 
-        <ul className="navbar-nav">
-          {navItems.map((item) => (
-            <li key={item.id || item.href}>
-              {item.href ? <Link href={item.href}>
-                {item.label}
-                {item.children && (
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
+        <ul className={s.links}>
+          {navItems.map((item) => {
+            const kids = item.children?.length ? item.children : null;
+            const active = isActive(pathname, item.href) || (kids && kids.some((c) => isActive(pathname, c.href)));
+            const open = dropId === keyOf(item);
+            return (
+              <li
+                key={keyOf(item)}
+                className={s.item}
+                onMouseEnter={kids ? () => setDropId(keyOf(item)) : undefined}
+                onMouseLeave={kids ? () => setDropId(null) : undefined}
+                onFocus={kids ? () => setDropId(keyOf(item)) : undefined}
+                onBlur={kids ? (e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDropId(null); } : undefined}
+              >
+                {item.href ? (
+                  <Link href={item.href} className={`${s.link} ${active ? s.active : ""}`} aria-current={isActive(pathname, item.href) ? "page" : undefined}>
+                    {item.label}
+                    {kids && <svg className={s.caret} width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" /></svg>}
+                  </Link>
+                ) : (
+                  <span className={`${s.link} ${s.heading}`}>{item.label}</span>
                 )}
-              </Link> : <span className="nav-heading">{item.label}</span>}
-              {item.children && (
-                <div className="dropdown-menu">
-                  {item.children.map((child) => (
-                    <Link key={child.id || child.href} href={child.href}>
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </li>
-          ))}
+                {kids && (
+                  <ul className={`${s.drop} ${open ? s.dropOpen : ""}`}>
+                    {kids.map((c) => (
+                      <li key={keyOf(c)}>
+                        <Link href={c.href} className={`${s.dropLink} ${isActive(pathname, c.href) ? s.dropActive : ""}`}>{c.label}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
-        <div className="navbar-cta">
-          <Link href="/contact" className="btn btn-primary btn-sm">
-            Contact Our Team
+        {q && (
+          <Link href="/investors" className={s.pill} aria-label={`NSE Kotyark share price ${q.priceStr} rupees`}>
+            <span className={s.dot} aria-hidden="true" />
+            <span>NSE · KOTYARK</span>
+            <span className={s.price}>₹{q.priceStr}</span>
+            <span style={{ color: q.chgColor }}>{q.pctStr}</span>
           </Link>
-          <button
-            className="navbar-toggle"
-            onClick={() => setMobileOpen(true)}
-            aria-label="Open navigation menu"
-            aria-expanded={mobileOpen}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
-      </nav>
+        )}
 
-      {/* Mobile Navigation */}
-      {mobileOpen && (
-        <div
-          className="mobile-nav-overlay"
-          style={{ display: "block" }}
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-      <div
-        className="mobile-nav"
-        style={{
-          display: mobileOpen ? "block" : "none",
-          transform: mobileOpen ? "translateX(0)" : "translateX(100%)",
-        }}
-      >
+        <Link href="/contact" className={s.cta}>Talk to our team</Link>
+
         <button
-          onClick={() => setMobileOpen(false)}
-          aria-label="Close navigation menu"
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--color-text-primary)",
-          }}
+          type="button"
+          className={s.menuBtn}
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-expanded={menuOpen}
+          aria-controls="kd-mobile-menu"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          {menuOpen ? "Close" : "Menu"}
         </button>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-            marginTop: "40px",
-          }}
-        >
+      </div>
+
+      {menuOpen && (
+        <div className={s.menu} id="kd-mobile-menu">
           {navItems.map((item) => (
-            <div key={item.id || item.href}>
+            <div key={keyOf(item)} className={s.menuGroup}>
               {item.href ? (
-              <Link
-                href={item.href}
-                style={{
-                  display: "block",
-                  padding: "12px 16px",
-                  fontSize: "16px",
-                  fontWeight: 500,
-                  color: "var(--color-text-primary)",
-                  borderRadius: "var(--radius-sm)",
-                }}
-                onClick={() => setMobileOpen(false)}
-              >
-                {item.label}
-              </Link>
+                <Link href={item.href} className={`${s.menuLink} ${isActive(pathname, item.href) ? s.active : ""}`} aria-current={isActive(pathname, item.href) ? "page" : undefined}>{item.label}</Link>
               ) : (
-                <span style={{ display: "block", padding: "12px 16px", fontSize: "16px", fontWeight: 600 }}>{item.label}</span>
+                <span className={`${s.menuLink} ${s.heading}`}>{item.label}</span>
               )}
-              {item.children &&
-                item.children.map((child) => (
-                  <Link
-                    key={child.id || child.href}
-                    href={child.href}
-                    style={{
-                      display: "block",
-                      padding: "10px 16px 10px 32px",
-                      fontSize: "15px",
-                      color: "var(--color-text-secondary)",
-                    }}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {child.label}
-                  </Link>
-                ))}
+              {item.children?.map((c) => (
+                <Link key={keyOf(c)} href={c.href} className={s.menuSub}>{c.label}</Link>
+              ))}
             </div>
           ))}
-          <Link
-            href="/contact"
-            className="btn btn-primary"
-            style={{ marginTop: "16px", textAlign: "center" }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Contact Our Team
-          </Link>
+          <Link href="/contact" className={s.menuCta}>Talk to our team</Link>
         </div>
-      </div>
-    </>
+      )}
+    </nav>
   );
 }

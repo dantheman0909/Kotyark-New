@@ -17,6 +17,7 @@ const NAV = [
   { href: '/admin/navigation', label: 'Navigation', cap: 'nav:write' },
   { href: '/admin/redirects', label: 'Redirects', cap: 'redirects:write' },
   { href: '/admin/popups', label: 'Pop-ups', cap: 'popups:write' },
+  { href: '/admin/enquiries', label: 'Enquiries', cap: 'enquiries:read' },
   { section: 'Administration' },
   { href: '/admin/settings', label: 'Settings', cap: 'settings:write' },
   { href: '/admin/users', label: 'Users', cap: 'users:manage' },
@@ -86,7 +87,11 @@ function Inner({ user, permissions, children }) {
   return (
     <div className={styles.shell}>
       <aside className={`${styles.sidebar} ${open ? styles.sidebarOpen : ''}`} aria-label="Admin navigation">
-        <div className={styles.brand}>Kotyark<small>Content admin</small></div>
+        <div className={styles.brand}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/kil-logo-white-trim.png" alt="Kotyark Industries" />
+          <small>Content admin</small>
+        </div>
         <nav className={styles.nav}>
           {visible.map((n) => n.section
             ? <div key={n.section} className={styles.navSection}>{n.section}</div>
@@ -101,6 +106,8 @@ function Inner({ user, permissions, children }) {
       <div className={styles.main}>
         <header className={styles.topbar}>
           <button type="button" className={styles.menuBtn} onClick={() => setOpen((o) => !o)} aria-label="Toggle navigation" aria-expanded={open}>&#9776;</button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className={styles.topLogo} src="/images/kil-logo-white-trim.png" alt="Kotyark Industries" />
           <div className={styles.spacer} />
           <div className={styles.userBox}>
             <span className={styles.userName}>{user.name || user.email}</span>
