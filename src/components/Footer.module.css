@@ -1,0 +1,26 @@
+/* CTA band + footer, values from the design mock. */
+.cta { padding: clamp(88px,11vw,160px) 0; font-size: 16px; line-height: normal; font-family: var(--kd-font); }
+.ctaTitle {
+  margin: 0 0 40px; font-family: var(--kd-font); color: inherit;
+  font-size: clamp(44px,7vw,120px); line-height: .94; letter-spacing: -.045em; font-weight: 800; font-stretch: 105%; max-width: 1200px;
+}
+.footer { background: #0D1411; padding: 72px 0 40px; font-size: 16px; line-height: normal; font-family: var(--kd-font); color: #F2EFE6; }
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 40px;
+  padding-bottom: 48px; border-bottom: 1px solid rgba(242,239,230,.12);
+}
+:global(.kd-site) a.logo { display: inline-block; }
+.logo img { height: 72px; width: auto; display: block; }
+.col { font-size: 15px; line-height: 1.7; color: #C9D4CE; }
+.label { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .12em; color: #9DAEA6; text-transform: uppercase; margin-bottom: 12px; }
+.addr { font-style: normal; }
+.site { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.site .label { margin-bottom: 6px; }
+:global(.kd-site) a.link { color: #C9D4CE; font-size: 15px; }
+:global(.kd-site) a.link:hover { color: #F28B30; }
+.bottom {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 28px;
+  font-family: var(--kd-mono); font-size: 11px; letter-spacing: .08em; color: #6F807A; text-transform: uppercase;
+}
+:global(.kd-site) a.login { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .08em; color: #6F807A; text-transform: uppercase; }
+:global(.kd-site) a.login:hover { color: #F28B30; }

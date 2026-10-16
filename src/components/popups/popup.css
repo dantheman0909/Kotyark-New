@@ -1,0 +1,145 @@
+/* On-brand pop-ups. Global on purpose: authors target these .kp-* classes from the Custom CSS tab,
+   and the server scopes their rules under [data-kp="<id>"]. Colours arrive as CSS variables on the root. */
+.kp-root {
+  --kp-bg: #0d3b24; --kp-text: #f0fff4; --kp-accent: #d97706; --kp-on-accent: #fff; --kp-radius: 16px;
+  --kp-w: 480px; --kp-overlay: rgba(7, 26, 16, .55);
+  position: fixed; z-index: 9000; color: var(--kp-text); font-family: var(--kp-font-body, "Inter", sans-serif);
+  font-size: 1rem; line-height: 1.55; pointer-events: none;
+}
+.kp-root.kp-preview { position: absolute; z-index: 5; }
+.kp-root style { display: none; }
+/* The frame owns the box: size, radius, shadow and clipping. Author CSS can never target it, and it clips the
+   dialog, so nothing an author is allowed to set (margins, padding, filters) can paint outside it. */
+.kp-frame { pointer-events: auto; display: flex; flex-direction: column; width: 100%; max-height: 100%; min-width: 0;
+  border-radius: var(--kp-radius); box-shadow: 0 16px 48px rgba(13, 59, 36, .28), 0 2px 8px rgba(0, 0, 0, .12);
+  overflow: hidden; contain: layout paint; }
+.kp-dialog { position: relative; background: var(--kp-bg); color: var(--kp-text); border-radius: inherit;
+  overflow: hidden; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; width: 100%; max-width: 100%; isolation: isolate; contain: layout paint; }
+.kp-dialog:focus { outline: none; }
+.kp-root :focus-visible { outline: 3px solid var(--kp-text); outline-offset: 2px; }
+
+/* layouts */
+.kp-layout-modal, .kp-layout-fullscreen { inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--kp-overlay); pointer-events: auto; }
+.kp-layout-modal .kp-frame { max-width: var(--kp-w); max-height: calc(100% - 8px); }
+.kp-layout-modal .kp-dialog, .kp-layout-slide-in .kp-dialog, .kp-layout-fullscreen .kp-dialog { overflow-y: auto; }
+.kp-layout-fullscreen { padding: 0; }
+.kp-layout-fullscreen .kp-frame { max-width: none; height: 100%; border-radius: 0; }
+.kp-layout-fullscreen .kp-dialog { justify-content: center; }
+.kp-layout-fullscreen .kp-content { max-width: 720px; margin: 0 auto; width: 100%; text-align: center; padding: 56px 24px; }
+.kp-layout-fullscreen .kp-actions { justify-content: center; }
+.kp-layout-slide-in { bottom: 20px; width: min(var(--kp-w), calc(100vw - 40px)); }
+.kp-layout-slide-in.kp-pos-bottom-right { right: 20px; }
+.kp-layout-slide-in.kp-pos-bottom-left { left: 20px; }
+.kp-layout-slide-in .kp-frame { max-height: 80vh; }
+.kp-root.kp-preview.kp-layout-slide-in .kp-frame { max-height: 100%; }
+.kp-layout-top-bar, .kp-layout-bottom-bar { left: 0; right: 0; }
+.kp-layout-top-bar { top: 0; } .kp-layout-bottom-bar { bottom: 0; }
+.kp-layout-top-bar .kp-frame, .kp-layout-bottom-bar .kp-frame { border-radius: 0; box-shadow: 0 4px 24px rgba(0, 0, 0, .18); }
+.kp-layout-top-bar .kp-dialog, .kp-layout-bottom-bar .kp-dialog { flex-direction: row; align-items: center; border-radius: 0; }
+.kp-layout-top-bar .kp-content, .kp-layout-bottom-bar .kp-content { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; padding: 14px 56px 14px 24px; flex: 1; }
+.kp-layout-top-bar .kp-text, .kp-layout-bottom-bar .kp-text { flex: 1 1 320px; min-width: 0; }
+.kp-layout-top-bar .kp-heading, .kp-layout-bottom-bar .kp-heading { font-size: 1.02rem; margin: 0; }
+.kp-layout-top-bar .kp-body, .kp-layout-bottom-bar .kp-body { font-size: .9rem; }
+.kp-layout-top-bar .kp-actions, .kp-layout-bottom-bar .kp-actions { margin-top: 0; }
+.kp-layout-top-bar .kp-image, .kp-layout-bottom-bar .kp-image { width: 64px; height: 64px; margin-left: 16px; border-radius: 8px; flex-shrink: 0; }
+
+/* content */
+.kp-content { padding: 28px 28px 24px; position: relative; flex: 1; min-width: 0; }
+.kp-eyebrow { font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--kp-accent); margin: 0 0 8px; }
+.kp-heading { font-family: var(--kp-font-heading, "Plus Jakarta Sans", sans-serif); font-size: 1.55rem; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0 0 10px; color: inherit; }
+.kp-body { font-size: .96rem; opacity: .92; }
+.kp-body > * + * { margin-top: .7em; }
+.kp-body h2, .kp-body h3, .kp-body h4 { font-family: var(--kp-font-heading, inherit); line-height: 1.25; }
+.kp-body h2 { font-size: 1.2rem; } .kp-body h3 { font-size: 1.08rem; } .kp-body h4 { font-size: 1rem; }
+.kp-body ul { list-style: disc; padding-left: 1.3em; } .kp-body ol { list-style: decimal; padding-left: 1.3em; }
+.kp-body a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.kp-body blockquote { border-left: 3px solid var(--kp-accent); padding-left: 12px; }
+.kp-image { display: block; width: 100%; height: 190px; object-fit: cover; }
+.kp-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 20px; }
+.kp-cta { display: inline-flex; align-items: center; justify-content: center; font: inherit; font-weight: 700; font-size: .92rem; line-height: 1.2;
+  padding: 11px 20px; border-radius: min(calc(var(--kp-radius) * .6), 14px); text-decoration: none; cursor: pointer;
+  background: var(--kp-accent); color: var(--kp-on-accent); border: 2px solid var(--kp-accent); transition: filter .15s, transform .15s; }
+.kp-cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.kp-btn-outline .kp-cta { background: transparent; color: var(--kp-text); }
+.kp-cta.kp-cta--secondary, .kp-btn-outline .kp-cta.kp-cta--secondary { background: transparent; color: var(--kp-text); border-color: color-mix(in srgb, var(--kp-text) 40%, transparent); }
+.kp-dismiss { background: none; border: 0; font: inherit; font-size: .85rem; color: inherit; opacity: .75; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; padding: 8px 4px; }
+.kp-dismiss:hover { opacity: 1; }
+.kp-close { position: absolute; top: 10px; right: 10px; z-index: 3; width: 38px; height: 38px; border-radius: 50%; border: 0; cursor: pointer;
+  background: color-mix(in srgb, var(--kp-bg) 70%, transparent); color: var(--kp-text); font-size: 1.5rem; line-height: 1; display: flex; align-items: center; justify-content: center; }
+.kp-close:hover { background: color-mix(in srgb, var(--kp-text) 18%, var(--kp-bg)); }
+.kp-layout-top-bar .kp-close, .kp-layout-bottom-bar .kp-close { top: 12px; right: 12px; }
+
+/* image positions (desktop) */
+.kp-img-left .kp-dialog, .kp-img-right .kp-dialog { flex-direction: row; }
+.kp-img-right .kp-dialog { flex-direction: row-reverse; }
+.kp-img-left .kp-image, .kp-img-right .kp-image { width: 38%; height: auto; min-height: 100%; flex-shrink: 0; }
+.kp-img-background .kp-image { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
+.kp-img-background .kp-dialog::before { content: ""; position: absolute; inset: 0; z-index: -1; background: color-mix(in srgb, var(--kp-bg) 74%, transparent); }
+.kp-layout-top-bar.kp-img-left .kp-image, .kp-layout-top-bar.kp-img-right .kp-image,
+.kp-layout-bottom-bar.kp-img-left .kp-image, .kp-layout-bottom-bar.kp-img-right .kp-image { width: 64px; height: 64px; min-height: 0; }
+.kp-layout-top-bar.kp-img-background .kp-image, .kp-layout-bottom-bar.kp-img-background .kp-image { width: 100%; height: 100%; margin: 0; border-radius: 0; }
+.kp-layout-fullscreen.kp-img-top .kp-image { height: 34vh; }
+
+/* widths */
+.kp-width-lg.kp-layout-modal .kp-dialog { max-width: var(--kp-w); }
+
+/* mobile: modal and slide-in become a bottom sheet; fullscreen stays fullscreen; bars stack */
+.kp-mobile.kp-layout-modal { align-items: flex-end; padding: 0; }
+.kp-mobile.kp-layout-modal .kp-frame { max-width: none; max-height: 88%; border-radius: var(--kp-radius) var(--kp-radius) 0 0; }
+.kp-mobile.kp-layout-slide-in { left: 0; right: 0; bottom: 0; width: auto; }
+.kp-mobile.kp-layout-slide-in .kp-frame { border-radius: var(--kp-radius) var(--kp-radius) 0 0; max-height: 75vh; }
+.kp-mobile.kp-img-left .kp-dialog, .kp-mobile.kp-img-right .kp-dialog { flex-direction: column; }
+.kp-mobile.kp-img-left .kp-image, .kp-mobile.kp-img-right .kp-image { width: 100%; height: 150px; min-height: 0; }
+.kp-mobile .kp-content { padding: 22px 20px 20px; }
+.kp-mobile .kp-heading { font-size: 1.3rem; }
+.kp-mobile.kp-layout-top-bar .kp-dialog, .kp-mobile.kp-layout-bottom-bar .kp-dialog { flex-direction: column; align-items: stretch; }
+.kp-mobile.kp-layout-top-bar .kp-content, .kp-mobile.kp-layout-bottom-bar .kp-content { padding: 14px 52px 14px 16px; }
+.kp-mobile.kp-layout-top-bar .kp-image, .kp-mobile.kp-layout-bottom-bar .kp-image { display: none; }
+.kp-mobile.kp-layout-top-bar.kp-img-background .kp-image, .kp-mobile.kp-layout-bottom-bar.kp-img-background .kp-image { display: block; }
+.kp-mobile .kp-actions .kp-cta { flex: 1 1 auto; }
+.kp-mobile.kp-layout-fullscreen .kp-content { padding: 64px 20px 32px; }
+
+/* animation (entrance only): on the frame, so the frame shadow and close button enter with the content */
+@keyframes kp-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes kp-rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes kp-drop { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
+@keyframes kp-zoom { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+.kp-anim-fade .kp-frame { animation: kp-fade .3s var(--ease-smooth, ease) both; }
+.kp-anim-slide .kp-frame { animation: kp-rise .35s var(--ease-smooth, ease) both; }
+.kp-anim-slide.kp-layout-top-bar .kp-frame { animation-name: kp-drop; }
+.kp-anim-zoom .kp-frame { animation: kp-zoom .3s var(--ease-smooth, ease) both; }
+.kp-anim-fade.kp-layout-modal, .kp-anim-slide.kp-layout-modal, .kp-anim-zoom.kp-layout-modal,
+.kp-anim-fade.kp-layout-fullscreen, .kp-anim-slide.kp-layout-fullscreen, .kp-anim-zoom.kp-layout-fullscreen { animation: kp-fade .25s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .kp-root, .kp-frame, .kp-dialog, .kp-cta { animation: none !important; transition: none !important; }
+}
+
+/* Root placement is enforced: editor CSS (scoped to [data-kp], specificity 0,1,0-0,2,0) cannot move the root
+   over the page. Triple class + !important beats anything the scoper can emit. */
+.kp-root.kp-root.kp-root:not(.kp-preview) { position: fixed !important; z-index: 9000 !important; transform: none !important; translate: none !important; margin: 0 !important; }
+.kp-root.kp-root.kp-root.kp-preview { position: absolute !important; z-index: 5 !important; transform: none !important; translate: none !important; margin: 0 !important; }
+.kp-layout-modal.kp-root.kp-root.kp-root, .kp-layout-fullscreen.kp-root.kp-root.kp-root { inset: 0 !important; }
+.kp-layout-top-bar.kp-root.kp-root.kp-root { top: 0 !important; left: 0 !important; right: 0 !important; bottom: auto !important; }
+.kp-layout-bottom-bar.kp-root.kp-root.kp-root { bottom: 0 !important; left: 0 !important; right: 0 !important; top: auto !important; }
+.kp-layout-slide-in.kp-root.kp-root.kp-root { top: auto !important; bottom: 20px !important; }
+.kp-layout-slide-in.kp-pos-bottom-right.kp-root.kp-root.kp-root { right: 20px !important; left: auto !important; }
+.kp-layout-slide-in.kp-pos-bottom-left.kp-root.kp-root.kp-root { left: 20px !important; right: auto !important; }
+.kp-mobile.kp-layout-slide-in.kp-root.kp-root.kp-root { bottom: 0 !important; left: 0 !important; right: 0 !important; }
+
+/* Hard limits that author CSS can never override (review: a bar or slide-in must not grow over the page,
+   and the close button must always be visible and usable). */
+.kp-root.kp-root.kp-layout-top-bar .kp-frame, .kp-root.kp-root.kp-layout-bottom-bar .kp-frame { max-height: min(40vh, 240px) !important; }
+.kp-root.kp-root.kp-layout-top-bar .kp-dialog, .kp-root.kp-root.kp-layout-bottom-bar .kp-dialog { overflow-y: auto !important; }
+.kp-root.kp-root.kp-layout-slide-in .kp-frame { max-height: 80vh !important; }
+.kp-root.kp-root.kp-mobile.kp-layout-slide-in .kp-frame { max-height: 75vh !important; }
+.kp-root.kp-root.kp-mobile.kp-layout-modal .kp-frame { max-height: 88% !important; }
+.kp-root.kp-root.kp-preview.kp-layout-slide-in .kp-frame { max-height: 100% !important; }
+.kp-root.kp-root .kp-frame .kp-close { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
+  font-size: 1.5rem !important; filter: none !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; text-shadow: none !important; transform: none !important; animation: none !important;
+  color: var(--kp-text) !important; background: color-mix(in srgb, var(--kp-text) 10%, var(--kp-bg)) !important; }
+/* Round 5: the close button is a child of the frame (not of .kp-dialog); bars are tall enough to hold it. */
+.kp-root.kp-root .kp-frame { position: relative !important; }
+.kp-root.kp-root.kp-layout-top-bar .kp-dialog, .kp-root.kp-root.kp-layout-bottom-bar .kp-dialog { min-height: 62px !important; }
+/* Close button clears a classic (Windows/desktop Linux) scrollbar on the scrolling dialog; touch uses overlay scrollbars. */
+.kp-root.kp-root .kp-frame .kp-close { right: 18px !important; }
+@media (pointer: coarse) { .kp-root.kp-root.kp-mobile .kp-frame .kp-close { right: 10px !important; } } /* touch: overlay scrollbars */

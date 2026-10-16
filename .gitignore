@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude / scratch outputs
+attached_assets/_scratch/
+
+# legacy sqlite (never commit) + local file storage
+/data/*.db*
+/.storage/
+
+# agent worktrees (parallel sub-agent checkouts)
+/.claude/worktrees/
+
+# parallel build dirs (NEXT_DIST_DIR)
+/.next-*/

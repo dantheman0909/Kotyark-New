@@ -1,0 +1,26 @@
+/* Reg. 46(2) disclosure table in the design language (paper section). */
+.intro { margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4A5550; }
+.table { width: 100%; border-collapse: collapse; border-top: 1px solid #121A16; color: #121A16; }
+.table thead th { text-align: left; font-family: var(--kd-mono); font-size: 11px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: #6A746F; padding: 14px 10px; border-bottom: 1px solid rgba(18,26,22,.14); }
+.table tbody th, .table tbody td { text-align: left; vertical-align: top; padding: 18px 10px; border-bottom: 1px solid rgba(18,26,22,.14); font-size: 16px; line-height: 1.4; font-weight: 400; }
+.table .sr { font-family: var(--kd-mono); font-size: 12px; color: #127B62; width: 70px; }
+.table .part { font-weight: 600; letter-spacing: -.01em; }
+.table .mono { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .06em; color: #6A746F; white-space: nowrap; }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.details { display: flex; flex-direction: column; gap: 2px; font-size: 15px; line-height: 1.45; color: #4A5550; margin-bottom: 6px; }
+.table a.mail { color: #127B62; font-weight: 600; border-bottom: 1px solid #127B62; }
+.table a.mail:hover { color: #121A16; border-color: #121A16; }
+.table tr.sub .part { font-weight: 400; padding-left: 28px; position: relative; }
+.table tr.sub .part::before { content: '↳'; position: absolute; left: 10px; color: #6A746F; }
+.table a.pill { display: inline-block; white-space: nowrap; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 999px; border: 1px solid #121A16; color: #121A16; background: transparent; }
+.table a.pill:hover { background: #121A16; color: #F2EFE6; }
+@media (max-width: 639.98px) {
+  .table tr.sub .part { padding-left: 18px; }
+  .table tr.sub .part::before { left: 0; }
+  .table, .table tbody, .table tr, .table tbody th, .table tbody td { display: block; width: 100%; }
+  .table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .table tbody tr { border: 1px solid rgba(18,26,22,.14); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; }
+  .table tbody th, .table tbody td { border-bottom: 0; padding: 6px 0; width: auto; }
+  .table td[data-label]::before { content: attr(data-label); display: block; font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #6A746F; margin-bottom: 2px; }
+  .table tbody th[data-label]::before { content: attr(data-label) ": "; font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #6A746F; }
+}

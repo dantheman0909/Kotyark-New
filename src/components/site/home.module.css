@@ -1,0 +1,96 @@
+/* Home page sections. Every value is copied from the inline styles in "Kotyark Website.dc.html". */
+
+/* ---- 1. Hero ---- */
+.hero { position: relative; min-height: 100vh; background: #0D1411; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+.heroImg { object-fit: cover; filter: grayscale(1) contrast(1.2) brightness(.75); opacity: .42; }
+.heroTint { position: absolute; inset: 0; background: #127B62; mix-blend-mode: multiply; opacity: .6; }
+.heroFade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(13,20,17,.35) 0%, rgba(13,20,17,0) 35%, #0D1411 92%); }
+.heroInner { position: relative; max-width: 1440px; width: 100%; margin: 0 auto; padding: 170px clamp(20px,4vw,56px) 56px; }
+.heroEyebrow { display: flex; gap: 12px; align-items: center; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #C9D4CE; margin-bottom: 28px; }
+.heroRule { width: 28px; height: 1px; background: #F28B30; display: inline-block; }
+.rot { color: #F28B30; display: inline-block; min-width: 120px; }
+.h1 { margin: 0; font-weight: 800; font-size: clamp(46px,8.2vw,138px); line-height: .94; letter-spacing: -.045em; font-stretch: 105%; }
+.kline { display: block; overflow: hidden; padding-bottom: .04em; }
+.kline2 { padding-bottom: .08em; }
+.kin { display: inline-block; }
+.outline { position: relative; display: inline-block; color: transparent; -webkit-text-stroke: 1.5px rgba(242,239,230,.6); }
+.strike { position: absolute; left: -2%; right: -2%; top: 52%; height: .075em; background: #F28B30; }
+.heroGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 40px; align-items: end; margin-top: 56px; }
+.heroLead { margin: 0 0 28px; font-size: clamp(17px,1.4vw,20px); line-height: 1.55; color: #C9D4CE; max-width: 540px; text-wrap: pretty; }
+
+.marqWrap { position: relative; border-top: 1px solid rgba(242,239,230,.12); overflow: hidden; padding: 18px 0; }
+.marqTrack { display: flex; gap: 56px; white-space: nowrap; width: max-content; font-family: var(--kd-mono); font-size: 13px; letter-spacing: .06em; color: #C9D4CE; text-transform: uppercase; will-change: transform; }
+.marqList { display: flex; gap: 56px; margin: 0; padding: 0; list-style: none; }
+.marqItem { display: flex; gap: 56px; align-items: center; }
+.marqDiamond { color: #F28B30; }
+
+/* ---- headings shared by the light/dark sections ---- */
+.h2 { margin: 0; font-size: clamp(34px,4.6vw,68px); line-height: 1; letter-spacing: -.035em; font-weight: 700; font-stretch: 108%; }
+.balance { text-wrap: balance; }
+.maxW900 { max-width: 900px; }
+
+/* ---- 2. Scale ---- */
+.scaleHead { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 32px; align-items: end; margin-bottom: clamp(56px,7vw,96px); }
+.scaleLead { margin: 0; font-size: 18px; line-height: 1.6; color: #4A5550; max-width: 520px; justify-self: end; text-wrap: pretty; }
+.stats { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: clamp(28px,2.6vw,48px) clamp(16px,2.6vw,48px); }
+.stat { min-width: 0; }
+.statRule { height: 1px; background: #121A16; margin-bottom: 28px; }
+.statBody { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.statUnit { font-family: var(--kd-mono); font-size: clamp(10px,1vw,13px); letter-spacing: .08em; text-transform: uppercase; color: #127B62; white-space: nowrap; }
+.statNum { font-size: clamp(30px,5.2vw,100px); font-weight: 700; line-height: .9; letter-spacing: -.04em; font-stretch: 68%; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.statLabel { margin: 18px 0 0; font-size: clamp(13px,1.2vw,16px); line-height: 1.5; color: #4A5550; max-width: 260px; text-wrap: pretty; }
+@media (max-width: 719.98px) {
+  .stats { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .statNum { font-size: clamp(40px,11vw,72px); }
+}
+
+/* ---- 4. Products ---- */
+.productsHead { margin-bottom: 56px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 24px; }
+.card { background: #E8E4D8; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; }
+.cardImg { position: relative; aspect-ratio: 16/10; overflow: hidden; }
+.cardImg img { object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.1,1); }
+.cardImg:hover img { transform: scale(1.06); }
+.cardBody { padding: 32px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+.cardTag { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #127B62; }
+.cardName { margin: 0; font-size: clamp(28px,2.6vw,40px); font-weight: 700; letter-spacing: -.03em; font-stretch: 105%; line-height: normal; }
+.cardDesc { margin: 0; font-size: 17px; line-height: 1.6; color: #4A5550; max-width: 520px; }
+
+/* ---- 5. Footprint ---- */
+.footGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(32px,5vw,80px); align-items: center; }
+.h2Foot { margin: 0 0 24px; font-size: clamp(32px,4vw,60px); line-height: 1; letter-spacing: -.035em; font-weight: 700; font-stretch: 108%; text-wrap: balance; }
+.footLead { margin: 0 0 40px; font-size: 17px; line-height: 1.6; color: #C9D4CE; max-width: 520px; }
+.plants { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.plant { display: grid; grid-template-columns: 90px 1fr; gap: 20px; padding: 22px 0; border-top: 1px solid rgba(242,239,230,.12); }
+.plantCode { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .12em; color: #F28B30; text-transform: uppercase; }
+.plantName { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+.plantAddr { font-size: 15px; color: #9DAEA6; margin-top: 6px; line-height: 1.5; }
+.mapPanel { position: relative; height: clamp(440px,52vw,660px); border: 1px solid rgba(242,239,230,.1); border-radius: 24px; overflow: hidden; background: #101915; }
+.canvas { width: 100%; height: 100%; display: block; }
+.mapLegend { position: absolute; left: 20px; bottom: 18px; right: 20px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--kd-mono); font-size: 11px; letter-spacing: .08em; color: #9DAEA6; text-transform: uppercase; }
+.mapKey { display: flex; gap: 8px; align-items: center; }
+.mapDot { width: 8px; height: 8px; border-radius: 50%; background: #F28B30; }
+
+/* ---- 6. Recognition ---- */
+.recGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: clamp(32px,5vw,80px); align-items: center; }
+.recH2 { margin-bottom: 24px; }
+.recLead { margin: 0 0 32px; font-size: 18px; line-height: 1.6; color: #4A5550; max-width: 520px; text-wrap: pretty; }
+.facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 28px; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.facts dt { color: #6A746F; }
+.facts dd { margin: 0; }
+.awards { display: grid; grid-template-columns: 1fr 1.4fr; grid-template-rows: auto auto; gap: 14px; }
+.award { position: relative; border-radius: 6px; overflow: hidden; }
+.award img { display: block; object-fit: cover; }
+.awardWide { grid-column: 1 / span 2; aspect-ratio: 730/546; }
+.awardWide img { width: 100%; height: 100%; }
+.awardCert { aspect-ratio: 3/4; }
+
+/* ---- 7. Investors ---- */
+.invH2 { margin-bottom: 56px; }
+.invGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: clamp(24px,4vw,64px); }
+.irList { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+:global(.kd-site) a.irRow { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; text-align: left; border-top: 1px solid rgba(242,239,230,.12); padding: 24px 0; color: #F2EFE6; }
+:global(.kd-site) a.irRow:hover { color: #F28B30; }
+.irTitle { display: block; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+.irDesc { display: block; font-size: 15px; color: #9DAEA6; margin-top: 6px; }
+.irArrow { font-size: 22px; }

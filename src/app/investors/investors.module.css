@@ -1,0 +1,6 @@
+/* Investors hub: hero + desk sections (values copied from the design). */
+.root { font-size: 16px; line-height: normal; font-family: var(--kd-font); }
+.hd { font-family: var(--kd-font); color: inherit; }
+.desk { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,400px),1fr)); gap: 40px; align-items: end; }
+.deskCol { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+.deskP { margin: 0; font-size: 17px; line-height: 1.6; color: #C9D4CE; max-width: 520px; }

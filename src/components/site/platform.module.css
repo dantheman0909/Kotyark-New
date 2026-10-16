@@ -1,0 +1,66 @@
+/* Platform (products) sections, values from the design mock. */
+@media (prefers-reduced-motion: reduce) { :global(html) { scroll-behavior: auto; } }
+.anchor { scroll-margin-top: 70px; }
+
+.heroGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(28px,4vw,64px); align-items: end; margin-top: clamp(40px,5vw,72px); padding-top: clamp(28px,3vw,40px); border-top: 1px solid rgba(242,239,230,.12); }
+.heroLead { margin: 0; font-size: clamp(17px,1.4vw,20px); line-height: 1.55; color: #C9D4CE; max-width: 520px; text-wrap: pretty; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+:global(.kd-site) a.tile { text-align: left; background: rgba(242,239,230,.04); border: 1px solid rgba(242,239,230,.14); border-radius: 18px; padding: 12px; color: #F2EFE6; display: flex; flex-direction: column; gap: 14px; transition: border-color .2s; }
+:global(.kd-site) a.tile:hover { border-color: #F28B30; color: #F2EFE6; }
+.tileImg { position: relative; width: 100%; aspect-ratio: 16/10; border-radius: 10px; overflow: hidden; display: block; }
+.tileImg img { object-fit: cover; }
+.tileRow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 4px 4px; }
+.tileName { font-size: 18px; font-weight: 600; letter-spacing: -.015em; }
+.tileArrow { color: #F28B30; }
+.tileMeta { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #9DAEA6; padding: 0 4px 4px; }
+
+.h2 { margin: 0; font-size: clamp(32px,4vw,60px); line-height: 1; letter-spacing: -.035em; font-weight: 700; font-stretch: 108%; }
+.productH2 { margin: 0 0 20px; font-size: clamp(40px,5vw,76px); line-height: .95; letter-spacing: -.04em; font-weight: 800; font-stretch: 105%; }
+.productLead { margin: 0 0 40px; font-size: 18px; line-height: 1.6; color: #4A5550; max-width: 560px; text-wrap: pretty; }
+
+.b100Grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: clamp(32px,5vw,80px); }
+.stickyImg { position: sticky; top: 110px; border-radius: 24px; overflow: hidden; aspect-ratio: 1/1; }
+.stickyImg img { object-fit: cover; }
+.specs { margin: 0; border-top: 1px solid #121A16; }
+.specRow { display: grid; grid-template-columns: minmax(140px,.8fr) 1.2fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid rgba(18,26,22,.14); }
+.specRow dt { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #6A746F; padding-top: 3px; }
+.specRow dd { margin: 0; font-size: 16px; line-height: 1.45; }
+
+/* Blend explorer */
+.blendH2 { margin-bottom: 56px; max-width: 900px; }
+.blendGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(32px,5vw,80px); align-items: end; }
+.blendBig { font-size: clamp(110px,15vw,230px); font-weight: 800; line-height: .82; font-stretch: 66%; letter-spacing: -.04em; }
+.range { width: 100%; margin-top: 36px; accent-color: #F28B30; }
+.rangeTicks { display: flex; justify-content: space-between; font-family: var(--kd-mono); font-size: 11px; color: #9DAEA6; margin-top: 8px; }
+.blendSide { display: flex; flex-direction: column; gap: 28px; }
+.mix { display: flex; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(242,239,230,.14); }
+.mixFill { background: #F28B30; transition: width .4s cubic-bezier(.2,.7,.1,1); }
+.mixRest { flex: 1; background: repeating-linear-gradient(135deg, #1A2520 0 8px, #141E1A 8px 16px); }
+.mixLabels { display: flex; justify-content: space-between; font-family: var(--kd-mono); font-size: 12px; color: #C9D4CE; margin-top: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.statPair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.statBox { border: 1px solid rgba(242,239,230,.12); border-radius: 18px; padding: 22px; }
+.statBoxLabel { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .1em; color: #9DAEA6; text-transform: uppercase; }
+.statBoxNum { font-size: 52px; font-weight: 700; font-stretch: 76%; margin-top: 8px; letter-spacing: -.03em; }
+.statBoxEngine { font-size: 22px; font-weight: 600; margin-top: 14px; line-height: 1.25; }
+.blendNote { font-family: var(--kd-mono); font-size: 11px; color: #6F807A; letter-spacing: .04em; line-height: 1.6; }
+
+/* Applications */
+.appsH2 { margin-bottom: 56px; }
+.apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(24px,3vw,48px); margin: 0; padding: 0; list-style: none; }
+.appRule { height: 1px; background: #121A16; margin-bottom: 24px; }
+.appNum { font-family: var(--kd-mono); font-size: 12px; color: #127B62; margin-bottom: 16px; }
+.appTitle { margin: 0 0 12px; font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: normal; }
+.appDesc { margin: 0; font-size: 16px; line-height: 1.6; color: #4A5550; }
+
+/* Glycerin */
+.glyGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: clamp(32px,5vw,80px); align-items: center; }
+.glyLead { margin: 0 0 32px; font-size: 18px; line-height: 1.6; color: #4A5550; max-width: 560px; }
+.uses { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.uses li { font-size: 15px; padding: 10px 16px; border: 1px solid #121A16; border-radius: 999px; }
+.glyImg { position: relative; border-radius: 24px; overflow: hidden; aspect-ratio: 4/3; }
+.glyImg img { object-fit: cover; }
+
+.backRow { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+
+.productCta { margin-top: clamp(32px,4vw,56px); }
+.backSec { padding: clamp(40px,5vw,64px) 0; border-top: 1px solid rgba(18,26,22,.14); }
