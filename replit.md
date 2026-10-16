@@ -47,7 +47,7 @@ manage menus, redirects, media, settings and users. Every change is audited.
 | `document_folders` + `documents` | Investor sections (with a `category` of Regulatory / Financial / Governance / Other that drives the Investors hub filter chips) and documents (file in App Storage or legacy external URL), PDF text for search, link-check status |
 | `popups` + `popup_stats` | On-brand pop-ups: content/design/rules as JSON, raw author CSS plus the postcss-scoped CSS that is the only CSS rendered; per-day views/clicks/dismissals. Active ones load in `LayoutShell` (path-filtered via the `x-kp-path` header set in `src/proxy.js`), shown by `PopupHost`; the shared renderer is `components/popups/Popup.js` |
 | `nav_items`, `redirects`, `site_settings`, `media` | Menus, 301s, company/SEO/GA4 settings, images |
-| `enquiries` | Contact-form submissions: status `new` / `handled` / `spam`, internal note, handler, optional `ip_hash` (only when `ENQUIRY_PEPPER` or `SESSION_SECRET` is set) |
+| `enquiries` | Contact-form submissions: status `new` / `handled` / `spam`, internal note, handler, optional `ip_hash` (only when `ENQUIRY_PEPPER` is set) |
 | `users`, `sessions`, `login_attempts`, `audit_log` | Access control and audit trail |
 
 ### Key routes
@@ -78,7 +78,7 @@ manage menus, redirects, media, settings and users. Every change is audited.
 | `SITE_URL` | yes | `https://www.kotyark.com` (canonical URLs, sitemap) |
 | `INDEXNOW_KEY` | optional | 8-128 letters/digits/dashes. When set in a production deployment, publishing, unpublishing, moving or deleting a page or document that is (or was) public pings IndexNow; drafts, hidden folders and nav saves never do (Bing and partners). The key is served at `/indexnow-key.txt` |
 | `TRUSTED_PROXY_HOPS` | optional (default 1) | Number of trusted reverse proxies in front of the app. The client IP (login throttling, audit log, contact-form rate limit) is the `X-Forwarded-For` entry that many positions from the right, clamped to the list, falling back to `x-real-ip`. On first use in production the app logs `[net] x-forwarded-for has N entries; using hop H` (counts only, never IPs): check that line after deploying and raise the value only if the real client sits further left |
-| `ENQUIRY_PEPPER` / `SESSION_SECRET` | optional | Secret key for the `ip_hash` stored with contact enquiries (HMAC-SHA256 of the IP). `ENQUIRY_PEPPER` wins; otherwise `SESSION_SECRET` is used. When neither is set, no `ip_hash` is stored (NULL): there is no built-in default |
+| `ENQUIRY_PEPPER` | optional | Secret key for the `ip_hash` stored with contact enquiries (HMAC-SHA256 of the IP). When unset, no `ip_hash` is stored (NULL): there is no built-in default |
 | `STOCK_YAHOO_URL` | development only | Replaces the Yahoo chart URL to simulate a dead or slow feed; ignored when `REPLIT_DEPLOYMENT` is set |
 | `REPLIT_BUCKET_ID` | optional | Overrides the bucket. Default bucket is set in `.replit` (`[objectStorage] defaultBucketID`) |
 

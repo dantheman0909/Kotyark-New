@@ -31,5 +31,5 @@ Dated, newest first. User-visible changes only; architecture is in `replit.md`.
 - IndexNow is pinged only when public content changes (never for drafts, hidden sections or menu saves).
 - `POST /api/contact` reads at most 20 KB of the body regardless of `Content-Length`, is limited to 5 messages per IP per
   10 minutes, and rejects unknown content types. The client IP honours `TRUSTED_PROXY_HOPS`.
-- The enquiry IP is stored only as an HMAC keyed by `ENQUIRY_PEPPER` or `SESSION_SECRET` (nothing stored when neither is set). CSV export neutralises spreadsheet formulas.
-- New env vars: `INDEXNOW_KEY`, `TRUSTED_PROXY_HOPS`, `ENQUIRY_PEPPER` or `SESSION_SECRET` (optional); `STOCK_YAHOO_URL` (development only).
+- The enquiry IP is stored only as an HMAC keyed by `ENQUIRY_PEPPER` (nothing stored when it is unset). CSV export neutralises spreadsheet formulas.
+- New env vars: `INDEXNOW_KEY`, `TRUSTED_PROXY_HOPS`, `ENQUIRY_PEPPER` (optional); `STOCK_YAHOO_URL` (development only).
