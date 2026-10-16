@@ -26,12 +26,13 @@ function limited(key) {
   return false;
 }
 
-// Without ENQUIRY_PEPPER we store no hash at all (NULL): a hash of an IPv4 address is trivially reversible without a
-// secret pepper, and a hard-coded one would be public in the source.
+// The IP is stored only as a keyed hash: HMAC-SHA256 with ENQUIRY_PEPPER, else SESSION_SECRET (the secret set on Replit).
+// With neither set we store no hash at all (NULL): an unkeyed hash of an IPv4 address is trivially reversible, and a
+// hard-coded key would be public in the source. Changing the secret only stops old and new hashes from matching.
 const hashIp = (ip) => {
-  const pepper = process.env.ENQUIRY_PEPPER;
-  if (!pepper || !ip) return null;
-  return crypto.createHash('sha256').update(ip + pepper).digest('hex');
+  const key = process.env.ENQUIRY_PEPPER || process.env.SESSION_SECRET;
+  if (!key || !ip) return null;
+  return crypto.createHmac('sha256', key).update(ip).digest('hex');
 };
 
 // Read at most MAX_BODY bytes from the stream, whatever content-length claims (or omits, e.g. chunked).
