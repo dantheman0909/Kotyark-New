@@ -1,9 +1,8 @@
 // Hard-coded navigation used when the nav_items table is empty or the database is unreachable.
-// Keep in step with the original site navigation so an empty CMS never changes the live site.
+// Order and labels follow the 2026 redesign (Home, Products, Investors, About, Contact).
 
 export const DEFAULT_HEADER_NAV = [
   { id: 'd-home', label: 'Home', href: '/' },
-  { id: 'd-about', label: 'About Us', href: '/about' },
   {
     id: 'd-products',
     label: 'Products',
@@ -14,6 +13,7 @@ export const DEFAULT_HEADER_NAV = [
     ],
   },
   { id: 'd-investors', label: 'Investors', href: '/investors' },
+  { id: 'd-about', label: 'About', href: '/about' },
   { id: 'd-contact', label: 'Contact', href: '/contact' },
 ];
 

@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Kotyark redesign: shared tokens and primitives (2026 design handoff).
+   Values are copied verbatim from "Kotyark Website.dc.html". Every class is
+   prefixed kd- so the legacy globals.css (still used by CMS blocks) is untouched.
+   ========================================================================== */
+
+:root {
+  --kd-ink: #0D1411;      /* page dark */
+  --kd-ink-2: #101915;    /* map panel */
+  --kd-paper: #F2EFE6;    /* light section + text on dark */
+  --kd-sand: #E8E4D8;     /* alt light section, cards */
+  --kd-sand-2: #E3DED0;
+  --kd-text-dark: #121A16;
+  --kd-green: #127B62;
+  --kd-orange: #F28B30;
+  --kd-orange-hover: #FFA457;
+  --kd-mist: #C9D4CE;     /* body text on dark */
+  --kd-sage: #9DAEA6;     /* muted on dark */
+  --kd-slate: #4A5550;    /* body text on light */
+  --kd-stone: #6A746F;    /* muted on light */
+  --kd-moss: #6F807A;     /* faint on dark */
+  --kd-up: #5FD1A6;
+  --kd-down: #FF7A6B;
+  --kd-error: #B3261E;
+  --kd-line-dark: rgba(242,239,230,.12);
+  --kd-line-light: rgba(18,26,22,.14);
+  --kd-pad-x: clamp(20px,4vw,56px);
+  --kd-ease: cubic-bezier(.2,.7,.1,1);
+  --kd-font: var(--font-archivo), 'Archivo', system-ui, sans-serif;
+  --kd-mono: var(--font-mono), 'JetBrains Mono', monospace;
+}
+
+.kd-site {
+  font-family: var(--kd-font);
+  color: var(--kd-paper);
+  background: var(--kd-ink);
+  -webkit-font-smoothing: antialiased;
+}
+.kd-site *, .kd-site *::before, .kd-site *::after { box-sizing: border-box; }
+.kd-site a { color: var(--kd-orange); text-decoration: none; }
+.kd-site a:hover { color: var(--kd-orange-hover); }
+.kd-site button { font: inherit; }
+.kd-site input[type=range] { accent-color: var(--kd-orange); }
+.kd-site ::selection { background: var(--kd-orange); color: var(--kd-ink); }
+.kd-site :focus-visible { outline: 2px solid var(--kd-orange); outline-offset: 3px; }
+html:has(.kd-site), body:has(.kd-site) { background: var(--kd-ink); margin: 0; }
+
+/* Visually hidden but readable by crawlers and screen readers. */
+.kd-sr { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- layout ---- */
+.kd-wrap { max-width: 1440px; margin: 0 auto; padding: 0 var(--kd-pad-x); width: 100%; }
+.kd-wrap-narrow { max-width: 1100px; margin: 0 auto; padding: 0 var(--kd-pad-x); }
+.kd-dark { background: var(--kd-ink); color: var(--kd-paper); }
+.kd-light { background: var(--kd-paper); color: var(--kd-text-dark); }
+.kd-sand { background: var(--kd-sand); color: var(--kd-text-dark); }
+.kd-green-bg { background: var(--kd-green); color: var(--kd-paper); }
+.kd-sec { padding: clamp(88px,11vw,160px) 0; }      /* home sections */
+.kd-sec-b { padding: clamp(88px,10vw,140px) 0; }    /* inner-page sections */
+.kd-hero-pad { padding: 200px 0 clamp(72px,8vw,120px); } /* inner-page hero */
+
+/* ---- type ---- */
+.kd-eyebrow { font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 20px; font-weight: 400; }
+.kd-dark .kd-eyebrow, .kd-eyebrow.on-dark { color: var(--kd-orange); }
+.kd-light .kd-eyebrow, .kd-sand .kd-eyebrow, .kd-eyebrow.on-light { color: var(--kd-green); }
+.kd-eyebrow.hero { margin-bottom: 28px; color: var(--kd-orange); }
+.kd-mono { font-family: var(--kd-mono); }
+
+.kd-h1 { margin: 0; font-weight: 800; font-size: clamp(46px,8vw,132px); line-height: .94; letter-spacing: -.045em; font-stretch: 105%; }
+.kd-h1 .kd-line { display: block; overflow: hidden; padding-bottom: .04em; }
+.kd-h1 .kd-line:last-child { padding-bottom: .06em; }
+.kd-h1 .kd-kin { display: inline-block; }
+.kd-accent { color: var(--kd-orange); }
+
+/* Section heading, "home" size (68px max). */
+.kd-h2 { margin: 0; font-size: clamp(34px,4.6vw,68px); line-height: 1; letter-spacing: -.035em; font-weight: 700; font-stretch: 108%; text-wrap: balance; }
+/* Section heading, inner-page size (60px max). */
+.kd-h2-b { margin: 0; font-size: clamp(32px,4vw,60px); line-height: 1; letter-spacing: -.035em; font-weight: 700; font-stretch: 108%; text-wrap: balance; }
+.kd-lead { margin: 0; font-size: clamp(17px,1.4vw,20px); line-height: 1.55; color: var(--kd-mist); max-width: 540px; text-wrap: pretty; }
+.kd-body-dark { font-size: 17px; line-height: 1.6; color: var(--kd-mist); }
+.kd-body-light { font-size: 18px; line-height: 1.6; color: var(--kd-slate); }
+
+/* ---- buttons / pill links (anchors styled as the mock's buttons) ---- */
+.kd-btn { display: inline-block; cursor: pointer; border-radius: 999px; font-size: 15px; padding: 16px 26px; line-height: 1.2; white-space: nowrap; transition: background .2s, border-color .2s, color .2s; text-align: center; }
+.kd-site a.kd-btn-primary, .kd-btn-primary { background: var(--kd-orange); color: var(--kd-ink); border: 0; font-weight: 600; }
+.kd-site a.kd-btn-primary:hover, .kd-btn-primary:hover { background: var(--kd-orange-hover); color: var(--kd-ink); }
+.kd-site a.kd-btn-ghost, .kd-btn-ghost { background: transparent; color: var(--kd-paper); border: 1px solid rgba(242,239,230,.35); font-weight: 500; }
+.kd-site a.kd-btn-ghost:hover, .kd-btn-ghost:hover { border-color: var(--kd-paper); color: var(--kd-paper); }
+.kd-site a.kd-btn-paper, .kd-btn-paper { background: var(--kd-paper); color: var(--kd-ink); border: 0; font-weight: 600; }
+.kd-site a.kd-btn-paper:hover, .kd-btn-paper:hover { background: #FFFFFF; color: var(--kd-ink); }
+.kd-site a.kd-btn-ghost-green, .kd-btn-ghost-green { background: transparent; color: var(--kd-paper); border: 1px solid rgba(242,239,230,.6); font-weight: 500; }
+.kd-site a.kd-btn-ghost-green:hover, .kd-btn-ghost-green:hover { border-color: var(--kd-paper); color: var(--kd-paper); }
+.kd-site a.kd-btn-dark, .kd-btn-dark { background: var(--kd-text-dark); color: var(--kd-paper); border: 0; font-weight: 600; font-size: 16px; }
+.kd-site a.kd-btn-dark:hover, .kd-btn-dark:hover { background: var(--kd-green); color: var(--kd-paper); }
+.kd-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Underlined text link ("Specifications →"). */
+.kd-site a.kd-ulink, .kd-ulink { background: none; border: 0; border-bottom: 1px solid var(--kd-text-dark); padding: 6px 0; cursor: pointer; font-weight: 600; font-size: 15px; color: var(--kd-text-dark); align-self: flex-start; }
+.kd-site a.kd-ulink:hover, .kd-ulink:hover { color: var(--kd-green); border-color: var(--kd-green); }
+
+/* Filter chip (toggle button). */
+.kd-chip { cursor: pointer; font-size: 14px; font-weight: 500; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--kd-text-dark); background: transparent; color: var(--kd-text-dark); }
+.kd-chip[aria-pressed="true"] { background: var(--kd-text-dark); color: var(--kd-paper); }
+
+/* Pill search input (light sections). */
+.kd-search { font: inherit; font-size: 16px; padding: 14px 20px; border-radius: 999px; border: 1px solid var(--kd-text-dark); background: transparent; color: var(--kd-text-dark); min-width: min(100%,320px); outline: none; }
+
+/* Rule that draws in (data-line). */
+.kd-rule-dark { height: 1px; background: var(--kd-text-dark); }
+
+/* ---- motion: initial states are applied by Motion.js only after hydration,
+   so server HTML (crawlers, no-JS) always shows the content. ---- */
+@media (prefers-reduced-motion: reduce) {
+  .kd-site *, .kd-site *::before, .kd-site *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
+
+/* Offset for the fixed nav when CMS block pages render inside the new chrome. */
+.kd-cms-page { background: var(--kd-paper); color: var(--kd-text-dark); padding-top: 96px; min-height: 60vh; }

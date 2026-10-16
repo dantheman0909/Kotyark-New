@@ -1,9 +1,15 @@
 import './globals.css';
+import '@/components/site/site.css';
+import { Archivo, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import LayoutShell from '@/components/LayoutShell';
 import JsonLd from '@/components/JsonLd';
 import { organizationJsonLd } from '@/lib/seo';
 import { SITE_URL, SITE_NAME, absoluteUrl, getSetting } from '@/lib/site';
+
+// Redesign typefaces, self-hosted at build time (no runtime request to Google).
+const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], display: 'swap', variable: '--font-archivo' });
+const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], display: 'swap', variable: '--font-mono' });
 
 // The GA4 id lives in site_settings, so the shell is rendered per request (and a change applies immediately).
 export const dynamic = 'force-dynamic';
@@ -76,7 +82,7 @@ async function getGa4Id() {
 export default async function RootLayout({ children }) {
   const ga4Id = await getGa4Id();
   return (
-    <html lang="en-IN">
+    <html lang="en-IN" className={`${archivo.variable} ${mono.variable}`}>
       <body>
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <LayoutShell>{children}</LayoutShell>
