@@ -34,8 +34,8 @@ localPort = 5000
 externalPort = 80
 
 [deployment]
-deploymentTarget = "vm"
-run = ["sh", "-c", "npm run migrate && npm run start"]
+deploymentTarget = "autoscale"
+run = ["sh", "-c", "npm run migrate || echo 'migrate failed; starting anyway'; npm run start"]
 build = ["sh", "-c", "npm ci --no-audit --no-fund && npm run build"]
 
 [objectStorage]

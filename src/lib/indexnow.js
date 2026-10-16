@@ -1,5 +1,5 @@
 // IndexNow: tells Bing, Yandex, Seznam, Naver (and through them AI search that reads their indexes) that URLs
-// changed. Fire-and-forget; never throws; no-op unless a key is configured AND this is a production deployment.
+// changed. Returns a promise the caller awaits; never throws; no-op unless a key is configured AND this is a production deployment.
 // The key file is served by src/app/indexnow-key.txt/route.js and announced via `keyLocation`.
 //
 // RULE: only URLs that are public after the change, or were public before it. Never ping from a draft save, a
@@ -25,7 +25,7 @@ export function getIndexNowKey() {
 }
 
 /** paths: root-relative paths or absolute URLs on our host. */
-export function pingIndexNow(paths) {
+export async function pingIndexNow(paths) {
   try {
     const key = getIndexNowKey();
     if (!key || !process.env.REPLIT_DEPLOYMENT) return;
@@ -37,11 +37,14 @@ export function pingIndexNow(paths) {
       try { if (new URL(u).host === host) urls.add(u); } catch { /* skip malformed */ }
     }
     if (!urls.size) return;
-    fetch(INDEXNOW_ENDPOINT, {
+    const body = JSON.stringify({ host, key, keyLocation: absoluteUrl('/indexnow-key.txt'), urlList: [...urls].slice(0, 10000) });
+    // Awaited by the caller (admin mutations) so it completes inside the request: Autoscale gives no CPU between requests.
+    // Bounded by the 3 s timeout below and never rejects.
+    await fetch(INDEXNOW_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify({ host, key, keyLocation: absoluteUrl('/indexnow-key.txt'), urlList: [...urls].slice(0, 10000) }),
+      body,
       signal: AbortSignal.timeout(3000),
-    }).catch(() => {});
+    }).then((r) => r.body?.cancel()).catch(() => {});
   } catch { /* never break a publish */ }
 }

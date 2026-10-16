@@ -91,7 +91,19 @@ branch with new dependencies never needs a manual install.
 `npm run admin:reset` (create the owner login or reset its password from `ADMIN_EMAIL` / `ADMIN_PASSWORD`; clears lockout)
 
 ## Deployment
-Target: VM. Build `npm run build`; run `npm run migrate && npm run start`.
+Target: **Autoscale** (`.replit` `deploymentTarget = "autoscale"`). Build `npm run build`; run `npm run migrate || echo …; npm run start` (a failed or timed-out migrate never stops the server from starting; migrate's connect and statements are time-bounded).
+- **Max instances = 1**, set in the Replit deployment UI (not in `.replit`). Autoscale scales to zero and allocates CPU
+  only while a request is served, so the first visit after idle pays a cold start (boot plus `npm run migrate`).
+- **State lives in the database, not in memory**, because instances come and go: sessions and login throttling
+  (`login_attempts`), the contact-form rate limit (`rate_hits`, keyed by a hash of the IP) and the NSE quote/history
+  second-level cache (`kv_cache`, migration 007). Memory caches are only a first level.
+- **Work that must finish is awaited inside the request** (IndexNow pings, the cold-path stock cache write).
+  `runAfter` (`src/lib/after.js`, Next `after()`) is best effort after the response: on Autoscale CPU may be frozen then,
+  so it is used only for refreshes that are fine to lose. Outside a request it falls back to fire-and-forget.
+- The run command starts the server even if `npm run migrate` fails (the site then serves what it can).
+- The contact rate limit needs `ENQUIRY_PEPPER` set to be shared across restarts and instances; without it the key
+  uses a per-process random secret.
+- `scripts/migrate.mjs` holds a Postgres advisory lock (polled, 60 s deadline), so instances starting together migrate one at a time.
 Go-live steps: `docs/admin-guide.md` (Go-live checklist) and `docs/migration.md`.
 
 ## Recent Changes

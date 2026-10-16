@@ -5,6 +5,7 @@ Dated, newest first. User-visible changes only; architecture is in `replit.md`.
 ## 2026-10-16
 
 ### Added
+- **Autoscale-safe deployment**: deployment target is now Autoscale (set Max instances = 1). The NSE quote and history are cached in the database so a cold start shows live figures, the contact-form rate limit is shared via the database, IndexNow pings are awaited inside the request, stock refreshes on a stale cache run best-effort after the response, migrations take an advisory lock and a failed migrate no longer stops the server from starting, and the social-card cache life is cut to 60 s. Migration 007.
 - **2026 redesign** of the public site: Home, Products (Biodiesel, Crude Glycerin), About, Investors hub, filing and
   document pages, SEBI LODR and Contact, with a new navigation bar (NSE ticker pill) and footer. Animations are
   skipped for visitors who prefer reduced motion, and all content is in the server HTML. A published CMS page still

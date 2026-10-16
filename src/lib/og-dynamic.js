@@ -1,5 +1,5 @@
 // Dynamic social cards for the investor section and document pages. Server-only.
-// Rendering a PNG is CPU-heavy, so rendered buffers are kept in a small in-memory LRU (50 entries, 5-minute life, cleared on every document/folder change) and
+// Rendering a PNG is CPU-heavy, so rendered buffers are kept in a small in-memory LRU (50 entries, 60-second life since the cache is per Autoscale instance, cleared on every document/folder change) and
 // every response carries a CDN-friendly Cache-Control. Only slugs that exist get their own entry; an unknown slug is
 // served ONE shared generic card, so a crawler walking random URLs can neither fill the cache nor trigger renders.
 import { queryOne } from './db';
@@ -11,7 +11,7 @@ const FALLBACK = { eyebrow: 'Investor Relations · NSE: KOTYARK', headline: 'Eve
 const CACHE_CONTROL = 'public, max-age=300, s-maxage=300';
 const GENERIC_CACHE_CONTROL = 'public, max-age=60, s-maxage=60';
 const MAX_ENTRIES = 50;
-const ENTRY_TTL = 5 * 60_000;
+const ENTRY_TTL = 60_000;
 
 const lru = (globalThis.__kotyarkOgLru ||= new Map());
 

@@ -98,7 +98,7 @@ export async function PUT(req, { params }) {
     revalidatePagePath(after.path);
     for (const m of moved) { revalidatePagePath(m.oldPath); revalidatePagePath(m.newPath); }
     // A slug/parent change moves public URLs only for pages that were published (drafts have no public URL).
-    pingIndexNow(moved.filter((m) => m.status === 'published').flatMap((m) => [m.oldPath, m.newPath]));
+    await pingIndexNow(moved.filter((m) => m.status === 'published').flatMap((m) => [m.oldPath, m.newPath]));
     return Response.json({ page: shapeFull(after), redirectsCreated: moved.filter(m => m.status === 'published').length });
   } catch (e) { return errorResponse(e); }
 }
@@ -119,7 +119,7 @@ export async function DELETE(_req, { params }) {
     });
     await audit(user, 'delete', 'page', id, `Deleted page "${page.title}" (${page.path})`, { before: { title: page.title, path: page.path, status: page.status } });
     revalidatePagePath(page.path);
-    if (page.status === 'published') pingIndexNow([page.path]); // was public
+    if (page.status === 'published') await pingIndexNow([page.path]); // was public
     return Response.json({ ok: true });
   } catch (e) { return errorResponse(e); }
 }

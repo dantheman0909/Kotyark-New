@@ -111,7 +111,7 @@ export async function PUT(req, { params }) {
     revalidateFolder(before.folder_slug);
     if (targetFolder.slug !== before.folder_slug || doc.slug !== before.slug) revalidateFolder(targetFolder.slug);
     // Ping only URLs public before (old location) or after (new location) the change.
-    pingIndexNow([
+    await pingIndexNow([
       ...publicDocPaths(before, before.folder_slug, before.folder_visible),
       ...publicDocPaths(doc, targetFolder.slug, targetFolder.visible),
     ]);
@@ -135,7 +135,7 @@ export async function DELETE(_req, { params }) {
     await audit(user, 'delete', 'document', id, `Deleted document "${doc.title}"`,
       { before: { slug: doc.slug, folder: doc.folder_slug, storage_key: doc.storage_key, external_url: doc.external_url } });
     revalidateFolder(doc.folder_slug);
-    pingIndexNow(publicDocPaths(doc, doc.folder_slug, doc.folder_visible)); // was public
+    await pingIndexNow(publicDocPaths(doc, doc.folder_slug, doc.folder_visible)); // was public
     return Response.json({ ok: true });
   } catch (e) { return errorResponse(e); }
 }

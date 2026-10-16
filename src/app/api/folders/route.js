@@ -57,7 +57,7 @@ export async function POST(req) {
         groupBy, body.visible !== false, sortOrder, category]);
     await audit(user, 'create', 'folder', id, `Created folder "${name}"`, { after: { slug, name, category } });
     revalidateFolder(slug);
-    if (rows[0].visible) pingIndexNow(['/investors', `/investors/${slug}`]);
+    if (rows[0].visible) await pingIndexNow(['/investors', `/investors/${slug}`]);
     return Response.json({ folder: { ...rows[0], document_count: 0 } }, { status: 201 });
   } catch (e) { return errorResponse(e); }
 }

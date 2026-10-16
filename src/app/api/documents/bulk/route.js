@@ -37,7 +37,7 @@ export async function POST(req) {
     for (const s of new Set([target.slug, ...toMove.map((d) => d.folder_slug)])) {
       revalidateFolder(s);
     }
-    pingIndexNow(toMove.flatMap((d) => [
+    await pingIndexNow(toMove.flatMap((d) => [
       ...publicDocPaths(d, d.folder_slug, d.folder_visible),   // old location, if it was public
       ...publicDocPaths(d, target.slug, target.visible),       // new location, if it is public
     ]));

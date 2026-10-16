@@ -22,7 +22,7 @@ export async function POST(_req, { params }) {
     });
     await audit(user, 'unpublish', 'page', id, `Unpublished "${out.after.title}" (${out.after.path})`, { before: { status: out.before.status }, after: { status: 'draft' } });
     revalidatePagePath(out.after.path);
-    if (out.before.status === 'published') pingIndexNow([out.before.path]); // was public
+    if (out.before.status === 'published') await pingIndexNow([out.before.path]); // was public
     return Response.json({ page: shapeFull(out.after) });
   } catch (e) { return errorResponse(e); }
 }

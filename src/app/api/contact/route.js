@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import { headers } from 'next/headers';
 import { errorResponse, httpError, ipFromHeaders } from '@/lib/auth';
-import { query } from '@/lib/db';
+import { query, tx, getPool } from '@/lib/db';
 import { validateEnquiry } from '@/lib/enquiry-rules';
 
 export const dynamic = 'force-dynamic';
@@ -10,20 +10,57 @@ const MAX_BODY = 20 * 1024;
 const MIN_FILL_MS = 3000;
 const LIMIT = 5;
 const WINDOW_MS = 10 * 60 * 1000;
-const MAX_KEYS = 10_000;
 
-// In-memory per-IP limiter. Per process (fine for one Replit instance). A Map keeps insertion order, so when it
-// reaches MAX_KEYS the oldest-inserted key is evicted; a key is re-inserted on every hit, so "oldest" = least recent.
-const hits = new Map();
-function limited(key) {
+// Shared limiter in Postgres (rate_hits), so it holds across Autoscale instances and restarts. The key is a hash, never
+// a raw IP: HMAC with ENQUIRY_PEPPER when set, else with a per-process random secret (made once at module load), so
+// the stored key cannot be reversed by hashing the IPv4 space. The fallback means counts do not carry across instances
+// or restarts; set ENQUIRY_PEPPER in the deployment for a limit that is truly shared.
+// Only admitted requests are recorded, so the table grows by at most LIMIT rows per key per window, and each call
+// deletes its own expired rows plus a small bounded batch of old ones (no separate prune job).
+// Fails open: a database error or timeout is logged and the request is allowed, so an outage never blocks enquiries.
+const PROCESS_SECRET = crypto.randomBytes(32);
+const rateKey = (ip) => `contact:${crypto.createHmac('sha256', process.env.ENQUIRY_PEPPER || PROCESS_SECRET).update(`contact-rl:${ip}`).digest('hex')}`;
+// Per-instance pre-filter (same LIMIT and WINDOW): bounded map, oldest keys evicted past MEM_MAX.
+const MEM_MAX = 10_000;
+const memHits = new Map();
+function memLimited(key) {
   const now = Date.now();
-  const recent = (hits.get(key) || []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= LIMIT) return true;
+  const recent = (memHits.get(key) || []).filter((t) => now - t < WINDOW_MS);
+  if (recent.length >= LIMIT) { memHits.set(key, recent); return true; }
   recent.push(now);
-  hits.delete(key);
-  hits.set(key, recent);
-  while (hits.size > MAX_KEYS) hits.delete(hits.keys().next().value);
+  memHits.delete(key); memHits.set(key, recent);
+  while (memHits.size > MEM_MAX) memHits.delete(memHits.keys().next().value);
   return false;
+}
+async function limited(ip) {
+  try {
+    const key = rateKey(ip);
+    // First line: a small per-instance counter, so a burst is refused without touching the database at all.
+    if (memLimited(key)) return true;
+    // A saturated pool means the site is already under pressure: rely on the per-instance counter above rather than
+    // queue up to 10 s for a connection. (With Max instances = 1 that counter is the whole limit anyway.)
+    if (getPool().waitingCount > 2) return false;
+    return await tx(async (c) => {
+      // The server cancels these statements if the DB is slow (SET LOCAL ends with the transaction).
+      await c.query(`SET LOCAL statement_timeout = '1500ms'`);
+      // Serialize callers for the same key: under READ COMMITTED, parallel requests would otherwise not see each
+      // other's uncommitted inserts and could all be admitted. Released at COMMIT/ROLLBACK; other keys are unaffected.
+      await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [key]);
+      await c.query(
+        `DELETE FROM rate_hits WHERE ctid IN (
+           SELECT ctid FROM rate_hits WHERE (key = $1 AND at < now() - make_interval(secs => $2)) OR at < now() - interval '20 minutes' LIMIT 200)`,
+        [key, WINDOW_MS / 1000]);
+      const { rows } = await c.query(
+        `WITH recent AS (SELECT 1 FROM rate_hits WHERE key = $1 AND at > now() - make_interval(secs => $2) LIMIT $3),
+              ins AS (INSERT INTO rate_hits(key) SELECT $1 WHERE (SELECT count(*) FROM recent) < $3 RETURNING 1)
+         SELECT (SELECT count(*) FROM ins)::int AS admitted`,
+        [key, WINDOW_MS / 1000, LIMIT]);
+      return rows[0].admitted === 0;
+    });
+  } catch (e) {
+    console.error(`[contact] rate limit unavailable, allowing: ${e.message}`);
+    return false;
+  }
 }
 
 // The IP is stored only as a keyed hash: HMAC-SHA256 with ENQUIRY_PEPPER.
@@ -69,7 +106,7 @@ export async function POST(req) {
 
     const h = await headers();
     const ip = ipFromHeaders(h) || 'unknown';
-    if (limited(ip)) {
+    if (await limited(ip)) {
       return Response.json({ error: 'Too many messages. Please try again in a few minutes.' }, { status: 429, headers: { 'Retry-After': '600' } });
     }
 

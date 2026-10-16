@@ -97,7 +97,7 @@ export async function PUT(req, { params }) {
           if (folder.visible) paths.push(`/investors/${folder.slug}/${d.slug}`);
         }
       }
-      pingIndexNow(paths);
+      await pingIndexNow(paths);
     }
     return Response.json({ folder });
   } catch (e) { return errorResponse(e); }
@@ -117,7 +117,7 @@ export async function DELETE(_req, { params }) {
     await query('DELETE FROM document_folders WHERE id = $1', [id]);
     await audit(user, 'delete', 'folder', id, `Deleted folder "${folder.name}"`, { before: { slug: folder.slug, name: folder.name } });
     revalidateFolder(folder.slug);
-    if (folder.visible) pingIndexNow(['/investors', `/investors/${folder.slug}`]); // was public
+    if (folder.visible) await pingIndexNow(['/investors', `/investors/${folder.slug}`]); // was public
     return Response.json({ ok: true });
   } catch (e) { return errorResponse(e); }
 }

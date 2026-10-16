@@ -33,7 +33,7 @@ export async function POST(_req, { params }) {
     if (out.invalid) return validationResponse(out.invalid);
     await audit(user, 'publish', 'page', id, `Published "${out.page.title}" at ${out.page.path}`, { before: { status: out.was }, after: { status: 'published' } });
     revalidatePagePath(out.page.path);
-    pingIndexNow([out.page.path]); // now public
+    await pingIndexNow([out.page.path]); // now public
     return Response.json({ page: shapeFull(out.page) });
   } catch (e) { return errorResponse(e); }
 }
