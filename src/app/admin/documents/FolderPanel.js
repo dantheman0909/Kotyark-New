@@ -41,7 +41,8 @@ export default function FolderPanel({ folders, selectedId, onSelect, onChanged, 
 
   const run = async (fn) => {
     setSaving(true); onError('');
-    try { await fn(); await onChanged(); setMode(null); } catch (e) { onError(e.message); } finally { setSaving(false); }
+    // Close the form as soon as the save succeeds, so rows stop shifting while the list refreshes.
+    try { await fn(); setMode(null); await onChanged(); } catch (e) { onError(e.message); } finally { setSaving(false); }
   };
 
   const create = (f) => run(async () => {
@@ -83,13 +84,14 @@ export default function FolderPanel({ folders, selectedId, onSelect, onChanged, 
                 <div className={s.folderName}>{f.name} {f.broken_count > 0 && <span className={s.brokenCount} title={`${f.broken_count} link${f.broken_count === 1 ? '' : 's'} need the original PDF`}>{f.broken_count}</span>} {!f.visible && <span className="admin-tag hidden-tag">Hidden</span>}</div>
                 <div className={s.folderMeta}>/investors/{f.slug} · {f.document_count} doc{f.document_count === 1 ? '' : 's'}</div>
               </div>
-              <div className={s.folderBtns} onClick={(e) => e.stopPropagation()}>
+              {/* Actions only on the selected row, on their own line: a click anywhere on another row always selects it. */}
+              {selectedId === f.id && <div className={s.folderBtns} onClick={(e) => e.stopPropagation()}>
                 <button className="admin-icon-btn" title="Move up" aria-label="Move up" disabled={saving || i === 0} onClick={() => move(i, -1)}>↑</button>
                 <button className="admin-icon-btn" title="Move down" aria-label="Move down" disabled={saving || i === folders.length - 1} onClick={() => move(i, 1)}>↓</button>
                 <button className="admin-icon-btn" title={f.visible ? 'Hide from public site' : 'Show on public site'} aria-label="Toggle visibility" onClick={() => toggleVisible(f)}>{f.visible ? '◉' : '○'}</button>
                 <button className="admin-icon-btn" title="Edit / rename" aria-label="Edit folder" onClick={() => setMode(f.id)}>✎</button>
                 <button className="admin-icon-btn admin-delete-btn" title="Delete" aria-label="Delete folder" onClick={() => remove(f)}>✕</button>
-              </div>
+              </div>}
             </div>
           )}
         </div>

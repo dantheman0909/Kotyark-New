@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from './api';
 import FolderPanel from './FolderPanel';
 import DocumentTable from './DocumentTable';
@@ -19,42 +19,57 @@ export default function AdminDocumentsPage() {
   const [version, setVersion] = useState(0);
   const [highlightId, setHighlightId] = useState(null);
 
+  // The selected section lives in state (for rendering) AND a ref (for async code), so a refresh or a slow
+  // response can never act on a section the user has already left. Every load is sequence-numbered and a
+  // response is applied only if it is still the latest request (and, for documents, still the selected section).
+  const selectedRef = useRef(null);
+  const docsSeq = useRef(0);
+  const foldersSeq = useRef(0);
+
+  const selectFolder = useCallback((id) => {
+    if (selectedRef.current !== id) setDocs([]); // never show one section's documents under another's heading
+    selectedRef.current = id;
+    setSelectedId(id);
+  }, []);
+
   const loadFolders = useCallback(async () => {
+    const seq = ++foldersSeq.current;
     const { folders: list } = await api('/api/folders');
-    setFolders(list);
+    if (seq === foldersSeq.current) setFolders(list);
     return list;
   }, []);
 
   const loadDocs = useCallback(async (folderId) => {
+    const seq = ++docsSeq.current;
     if (!folderId) { setDocs([]); return; }
     const { documents } = await api(`/api/documents?folderId=${encodeURIComponent(folderId)}`);
-    setDocs(documents);
+    if (seq === docsSeq.current && folderId === selectedRef.current) setDocs(documents);
   }, []);
 
   useEffect(() => {
-    loadFolders().then((list) => { if (list.length) setSelectedId((cur) => cur || list[0].id); }).catch((e) => setError(e.message));
-  }, [loadFolders]);
+    loadFolders().then((list) => { if (list.length && !selectedRef.current) selectFolder(list[0].id); }).catch((e) => setError(e.message));
+  }, [loadFolders, selectFolder]);
 
   useEffect(() => { loadDocs(selectedId).catch((e) => setError(e.message)); }, [selectedId, loadDocs]);
 
   // After any mutation: refresh counts + current list.
   const refresh = useCallback(async () => {
-    try { await loadFolders(); await loadDocs(selectedId); setVersion((v) => v + 1); } catch (e) { setError(e.message); }
-  }, [loadFolders, loadDocs, selectedId]);
+    try { await Promise.all([loadFolders(), loadDocs(selectedRef.current)]); setVersion((v) => v + 1); } catch (e) { setError(e.message); }
+  }, [loadFolders, loadDocs]);
 
   const checkLinks = async () => {
     setChecking(true); setError(''); setNotice('');
     try {
       const r = await api('/api/documents/link-check', { method: 'POST' });
       setResult(r);
-      await Promise.all([loadFolders(), loadDocs(selectedId)]);
+      await Promise.all([loadFolders(), loadDocs(selectedRef.current)]);
     } catch (e) { setError(e.message); } finally { setChecking(false); }
   };
 
   const openDoc = useCallback((d) => {
-    setSelectedId(d.folder_id); setHighlightId(d.id);
+    selectFolder(d.folder_id); setHighlightId(d.id);
     setTimeout(() => setHighlightId((cur) => (cur === d.id ? null : cur)), 6000);
-  }, []);
+  }, [selectFolder]);
 
   const folder = folders?.find((f) => f.id === selectedId) || null;
 
@@ -76,7 +91,7 @@ export default function AdminDocumentsPage() {
 
       <LinkHealthPanel result={result} version={version} onError={setError} onChanged={refresh} onOpen={openDoc} />
 
-      <FolderPanel folders={folders || []} selectedId={selectedId} onSelect={setSelectedId} onChanged={refresh} onError={setError} />
+      <FolderPanel folders={folders || []} selectedId={selectedId} onSelect={selectFolder} onChanged={refresh} onError={setError} />
 
       <div className={s.col}>
         {folder ? (

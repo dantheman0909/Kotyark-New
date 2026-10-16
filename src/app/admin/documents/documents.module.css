@@ -37,13 +37,13 @@
 .textBtn:hover { background: var(--color-bg-section-alt); }
 .dangerBtn { color: #b91c1c; }
 .dangerBtn:hover { background: #fef2f2; }
-.folderRow { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--color-divider); cursor: pointer; }
+.folderRow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--color-divider); cursor: pointer; }
 .folderRow:hover { background: var(--color-bg-section-alt); }
 .folderRowActive { background: rgba(13, 59, 36, 0.07); box-shadow: inset 3px 0 0 var(--color-primary); }
 .folderMain { flex: 1; min-width: 0; }
 .folderName { font-size: 0.88rem; font-weight: 500; overflow-wrap: anywhere; }
 .folderMeta { font-size: 0.72rem; color: var(--color-text-muted); }
-.folderBtns { display: flex; gap: 0; }
+.folderBtns { display: flex; gap: 2px; flex-basis: 100%; margin-top: 4px; cursor: default; }
 .folderForm { padding: 14px; border-bottom: 1px solid var(--color-border); background: var(--color-bg-section-alt); display: flex; flex-direction: column; gap: 10px; }
 .check { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); }
 .empty { padding: 32px; text-align: center; color: var(--color-text-muted); font-size: 0.9rem; }
