@@ -31,9 +31,13 @@ export default function Navbar({ items, quote = null }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // CMS block pages can open on a light band, where the transparent nav (white logo, grey links) is unreadable:
+  // keep the bar solid on any page rendered through PageView (.kd-cms-page).
+  const [onCmsPage, setOnCmsPage] = useState(false);
   useEffect(() => {
     setMenuOpen(false);
     setDropId(null);
+    setOnCmsPage(Boolean(document.querySelector(".kd-cms-page")));
   }, [pathname]);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export default function Navbar({ items, quote = null }) {
   const keyOf = (i) => i.id || i.href || i.label;
 
   return (
-    <nav ref={navRef} className={`${s.nav} ${solid || menuOpen ? s.solid : ""} ${solid ? s.line : ""}`} aria-label="Main">
+    <nav ref={navRef} className={`${s.nav} ${solid || menuOpen || onCmsPage ? s.solid : ""} ${solid || onCmsPage ? s.line : ""}`} aria-label="Main">
       <div className={s.bar}>
         <Link href="/" className={s.logo} aria-label="Kotyark Industries Limited home">
           <img src="/images/kil-logo-white-trim.png" alt="Kotyark Industries Limited" width="73" height="46" />

@@ -34,3 +34,9 @@
 .plantCode { font-family: var(--kd-mono); font-size: 12px; color: #127B62; letter-spacing: .1em; text-transform: uppercase; }
 .plantName { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: normal; }
 .plantLong { margin: 10px 0 0; font-size: 16px; line-height: 1.55; color: #4A5550; }
+
+/* Narrow phones: the mock's 120px year column leaves ~76px for the text at 360px and overflows.
+   Stack the year above the milestone instead (deviation from the mock, below 480px only). */
+@media (max-width: 479.98px) {
+  .milestone { grid-template-columns: minmax(0,1fr); gap: 6px; }
+}

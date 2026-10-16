@@ -31,15 +31,19 @@
 }
 
 .kd-site {
+  /* The mock inherits the browser's line-height (normal); globals.css sets 1.65 on body, which inflated inputs. */
+  line-height: normal;
   font-family: var(--kd-font);
   color: var(--kd-paper);
   background: var(--kd-ink);
   -webkit-font-smoothing: antialiased;
 }
 .kd-site *, .kd-site *::before, .kd-site *::after { box-sizing: border-box; }
-.kd-site a { color: var(--kd-orange); text-decoration: none; }
-.kd-site a:hover { color: var(--kd-orange-hover); }
-.kd-site button { font: inherit; }
+/* Element defaults use :where() (zero specificity) so any component or CMS-block class wins over them.
+   A plain `.kd-site button { font: inherit }` outranked the module classes and reset every chip to 16px. */
+:where(.kd-site) a { color: var(--kd-orange); text-decoration: none; }
+:where(.kd-site) a:hover { color: var(--kd-orange-hover); }
+:where(.kd-site) :is(button, input, select, textarea) { font-family: inherit; }
 .kd-site input[type=range] { accent-color: var(--kd-orange); }
 .kd-site ::selection { background: var(--kd-orange); color: var(--kd-ink); }
 .kd-site :focus-visible { outline: 2px solid var(--kd-orange); outline-offset: 3px; }
