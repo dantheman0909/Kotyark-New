@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { api, formatBytes, DATE_RE, DATE_PATTERN } from './api';
+import { api, formatBytes, progressText, DATE_RE, DATE_PATTERN } from './api';
+import { uploadFile, deleteUpload, useUnloadGuard, MAX_FILE_BYTES } from './uploader';
+import ProgressBar from './ProgressBar';
 import s from './documents.module.css';
 
 const LINK_BADGE = { ok: ['ok', 'OK'], broken: ['broken', 'Broken: upload original'], error: ['err', 'Unreachable'], unchecked: ['muted', 'Unchecked'], 'n/a': ['muted', 'Stored'] };
@@ -18,6 +20,8 @@ function EditRow({ doc, onDone, onError }) {
   });
   const [busy, setBusy] = useState(false);
   const fileRef = useRef(null);
+  const [prog, setProg] = useState(null);
+  useUnloadGuard(busy);
   const up = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
   const save = async () => {
@@ -32,12 +36,23 @@ function EditRow({ doc, onDone, onError }) {
   };
   const replace = async (file) => {
     if (!file) return;
+    if (file.size > MAX_FILE_BYTES) { onError('File is larger than 100 MB'); return; }
     setBusy(true); onError('');
+    let uploadId = null;
     try {
-      const fd = new FormData(); fd.append('file', file);
-      await api(`/api/documents/${doc.id}`, { method: 'PUT', formData: fd });
+      uploadId = await uploadFile(file, { onProgress: ({ loaded, total }) => setProg({ loaded, total }) });
+      setProg({ loaded: file.size, total: file.size, processing: true });
+      const res = await api(`/api/documents/${doc.id}`, { method: 'PUT', json: { uploadId } });
       await onDone(true);
-    } catch (e) { onError(e.message); setBusy(false); }
+      if (res.warning) onError(res.warning);
+    } catch (e) {
+      if (uploadId && e.status === 404) { // the replace may have gone through and only its response was lost
+        onError('This file may already be saved. Refreshing the list; check it before uploading again.');
+        await onDone(true); return;
+      }
+      if (uploadId) deleteUpload(uploadId);
+      onError(e.message); setBusy(false); setProg(null);
+    }
   };
 
   return (
@@ -74,6 +89,7 @@ function EditRow({ doc, onDone, onError }) {
           <button className="admin-cancel-btn" disabled={busy} onClick={() => fileRef.current?.click()}>Replace file...</button>
           <input ref={fileRef} type="file" hidden accept=".pdf,.docx,.xlsx,.pptx,.png,.jpg,.jpeg" onChange={(e) => replace(e.target.files?.[0])} />
         </div>
+        {prog && <div style={{ marginTop: 8 }}><ProgressBar percent={prog.processing ? 100 : (prog.loaded / prog.total) * 100} label={prog.processing ? 'Processing…' : progressText(prog.loaded, prog.total)} /></div>}
         <div className={s.folderMeta} style={{ marginTop: 6 }}>Replacing a file keeps the same public URL ({doc.url}).</div>
       </td>
     </tr>

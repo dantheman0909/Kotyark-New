@@ -62,10 +62,15 @@
 .healthGroupBtn { width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: none; padding: 8px 2px; font: inherit; font-weight: 600; color: inherit; cursor: pointer; text-align: left; }
 .healthCount { background: #fef3c7; color: #92400e; border-radius: 12px; padding: 1px 9px; font-size: 0.72rem; font-weight: 700; }
 .healthList { list-style: none; margin: 0 0 6px; padding: 0 0 0 16px; }
-.healthList li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid rgba(120, 53, 15, 0.08); }
+.healthList li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid rgba(120, 53, 15, 0.08); }
 .healthTitle { overflow-wrap: anywhere; }
 .healthTitle small { display: block; font-size: 0.72rem; opacity: 0.75; }
 .brokenCount { background: #fef3c7; color: #92400e; border-radius: 12px; padding: 0 7px; font-size: 0.68rem; font-weight: 700; margin-left: 4px; }
 .filterToggle { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--color-text-secondary); }
 .rowHighlight td { background: #fef9c3 !important; transition: background 0.3s ease; }
 .folderMain:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 4px; }
+
+.progress { display: flex; flex-direction: column; gap: 4px; }
+.progressTrack { height: 8px; border-radius: 999px; background: var(--color-divider); overflow: hidden; }
+.progressFill { height: 100%; background: var(--color-primary); transition: width 0.15s linear; }
+.progressLabel { font-size: 0.78rem; color: var(--color-text-muted); }

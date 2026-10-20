@@ -2,6 +2,11 @@
 
 Dated, newest first. User-visible changes only; architecture is in `replit.md`.
 
+## 2026-10-20
+
+### Added
+- **Document uploads up to 100 MB** (was 25 MB) with a progress bar, in the upload panel and in Replace file. Files are sent in 8 MB parts so each request stays under the hosting limit; PDFs over 25 MB are not text-indexed (extraction is limited to one at a time, 150 pages, and a short queue, to bound memory). The deployment now starts the server with a 512 MB heap cap. Migration 008.
+
 ## 2026-10-16
 
 ### Added

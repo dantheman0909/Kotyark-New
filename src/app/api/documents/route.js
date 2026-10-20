@@ -1,4 +1,4 @@
-import { query } from '@/lib/db';
+import { query, tx } from '@/lib/db';
 import { getCurrentUser, can, requireUser, errorResponse, httpError } from '@/lib/auth';
 import { audit } from '@/lib/audit';
 import { uniqueSlug } from '@/lib/slug';
@@ -9,7 +9,7 @@ import { pingIndexNow, publicDocPaths } from '@/lib/indexnow';
 import {
   getFolderById, listDocuments, listAllDocuments, listLinkIssues, documentFileUrl, documentLandingPath,
 } from '@/lib/documents';
-import { readInput, parseMetadata, ingestFile, titleFromFilename, DOC_RETURN, NO_TEXT_WARNING } from './_lib';
+import { readInput, parseMetadata, ingestFile, resolveUploadFile, failUpload, afterCommit, titleFromFilename, DOC_RETURN, NO_TEXT_WARNING, TOO_BIG_TEXT_WARNING, TRUNCATED_TEXT_WARNING } from './_lib';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,9 +45,11 @@ export async function GET(req) {
 // -> 201 { document }.  JSON body accepted for external links only.
 export async function POST(req) {
   let storedKey = null;
+  let file = null; // may be a claimed chunked upload
   try {
     const user = await requireUser('documents:write');
-    const { fields, file } = await readInput(req);
+    const { fields, file: rawFile } = await readInput(req);
+    file = await resolveUploadFile(fields, user, rawFile);
     const meta = parseMetadata(fields);
     if (!meta.folder_id) throw httpError(400, 'folderId is required');
     const folder = await getFolderById(meta.folder_id);
@@ -64,23 +66,33 @@ export async function POST(req) {
     let sortOrder = meta.sort_order;
     if (sortOrder === undefined) sortOrder = 0;
 
-    const rows = await query(
-      `INSERT INTO documents(folder_id, title, slug, description, storage_key, external_url, original_name, mime, size,
-                             fy, doc_date, extracted_text, status, sort_order, link_status, link_checked_at, created_by, updated_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$17)
-       RETURNING ${DOC_RETURN}`,
-      [folder.id, title, slug, description, stored.storage_key, meta.external_url ?? null, stored.original_name, stored.mime,
-        stored.size, meta.fy ?? null, meta.doc_date ?? null, stored.text, meta.status || 'published', sortOrder,
-        stored.storage_key || !meta.external_url ? 'n/a' : 'unchecked', stored.storage_key ? new Date() : null, user.id]);
-    const doc = { ...rows[0], folder_slug: folder.slug };
-    await audit(user, 'upload', 'document', doc.id, `Added document "${title}" to ${folder.name}`,
-      { after: { slug, folder: folder.slug, storage_key: doc.storage_key, external_url: doc.external_url } });
-    revalidateFolder(folder.slug);
-    await pingIndexNow(publicDocPaths(doc, folder.slug, folder.visible)); // only when published AND in a visible folder
-    const warning = file && stored.mime === 'application/pdf' && !String(stored.text || '').trim() ? NO_TEXT_WARNING : undefined;
+    // The document row and its audit row commit together: if the audit insert fails nothing is created.
+    const doc = await tx(async (c) => {
+      const r = await c.query(
+        `INSERT INTO documents(folder_id, title, slug, description, storage_key, external_url, original_name, mime, size,
+                               fy, doc_date, extracted_text, status, sort_order, link_status, link_checked_at, created_by, updated_by)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$17)
+         RETURNING ${DOC_RETURN}`,
+        [folder.id, title, slug, description, stored.storage_key, meta.external_url ?? null, stored.original_name, stored.mime,
+          stored.size, meta.fy ?? null, meta.doc_date ?? null, stored.text, meta.status || 'published', sortOrder,
+          stored.storage_key || !meta.external_url ? 'n/a' : 'unchecked', stored.storage_key ? new Date() : null, user.id]);
+      const row = { ...r.rows[0], folder_slug: folder.slug };
+      await audit(user, 'upload', 'document', row.id, `Added document "${title}" to ${folder.name}`,
+        { after: { slug, folder: folder.slug, storage_key: row.storage_key, external_url: row.external_url } }, c);
+      return row;
+    });
+    // COMMITTED. From here nothing may delete the stored file or touch the session via the catch below.
+    const hadFile = Boolean(file);
+    storedKey = null; file = null;
+    if (stored.discard) await stored.discard(); // the temp parts are no longer needed
+    await afterCommit('revalidate', () => revalidateFolder(folder.slug));
+    await afterCommit('indexnow', () => pingIndexNow(publicDocPaths(doc, folder.slug, folder.visible))); // only when published AND in a visible folder
+    const warning = stored.tooBig ? TOO_BIG_TEXT_WARNING : stored.truncated ? TRUNCATED_TEXT_WARNING
+      : hadFile && stored.mime === 'application/pdf' && !String(stored.text || '').trim() ? NO_TEXT_WARNING : undefined;
     return Response.json({ document: decorate(doc), ...(warning ? { warning } : {}) }, { status: 201 });
   } catch (e) {
     if (storedKey) await deleteObject(storedKey).catch(() => {});
+    await failUpload(file, e);
     if (e?.code === '23505') return errorResponse(httpError(409, 'A document with that link already exists in this folder'));
     return errorResponse(e);
   }

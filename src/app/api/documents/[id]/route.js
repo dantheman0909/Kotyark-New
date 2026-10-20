@@ -9,7 +9,7 @@ import { pingIndexNow, publicDocPaths } from '@/lib/indexnow';
 import {
   getFolderById, getDocumentById, extForMime, documentFileUrl, documentLandingPath, addRedirect,
 } from '@/lib/documents';
-import { readInput, parseMetadata, ingestFile, DOC_RETURN, NO_TEXT_WARNING } from '../_lib';
+import { readInput, parseMetadata, ingestFile, resolveUploadFile, failUpload, afterCommit, DOC_RETURN, NO_TEXT_WARNING, TOO_BIG_TEXT_WARNING, TRUNCATED_TEXT_WARNING } from '../_lib';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,12 +40,17 @@ export async function GET(_req, { params }) {
 //   multipart `file` = replace the file; URL/slug are kept and the old stored object is deleted.
 export async function PUT(req, { params }) {
   let newKey = null;
+  let file = null; // may be a claimed chunked upload
+  let ingested = null;
   let ing_noText = false;
+  let ing_tooBig = false;
+  let ing_truncated = false;
   try {
     const user = await requireUser('documents:write');
     const { id } = await params;
     const before = await loadOr404(id);
-    const { fields, file } = await readInput(req);
+    const { fields, file: rawFile } = await readInput(req);
+    file = await resolveUploadFile(fields, user, rawFile);
     const meta = parseMetadata(fields);
 
     const set = {};
@@ -74,8 +79,9 @@ export async function PUT(req, { params }) {
     }
     if (file) {
       const ing = await ingestFile(file, newSlug || before.slug);
-      newKey = ing.storage_key;
-      ing_noText = ing.mime === 'application/pdf' && !ing.text.trim();
+      newKey = ing.storage_key; ingested = ing;
+      ing_tooBig = Boolean(ing.tooBig); ing_truncated = Boolean(ing.truncated);
+      ing_noText = !ing_tooBig && ing.mime === 'application/pdf' && !ing.text.trim();
       Object.assign(set, { storage_key: ing.storage_key, mime: ing.mime, size: ing.size, original_name: ing.original_name, extracted_text: ing.text });
       if (!('description' in set) && !before.description) set.description = autoDescription(ing.text);
       // A stored file is served from App Storage: any legacy external URL no longer matters, so it is never "broken".
@@ -98,27 +104,34 @@ export async function PUT(req, { params }) {
       if (before.storage_key && row.storage_key && before.slug !== row.slug) {
         await addRedirect(`/files/${before.slug}.${extForMime(before.mime)}`, `/files/${row.slug}.${extForMime(row.mime)}`, c);
       }
+      await audit(user, file ? 'upload' : 'update', 'document', id,
+        file ? `Replaced file for "${row.title}"` : `Updated document "${row.title}"`,
+        { before: { title: before.title, folder: before.folder_slug, status: before.status, fy: before.fy, doc_date: before.doc_date },
+          after: { title: row.title, folder: targetFolder.slug, status: row.status, fy: row.fy, doc_date: row.doc_date, fileReplaced: Boolean(file) },
+          ...(file ? { replacedFile: { storage_key: before.storage_key || null, original_name: before.original_name || null, size: before.size ?? null, external_url: before.external_url || null } } : {}) }, c);
       return row;
     });
-    if (file && before.storage_key) await deleteObject(before.storage_key).catch((e) => console.warn('Old object delete failed:', e.message));
+    // COMMITTED. From here nothing may delete the new file or touch the session via the catch below.
+    const hadFile = Boolean(file);
+    newKey = null; file = null;
+    if (ingested?.discard) await ingested.discard(); // the temp parts are no longer needed
+    if (hadFile && before.storage_key) await deleteObject(before.storage_key).catch((e) => console.warn('Old object delete failed:', e.message));
 
     const doc = { ...updated, folder_slug: targetFolder.slug };
-    await audit(user, file ? 'upload' : 'update', 'document', id,
-      file ? `Replaced file for "${doc.title}"` : `Updated document "${doc.title}"`,
-      { before: { title: before.title, folder: before.folder_slug, status: before.status, fy: before.fy, doc_date: before.doc_date },
-        after: { title: doc.title, folder: doc.folder_slug, status: doc.status, fy: doc.fy, doc_date: doc.doc_date, fileReplaced: Boolean(file) },
-        ...(file ? { replacedFile: { storage_key: before.storage_key || null, original_name: before.original_name || null, size: before.size ?? null, external_url: before.external_url || null } } : {}) });
-    revalidateFolder(before.folder_slug);
-    if (targetFolder.slug !== before.folder_slug || doc.slug !== before.slug) revalidateFolder(targetFolder.slug);
+    await afterCommit('revalidate', () => {
+      revalidateFolder(before.folder_slug);
+      if (targetFolder.slug !== before.folder_slug || doc.slug !== before.slug) revalidateFolder(targetFolder.slug);
+    });
     // Ping only URLs public before (old location) or after (new location) the change.
-    await pingIndexNow([
+    await afterCommit('indexnow', () => pingIndexNow([
       ...publicDocPaths(before, before.folder_slug, before.folder_visible),
       ...publicDocPaths(doc, targetFolder.slug, targetFolder.visible),
-    ]);
-    const warning = file && ing_noText ? NO_TEXT_WARNING : undefined;
+    ]));
+    const warning = ing_tooBig ? TOO_BIG_TEXT_WARNING : ing_truncated ? TRUNCATED_TEXT_WARNING : hadFile && ing_noText ? NO_TEXT_WARNING : undefined;
     return Response.json({ document: decorate(doc), ...(warning ? { warning } : {}) });
   } catch (e) {
     if (newKey) await deleteObject(newKey).catch(() => {});
+    await failUpload(file, e);
     if (e?.code === '23505') return errorResponse(httpError(409, 'A document with that link already exists in the folder'));
     return errorResponse(e);
   }

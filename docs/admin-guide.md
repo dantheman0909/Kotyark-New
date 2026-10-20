@@ -112,7 +112,7 @@ Documents → left panel: create, rename, hide, reorder or delete investor secti
 ### 6.2 Upload
 1. Select the section, drag files onto the upload area (or click to choose). Several files at once is fine.
 2. For each file set **Title**, **FY** (e.g. `FY 2025-26`) and **Date** (`YYYY-MM-DD`).
-3. Upload. Accepted: PDF, DOCX, XLSX, PPTX, PNG, JPG, up to **25 MB** each. Larger uploads are refused before transfer completes.
+3. Upload. Accepted: PDF, DOCX, XLSX, PPTX, PNG, JPG, up to **100 MB** each. Files upload in 8 MB parts with a progress bar (and a Cancel button for the whole batch); larger files are refused before upload starts. PDFs over **25 MB** are stored and downloadable but their text is not indexed for site search (a notice says so); title and details remain searchable. For PDFs of up to 25 MB, only the **first 150 pages** are indexed for site search (a notice says so when a PDF is longer). The same limit and progress bar apply to **Replace file**.
 
 What happens automatically:
 - The document gets its own page `/investors/<section>/<document>` and a file link `/files/<document>.pdf` on kotyark.com. Both are listed in the sitemap for Google.

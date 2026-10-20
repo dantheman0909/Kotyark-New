@@ -91,7 +91,11 @@ branch with new dependencies never needs a manual install.
 `npm run admin:reset` (create the owner login or reset its password from `ADMIN_EMAIL` / `ADMIN_PASSWORD`; clears lockout)
 
 ## Deployment
-Target: **Autoscale** (`.replit` `deploymentTarget = "autoscale"`). Build `npm run build`; run `npm run migrate || echo …; npm run start` (a failed or timed-out migrate never stops the server from starting; migrate's connect and statements are time-bounded).
+Target: **Autoscale** (`.replit` `deploymentTarget = "autoscale"`). Build `npm run build`; run `npm run migrate || echo …; NODE_OPTIONS=--max-old-space-size=512 npm run start` (the 512 MB heap cap keeps PDF text extraction from exhausting the 1 GiB machine; a failed or timed-out migrate never stops the server from starting; migrate's connect and statements are time-bounded).
+- **Document uploads are chunked** (8 MB parts, `/api/documents/uploads`, up to 100 MB; sessions in `upload_sessions`, parts in
+  `tmp/uploads/<id>/<n>`, migration 008). Parts are assembled by streaming, one in memory at a time; PDF text extraction runs
+  only for files up to 25 MB, one at a time process-wide, at most 150 pages, with at most 3 jobs queued behind the running one (a further complete returns 503 and the admin can Retry save). The buffered multipart path accepts 10 MB.
+  `npm run test:uploads` covers the storage stream-failure and extraction-queue behaviour.
 - **Max instances = 1**, set in the Replit deployment UI (not in `.replit`). Autoscale scales to zero and allocates CPU
   only while a request is served, so the first visit after idle pays a cold start (boot plus `npm run migrate`).
 - **State lives in the database, not in memory**, because instances come and go: sessions and login throttling

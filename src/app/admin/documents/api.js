@@ -34,3 +34,9 @@ export function fyOf(iso) {
   const start = Number(m[2]) >= 4 ? Number(m[1]) : Number(m[1]) - 1;
   return `FY ${start}-${String((start + 1) % 100).padStart(2, '0')}`;
 }
+
+/** Accessible progress bar data: percent (0-100) and label. */
+export function progressText(loaded, total) {
+  const mb = (n) => (n / 1024 / 1024).toFixed(1);
+  return `${Math.round((loaded / total) * 100)}% · ${mb(loaded)} of ${mb(total)} MB`;
+}

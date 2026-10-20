@@ -22,7 +22,13 @@ export const FILE_TYPES = {
   'image/png': { ext: 'png', label: 'PNG' },
   'image/jpeg': { ext: 'jpg', label: 'JPG' },
 };
-export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
+/** Chunked uploads: size of each part (every part but the last is exactly this) and the largest PDF we parse for text. */
+export const PART_BYTES = 8 * 1024 * 1024;
+/** The buffered multipart path (scripts, legacy callers). Anything larger must use the chunked upload. */
+export const MULTIPART_MAX_BYTES = 10 * 1024 * 1024;
+export const MAX_OPEN_UPLOADS = 20;
+export const PDF_TEXT_MAX_BYTES = 25 * 1024 * 1024;
 
 const FOLDER_COLS = `f.id, f.parent_id, f.slug, f.name, f.description, f.group_by, f.visible, f.sort_order, f.category,
   f.created_at, f.updated_at`;

@@ -103,7 +103,7 @@ export default function AdminDocumentsPage() {
               </div>
               <a className={s.textBtn} href={`/investors/${folder.slug}`} target="_blank" rel="noopener noreferrer">View public page</a>
             </div>
-            <UploadPanel folderId={folder.id} onError={setError}
+            <UploadPanel folderId={folder.id} onError={setError} onRefresh={refresh}
               onUploaded={async (n) => { setNotice(`Uploaded ${n} item${n === 1 ? '' : 's'}.`); await refresh(); }} />
             <DocumentTable key={folder.id} highlightId={highlightId} docs={docs} folders={folders} folderId={folder.id} onChanged={refresh} onError={setError} />
           </>

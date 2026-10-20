@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { api } from './api';
+import { api, progressText } from './api';
+import { uploadFile, deleteUpload, useUnloadGuard, MAX_FILE_BYTES } from './uploader';
+import ProgressBar from './ProgressBar';
 import { useToast } from '@/components/admin/Toast';
 import s from './documents.module.css';
 
@@ -32,6 +34,8 @@ export default function LinkHealthPanel({ result, version, onOpen, onChanged, on
   const [busyId, setBusyId] = useState(null);
   const fileRef = useRef(null);
   const targetRef = useRef(null);
+  const [prog, setProg] = useState(null); // { id, loaded, total, processing }
+  useUnloadGuard(busyId !== null);
 
   // Persisted broken set: survives reloads without re-probing every URL.
   useEffect(() => {
@@ -61,14 +65,22 @@ export default function LinkHealthPanel({ result, version, onOpen, onChanged, on
   const replace = async (file) => {
     const d = targetRef.current;
     if (!file || !d) return;
+    if (file.size > MAX_FILE_BYTES) { onError('File is larger than 100 MB'); if (fileRef.current) fileRef.current.value = ''; return; }
     setBusyId(d.id); onError('');
+    let uploadId = null;
     try {
-      const fd = new FormData(); fd.append('file', file);
-      await api(`/api/documents/${d.id}`, { method: 'PUT', formData: fd });
+      uploadId = await uploadFile(file, { onProgress: ({ loaded, total }) => setProg({ id: d.id, loaded, total }) });
+      setProg({ id: d.id, loaded: file.size, total: file.size, processing: true });
+      const res = await api(`/api/documents/${d.id}`, { method: 'PUT', json: { uploadId } });
       setRows((cur) => (cur || []).filter((x) => x.id !== d.id));
-      toast(`Stored "${d.title}". It is no longer flagged.`);
+      toast(res.warning ? `Stored "${d.title}". ${res.warning}` : `Stored "${d.title}". It is no longer flagged.`);
       await onChanged();
-    } catch (e) { onError(e.message); } finally { setBusyId(null); if (fileRef.current) fileRef.current.value = ''; }
+    } catch (e) {
+      if (uploadId && e.status === 404) { // the replace may have gone through and only its response was lost
+        onError('This file may already be saved. Refreshing the list; check it before uploading again.');
+        await onChanged();
+      } else { if (uploadId) deleteUpload(uploadId); onError(e.message); }
+    } finally { setBusyId(null); setProg(null); if (fileRef.current) fileRef.current.value = ''; }
   };
 
   const parts = [];
@@ -106,6 +118,11 @@ export default function LinkHealthPanel({ result, version, onOpen, onChanged, on
                       {busyId === d.id ? 'Uploading...' : 'Replace file'}
                     </button>
                   </span>
+                  {prog?.id === d.id && (
+                    <div style={{ flexBasis: '100%' }}>
+                      <ProgressBar percent={prog.processing ? 100 : (prog.loaded / prog.total) * 100} label={prog.processing ? 'Processing…' : progressText(prog.loaded, prog.total)} />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
