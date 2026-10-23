@@ -9,7 +9,7 @@
 .vmLabel { margin: 0 0 16px; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #127B62; font-weight: 400; line-height: normal; }
 .vmText { margin: 0; font-size: 20px; line-height: 1.5; }
 
-.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; align-items: start; margin: 0; padding: 0; list-style: none; }
 .person { background: #F2EFE6; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
 .portrait { aspect-ratio: 4/3; background: repeating-linear-gradient(135deg, #DDD8CA 0 10px, #E5E1D4 10px 20px); display: flex; align-items: flex-end; justify-content: space-between; padding: 18px; }
 .photo { position: relative; aspect-ratio: 4/3; background: #0D1411; overflow: hidden; }
@@ -42,3 +42,8 @@
 @media (max-width: 479.98px) {
   .milestone { grid-template-columns: minmax(0,1fr); gap: 6px; }
 }
+
+/* Director profiles: clamped to 6 lines until "Read more" (full text stays in the DOM). */
+.bioClamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; line-clamp: 6; overflow: hidden; }
+.bioMore { margin-top: 12px; padding: 4px 0; background: none; border: 0; border-bottom: 1px solid #127B62; color: #127B62; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.bioMore:hover { color: #121A16; border-color: #121A16; }

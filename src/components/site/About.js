@@ -1,14 +1,11 @@
 import Image from 'next/image';
 import JsonLd from '@/components/JsonLd';
 import { peopleJsonLd, webPageJsonLd } from '@/lib/seo';
+import { BOARD } from '@/lib/site-content';
+import BioToggle from './BioToggle';
 import prim from './prim.module.css';
 import s from './about.module.css';
 
-const BOARD = [
-  { i: 'GS', img: '/images/board/gaurang-shah.jpg', n: 'Mr. Gaurang Shah', r: 'Chairman cum Managing Director', bio: 'Commerce graduate, M.S. University of Baroda. 27+ years in vegetable-oil trading and biofuels; leads strategy and overall management.' },
-  { i: 'DS', img: '/images/board/dhruti-shah.jpg', n: 'Mrs. Dhruti Shah', r: 'Whole Time Director & CFO', bio: 'M.Com, MBA; ~11 years in the industry. Appointed CFO and KMP in September 2024; oversees finance and operations.' },
-  { i: 'BS', img: '/images/board/bhaviniben-shah.jpg', n: 'Mrs. Bhaviniben Shah', r: 'Non-Executive Director', bio: 'Diploma in Mechanical Engineering with ~10 years in the biofuels sector.' },
-];
 
 const TIMELINE = [
   { y: 'Heritage', t: 'Vegetable-oil trading roots', d: 'Promoter experience spanning nearly three decades in vegetable oils and biofuels.' },
@@ -81,7 +78,7 @@ export default function About() {
                 <div className={s.personBody}>
                   <h3 className={`${prim.hd} ${s.personName}`}>{b.n}</h3>
                   <div className={s.personRole}>{b.r}</div>
-                  <p className={s.personBio}>{b.bio}</p>
+                  <BioToggle text={b.bio} className={s.personBio} />
                 </div>
               </li>
             ))}

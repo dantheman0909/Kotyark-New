@@ -4,6 +4,27 @@
 // Pure data, no imports: do not import page components here. Keep in step with the page copy.
 import { COMPANY } from './seo';
 
+// Board of Directors: profiles verbatim as supplied by the company (owner, 23 Oct 2026). Used by the About page,
+// its Person JSON-LD and llms-full.txt. The last profile ended mid-sentence in the source ("…in the biofuels");
+// it is completed as "biofuels sector." to match the earlier published wording.
+export const BOARD = [
+  {
+    i: 'GS', img: '/images/board/gaurang-shah.jpg',
+    n: 'Mr. Gaurang Shah', r: 'Chairman cum Managing Director',
+    bio: 'Mr. Gaurang Rameshchandra Shah, is Chairman cum Managing Director and also the Promoter of our Company. He is a Commerce Graduate from The Maharaja Sayajirao University of Baroda with over 27 years of experience in vegetable oil trading and biofuels. He is responsible for overall management, including micro-management, delegation of tasks, and ensuring adequate and satisfactory work output. He actively adapts to industry changes and promptly makes operational adjustments when required. He plays a leading role in formulating new product and service offerings and consistently strives to exceed industry standards to meet and surpass client expectations. His strong research abilities and quick grasp of new concepts are valuable assets to the Company. He is assertive yet considerate, passionate yet logical, persuasive, and inspiring.',
+  },
+  {
+    i: 'DS', img: '/images/board/dhruti-shah.jpg',
+    n: 'Mrs. Dhruti Shah', r: 'Whole Time Director & Chief Financial Officer',
+    bio: 'Mrs. Dhruti Mihir Shah, is the Whole Time Director & CFO of our Company. She holds degree in Master of Commerce and master in Business Administration. She was appointed as Chief Financial Officer (CFO) and Key Managerial Personnel (KMP) of the Company with effect from September 05, 2024. She has approximately 11 years of experience in the industry and has been involved in the business from the conceptualization stage to execution, including planning, monitoring, and overseeing all operational activities. She possesses extensive knowledge of the bio-fuel and related industries, along with strong accounting and commercial expertise. She brings invaluable business acumen and critical experience contributing to the Company’s growth and success.',
+  },
+  {
+    i: 'BS', img: '/images/board/bhaviniben-shah.jpg',
+    n: 'Mrs. Bhaviniben Gaurang Shah', r: 'Non-Executive Director',
+    bio: 'Mrs. Bhaviniben Gaurang Shah, aged 49 years is the Non-Executive Director of our Company. She has done a Diploma in Mechanical Engineering. She is having experience of approx. 10 years in the biofuels sector.',
+  },
+];
+
 export const PAGES = [
   { path: '/', name: 'Home', desc: 'Overview: B100 biodiesel from non-edible oils, 480,000 KL annual capacity, two zero-discharge plants, investor snapshot.' },
   { path: '/products', name: 'Products', desc: 'Biodiesel (B100) and crude glycerin: one trans-esterification process, two products.' },
@@ -99,9 +120,7 @@ export function marketingText() {
     "Vision: to be India's most trusted producer of sustainable biofuels, leading the transition to carbon-neutral energy and reducing dependency on imported fossil fuels.",
     'Mission: to manufacture premium biodiesel that exceeds industry standards while maintaining zero-discharge operations, supporting rural employment, and delivering value to shareholders and communities.',
     'Board of Directors:',
-    '- Mr. Gaurang Shah, Chairman cum Managing Director. Commerce graduate, M.S. University of Baroda. 27+ years in vegetable-oil trading and biofuels; leads strategy and overall management.',
-    '- Mrs. Dhruti Shah, Whole Time Director & CFO. M.Com, MBA; about 11 years in the industry. Appointed CFO and KMP in September 2024; oversees finance and operations.',
-    '- Mrs. Bhaviniben Shah, Non-Executive Director. Diploma in Mechanical Engineering with about 10 years in the biofuels sector.',
+    ...BOARD.map((b) => `- ${b.n}, ${b.r}. ${b.bio}`),
     'Milestones:',
     '- Heritage: vegetable-oil trading roots. Promoter experience spanning nearly three decades in vegetable oils and biofuels.',
     '- Plant I, Sirohi, Rajasthan: primary zero-discharge biodiesel facility at RIICO Industrial Area, Swaroopganj.',
