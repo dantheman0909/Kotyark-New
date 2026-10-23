@@ -12,6 +12,8 @@
 .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
 .person { background: #F2EFE6; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
 .portrait { aspect-ratio: 4/3; background: repeating-linear-gradient(135deg, #DDD8CA 0 10px, #E5E1D4 10px 20px); display: flex; align-items: flex-end; justify-content: space-between; padding: 18px; }
+.photo { position: relative; aspect-ratio: 4/3; background: #0D1411; overflow: hidden; }
+.photoImg { object-fit: cover; object-position: center 30%; }
 .initials { font-size: 64px; font-weight: 800; font-stretch: 70%; letter-spacing: -.03em; color: #127B62; line-height: .8; }
 .portraitTag { font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; color: #6A746F; text-transform: uppercase; }
 .personBody { padding: 24px; }

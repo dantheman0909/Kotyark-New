@@ -1,12 +1,13 @@
+import Image from 'next/image';
 import JsonLd from '@/components/JsonLd';
 import { peopleJsonLd, webPageJsonLd } from '@/lib/seo';
 import prim from './prim.module.css';
 import s from './about.module.css';
 
 const BOARD = [
-  { i: 'GS', n: 'Mr. Gaurang Shah', r: 'Chairman cum Managing Director', bio: 'Commerce graduate, M.S. University of Baroda. 27+ years in vegetable-oil trading and biofuels; leads strategy and overall management.' },
-  { i: 'DS', n: 'Mrs. Dhruti Shah', r: 'Whole Time Director & CFO', bio: 'M.Com, MBA; ~11 years in the industry. Appointed CFO and KMP in September 2024; oversees finance and operations.' },
-  { i: 'BS', n: 'Mrs. Bhaviniben Shah', r: 'Non-Executive Director', bio: 'Diploma in Mechanical Engineering with ~10 years in the biofuels sector.' },
+  { i: 'GS', img: '/images/board/gaurang-shah.jpg', n: 'Mr. Gaurang Shah', r: 'Chairman cum Managing Director', bio: 'Commerce graduate, M.S. University of Baroda. 27+ years in vegetable-oil trading and biofuels; leads strategy and overall management.' },
+  { i: 'DS', img: '/images/board/dhruti-shah.jpg', n: 'Mrs. Dhruti Shah', r: 'Whole Time Director & CFO', bio: 'M.Com, MBA; ~11 years in the industry. Appointed CFO and KMP in September 2024; oversees finance and operations.' },
+  { i: 'BS', img: '/images/board/bhaviniben-shah.jpg', n: 'Mrs. Bhaviniben Shah', r: 'Non-Executive Director', bio: 'Diploma in Mechanical Engineering with ~10 years in the biofuels sector.' },
 ];
 
 const TIMELINE = [
@@ -29,7 +30,7 @@ export default function About() {
     <div className={prim.root}>
       <JsonLd data={[
         webPageJsonLd({ type: 'AboutPage', name: 'About Kotyark Industries', path: '/about', description: 'Kotyark Industries Limited is an NSE-listed biodiesel manufacturer operating zero-discharge plants in Sirohi, Rajasthan and Anand, Gujarat.' }),
-        ...peopleJsonLd(BOARD.map((b) => ({ name: b.n, jobTitle: b.r, description: b.bio }))),
+        ...peopleJsonLd(BOARD.map((b) => ({ name: b.n, jobTitle: b.r, description: b.bio, image: b.img }))),
       ]} />
 
       <section className="kd-dark kd-hero-pad" aria-labelledby="kd-about-title" data-screen-label="About — Hero">
@@ -67,10 +68,16 @@ export default function About() {
           <ul className={s.board}>
             {BOARD.map((b) => (
               <li key={b.i} data-reveal="1" className={s.person}>
-                <div className={s.portrait} aria-hidden="true">
-                  <span className={s.initials}>{b.i}</span>
-                  <span className={s.portraitTag}>Portrait</span>
-                </div>
+                {b.img ? (
+                  <div className={s.photo}>
+                    <Image src={b.img} alt={`${b.n}, ${b.r}`} fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" className={s.photoImg} />
+                  </div>
+                ) : (
+                  <div className={s.portrait} aria-hidden="true">
+                    <span className={s.initials}>{b.i}</span>
+                    <span className={s.portraitTag}>Portrait</span>
+                  </div>
+                )}
                 <div className={s.personBody}>
                   <h3 className={`${prim.hd} ${s.personName}`}>{b.n}</h3>
                   <div className={s.personRole}>{b.r}</div>
