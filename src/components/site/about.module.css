@@ -43,7 +43,15 @@
   .milestone { grid-template-columns: minmax(0,1fr); gap: 6px; }
 }
 
-/* Director profiles: clamped to 6 lines until "Read more" (full text stays in the DOM). */
-.bioClamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; line-clamp: 6; overflow: hidden; }
+/* Director facts: mono labels, the design's key/value style (as in the Recognition block). */
+.facts { margin: 0 0 18px; padding: 14px 0 0; border-top: 1px solid rgba(18,26,22,.12); display: grid; gap: 10px; }
+.fact { display: grid; grid-template-columns: 96px minmax(0,1fr); gap: 12px; }
+.fact dt { font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #6A746F; padding-top: 3px; }
+.fact dd { margin: 0; font-size: 14px; line-height: 1.45; color: #121A16; }
+
+/* Director profiles: clamped to ~6 lines until "Read more" (full text stays in the DOM). */
+.bio > p + p { margin-top: 12px; }
+.bioClamp { max-height: calc(1.55em * 6); overflow: hidden; font-size: 15px; }
+.bioFade { -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
 .bioMore { margin-top: 12px; padding: 4px 0; background: none; border: 0; border-bottom: 1px solid #127B62; color: #127B62; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .bioMore:hover { color: #121A16; border-color: #121A16; }

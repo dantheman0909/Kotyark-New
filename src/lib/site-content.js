@@ -4,24 +4,53 @@
 // Pure data, no imports: do not import page components here. Keep in step with the page copy.
 import { COMPANY } from './seo';
 
-// Board of Directors: profiles verbatim as supplied by the company (owner, 23 Oct 2026). Used by the About page,
-// its Person JSON-LD and llms-full.txt. The last profile ended mid-sentence in the source ("…in the biofuels");
-// it is completed as "biofuels sector." to match the earlier published wording.
+// Board of Directors. Source: profiles supplied by the company (owner, 23 Oct 2026), copy-edited for grammar and
+// house style at the owner's request ("format it right"); no facts added beyond the source, plus the June 2026
+// World Book of Records recognition already published on this site. Used by the About cards, Person JSON-LD and
+// llms-full.txt. `facts` render as a key/value list; `bio` paragraphs render in order.
 export const BOARD = [
   {
     i: 'GS', img: '/images/board/gaurang-shah.jpg',
-    n: 'Mr. Gaurang Shah', r: 'Chairman cum Managing Director',
-    bio: 'Mr. Gaurang Rameshchandra Shah, is Chairman cum Managing Director and also the Promoter of our Company. He is a Commerce Graduate from The Maharaja Sayajirao University of Baroda with over 27 years of experience in vegetable oil trading and biofuels. He is responsible for overall management, including micro-management, delegation of tasks, and ensuring adequate and satisfactory work output. He actively adapts to industry changes and promptly makes operational adjustments when required. He plays a leading role in formulating new product and service offerings and consistently strives to exceed industry standards to meet and surpass client expectations. His strong research abilities and quick grasp of new concepts are valuable assets to the Company. He is assertive yet considerate, passionate yet logical, persuasive, and inspiring.',
+    n: 'Mr. Gaurang Shah', fullName: 'Gaurang Rameshchandra Shah', r: 'Chairman cum Managing Director',
+    facts: [
+      ['Status', 'Promoter of the Company'],
+      ['Education', 'Commerce Graduate, The Maharaja Sayajirao University of Baroda'],
+      ['Experience', '27+ years in vegetable oil trading and biofuels'],
+      ['Recognition', 'Certificate of Excellence, World Book of Records, London (June 2026)'],
+    ],
+    alumniOf: 'The Maharaja Sayajirao University of Baroda',
+    award: 'Certificate of Excellence, World Book of Records, London (26 June 2026)',
+    bio: [
+      'Mr. Gaurang Rameshchandra Shah is the Chairman cum Managing Director and a Promoter of the Company. A Commerce Graduate of The Maharaja Sayajirao University of Baroda, he brings over 27 years of experience in vegetable oil trading and biofuels.',
+      'He is responsible for the overall management of the Company, from close day-to-day oversight and delegation to ensuring consistent, satisfactory output. He adapts quickly to change in the industry and makes operational adjustments promptly when they are needed.',
+      'He leads the development of new products and services, and consistently works to exceed industry standards and client expectations. His research ability and quick grasp of new concepts are valuable assets to the Company. He is assertive yet considerate, passionate yet logical, persuasive and inspiring.',
+    ],
   },
   {
     i: 'DS', img: '/images/board/dhruti-shah.jpg',
-    n: 'Mrs. Dhruti Shah', r: 'Whole Time Director & Chief Financial Officer',
-    bio: 'Mrs. Dhruti Mihir Shah, is the Whole Time Director & CFO of our Company. She holds degree in Master of Commerce and master in Business Administration. She was appointed as Chief Financial Officer (CFO) and Key Managerial Personnel (KMP) of the Company with effect from September 05, 2024. She has approximately 11 years of experience in the industry and has been involved in the business from the conceptualization stage to execution, including planning, monitoring, and overseeing all operational activities. She possesses extensive knowledge of the bio-fuel and related industries, along with strong accounting and commercial expertise. She brings invaluable business acumen and critical experience contributing to the Company’s growth and success.',
+    n: 'Mrs. Dhruti Shah', fullName: 'Dhruti Mihir Shah', r: 'Whole Time Director & Chief Financial Officer',
+    facts: [
+      ['Education', 'Master of Commerce (M.Com); Master of Business Administration (MBA)'],
+      ['Appointed', 'CFO and Key Managerial Personnel (KMP), 5 September 2024'],
+      ['Experience', 'About 11 years in the industry'],
+    ],
+    bio: [
+      'Mrs. Dhruti Mihir Shah is the Whole Time Director and Chief Financial Officer of the Company. She holds a Master of Commerce and a Master of Business Administration, and was appointed Chief Financial Officer (CFO) and Key Managerial Personnel (KMP) with effect from 5 September 2024.',
+      'With approximately 11 years of experience in the industry, she has been involved in the business from conceptualisation to execution, including planning, monitoring and overseeing all operational activities.',
+      'She brings extensive knowledge of the biofuel and related industries, strong accounting and commercial expertise, and the business acumen and experience that contribute to the Company’s growth and success.',
+    ],
   },
   {
     i: 'BS', img: '/images/board/bhaviniben-shah.jpg',
-    n: 'Mrs. Bhaviniben Gaurang Shah', r: 'Non-Executive Director',
-    bio: 'Mrs. Bhaviniben Gaurang Shah, aged 49 years is the Non-Executive Director of our Company. She has done a Diploma in Mechanical Engineering. She is having experience of approx. 10 years in the biofuels sector.',
+    n: 'Mrs. Bhaviniben Gaurang Shah', fullName: 'Bhaviniben Gaurang Shah', r: 'Non-Executive Director',
+    facts: [
+      ['Education', 'Diploma in Mechanical Engineering'],
+      ['Experience', 'About 10 years in biofuels'],
+      ['Age', '49'],
+    ],
+    bio: [
+      'Mrs. Bhaviniben Gaurang Shah, aged 49, is the Non-Executive Director of the Company. She holds a Diploma in Mechanical Engineering and has approximately 10 years of experience in the biofuels sector.',
+    ],
   },
 ];
 
@@ -120,7 +149,7 @@ export function marketingText() {
     "Vision: to be India's most trusted producer of sustainable biofuels, leading the transition to carbon-neutral energy and reducing dependency on imported fossil fuels.",
     'Mission: to manufacture premium biodiesel that exceeds industry standards while maintaining zero-discharge operations, supporting rural employment, and delivering value to shareholders and communities.',
     'Board of Directors:',
-    ...BOARD.map((b) => `- ${b.n}, ${b.r}. ${b.bio}`),
+    ...BOARD.map((b) => `- ${b.n} (${b.fullName}), ${b.r}. ${b.facts.map(([k, v]) => `${k}: ${v}`).join('; ')}. ${b.bio.join(' ')}`),
     'Milestones:',
     '- Heritage: vegetable-oil trading roots. Promoter experience spanning nearly three decades in vegetable oils and biofuels.',
     '- Plant I, Sirohi, Rajasthan: primary zero-discharge biodiesel facility at RIICO Industrial Area, Swaroopganj.',

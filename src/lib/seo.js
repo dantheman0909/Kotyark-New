@@ -129,7 +129,7 @@ export function plantsJsonLd() {
 
 /** people: [{ name, jobTitle, description }] */
 export function peopleJsonLd(people) {
-  return people.map((p) => ({ '@context': 'https://schema.org', '@type': 'Person', name: p.name, jobTitle: p.jobTitle, description: p.description, image: p.image ? absoluteUrl(p.image) : undefined, worksFor: { '@id': ORG_ID } }));
+  return people.map((p) => ({ '@context': 'https://schema.org', '@type': 'Person', name: p.name, alternateName: p.alternateName || undefined, jobTitle: p.jobTitle, description: p.description, image: p.image ? absoluteUrl(p.image) : undefined, alumniOf: p.alumniOf ? { '@type': 'CollegeOrUniversity', name: p.alumniOf } : undefined, award: p.award || undefined, worksFor: { '@id': ORG_ID } }));
 }
 
 /** crumbs: [{ name, path }] from root to current page. */
