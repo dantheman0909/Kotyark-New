@@ -9,14 +9,18 @@
 .vmLabel { margin: 0 0 16px; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #127B62; font-weight: 400; line-height: normal; }
 .vmText { margin: 0; font-size: 20px; line-height: 1.5; }
 
-.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; align-items: start; margin: 0; padding: 0; list-style: none; }
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); grid-auto-rows: 1fr; gap: 24px; margin: 0; padding: 0; list-style: none; }
 .person { background: #F2EFE6; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
 .portrait { aspect-ratio: 4/3; background: repeating-linear-gradient(135deg, #DDD8CA 0 10px, #E5E1D4 10px 20px); display: flex; align-items: flex-end; justify-content: space-between; padding: 18px; }
 .photo { position: relative; aspect-ratio: 4/3; background: #0D1411; overflow: hidden; }
 .photoImg { object-fit: cover; object-position: center 30%; }
 .initials { font-size: 64px; font-weight: 800; font-stretch: 70%; letter-spacing: -.03em; color: #127B62; line-height: .8; }
 .portraitTag { font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; color: #6A746F; text-transform: uppercase; }
-.personBody { padding: 24px; }
+.personBody { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+/* Equal-height cards: the grid stretches every card in a row; the LinkedIn link sits on the bottom edge. */
+.linkedin { margin-top: auto; padding-top: 18px; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font-family: var(--kd-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+:global(.kd-site) a.linkedin { color: #127B62; }
+:global(.kd-site) a.linkedin:hover { color: #121A16; }
 .personName { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -.015em; line-height: normal; }
 .personRole { font-family: var(--kd-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #127B62; margin: 8px 0 14px; }
 .personBio { margin: 0; font-size: 15px; line-height: 1.55; color: #4A5550; }

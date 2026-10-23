@@ -26,7 +26,7 @@ export default function About() {
     <div className={prim.root}>
       <JsonLd data={[
         webPageJsonLd({ type: 'AboutPage', name: 'About Kotyark Industries', path: '/about', description: 'Kotyark Industries Limited is an NSE-listed biodiesel manufacturer operating zero-discharge plants in Sirohi, Rajasthan and Anand, Gujarat.' }),
-        ...peopleJsonLd(BOARD.map((b) => ({ name: b.fullName, alternateName: b.n.replace(/^(Mr|Mrs)\. /, ''), jobTitle: b.r, description: b.bio.join(' '), image: b.img, alumniOf: b.alumniOf, award: b.award }))),
+        ...peopleJsonLd(BOARD.map((b) => ({ name: b.fullName, alternateName: b.n.replace(/^(Mr|Mrs)\. /, ''), jobTitle: b.r, description: b.bio.join(' '), image: b.img, alumniOf: b.alumniOf, award: b.award, sameAs: b.linkedin ? [b.linkedin] : undefined }))),
       ]} />
 
       <section className="kd-dark kd-hero-pad" aria-labelledby="kd-about-title" data-screen-label="About — Hero">
@@ -78,6 +78,12 @@ export default function About() {
                   <h3 className={`${prim.hd} ${s.personName}`}>{b.n}</h3>
                   <div className={s.personRole}>{b.r}</div>
                   <p className={s.personBio}>{b.summary}</p>
+                  {b.linkedin && (
+                    <a href={b.linkedin} target="_blank" rel="noopener noreferrer" className={s.linkedin} aria-label={`${b.n} on LinkedIn (opens in a new tab)`}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
+                      <span>LinkedIn</span>
+                    </a>
+                  )}
                 </div>
               </li>
             ))}
