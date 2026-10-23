@@ -7,7 +7,7 @@ import { COMPANY } from './seo';
 // Board of Directors. Source: profiles supplied by the company (owner, 23 Oct 2026), copy-edited for grammar and
 // house style at the owner's request ("format it right"); no facts added beyond the source, plus the June 2026
 // World Book of Records recognition already published on this site. Used by the About cards, Person JSON-LD and
-// llms-full.txt. `facts` and the short `summary` render on the card (no Read more); the full `bio` paragraphs
+// llms-full.txt. the card shows name, role and `summary` (60 words or fewer); `facts` feed llms-full.txt; the full `bio` paragraphs
 // go to the Person JSON-LD description and llms-full.txt.
 export const BOARD = [
   {
@@ -19,7 +19,7 @@ export const BOARD = [
       ['Experience', '27+ years in vegetable oil trading and biofuels'],
       ['Recognition', 'Certificate of Excellence, World Book of Records, London (June 2026)'],
     ],
-    summary: 'Leads the Company’s overall management and new product development, aiming to exceed industry standards and client expectations. Assertive yet considerate, passionate yet logical, persuasive and inspiring.',
+    summary: 'Mr. Gaurang Rameshchandra Shah is the Chairman cum Managing Director and a Promoter of the Company. A Commerce Graduate of The Maharaja Sayajirao University of Baroda with over 27 years in vegetable oil trading and biofuels, he leads overall management and new product development. He is assertive yet considerate, passionate yet logical, persuasive and inspiring.',
     alumniOf: 'The Maharaja Sayajirao University of Baroda',
     award: 'Certificate of Excellence, World Book of Records, London (26 June 2026)',
     bio: [
@@ -36,7 +36,7 @@ export const BOARD = [
       ['Appointed', 'CFO and Key Managerial Personnel (KMP), 5 September 2024'],
       ['Experience', 'About 11 years in the industry'],
     ],
-    summary: 'Involved from conceptualisation to execution, she plans, monitors and oversees operations, bringing deep knowledge of the biofuel industry with strong accounting and commercial expertise.',
+    summary: 'Mrs. Dhruti Mihir Shah is the Whole Time Director and Chief Financial Officer, appointed CFO and Key Managerial Personnel from 5 September 2024. She holds an M.Com and an MBA and has about 11 years in the industry, overseeing planning, monitoring and operations, with deep biofuel knowledge and strong accounting and commercial expertise.',
     bio: [
       'Mrs. Dhruti Mihir Shah is the Whole Time Director and Chief Financial Officer of the Company. She holds a Master of Commerce and a Master of Business Administration, and was appointed Chief Financial Officer (CFO) and Key Managerial Personnel (KMP) with effect from 5 September 2024.',
       'With approximately 11 years of experience in the industry, she has been involved in the business from conceptualisation to execution, including planning, monitoring and overseeing all operational activities.',
@@ -51,7 +51,7 @@ export const BOARD = [
       ['Experience', 'About 10 years in biofuels'],
       ['Age', '49'],
     ],
-    summary: 'Brings an engineering background and about a decade of experience in the biofuels sector to the Board.',
+    summary: 'Mrs. Bhaviniben Gaurang Shah, aged 49, is the Non-Executive Director of the Company. She holds a Diploma in Mechanical Engineering and has approximately 10 years of experience in the biofuels sector.',
     bio: [
       'Mrs. Bhaviniben Gaurang Shah, aged 49, is the Non-Executive Director of the Company. She holds a Diploma in Mechanical Engineering and has approximately 10 years of experience in the biofuels sector.',
     ],

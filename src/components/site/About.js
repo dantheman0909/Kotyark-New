@@ -77,11 +77,6 @@ export default function About() {
                 <div className={s.personBody}>
                   <h3 className={`${prim.hd} ${s.personName}`}>{b.n}</h3>
                   <div className={s.personRole}>{b.r}</div>
-                  <dl className={s.facts}>
-                    {b.facts.map(([k, v]) => (
-                      <div key={k} className={s.fact}><dt>{k}</dt><dd>{v}</dd></div>
-                    ))}
-                  </dl>
                   <p className={s.personBio}>{b.summary}</p>
                 </div>
               </li>

@@ -42,9 +42,3 @@
 @media (max-width: 479.98px) {
   .milestone { grid-template-columns: minmax(0,1fr); gap: 6px; }
 }
-
-/* Director facts: mono labels, the design's key/value style (as in the Recognition block). */
-.facts { margin: 0 0 18px; padding: 14px 0 0; border-top: 1px solid rgba(18,26,22,.12); display: grid; gap: 10px; }
-.fact { display: grid; grid-template-columns: 96px minmax(0,1fr); gap: 12px; }
-.fact dt { font-family: var(--kd-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #6A746F; padding-top: 3px; }
-.fact dd { margin: 0; font-size: 14px; line-height: 1.45; color: #121A16; }
