@@ -1,0 +1,96 @@
+/* Fixed nav, values from the design mock (<nav> at the top of Kotyark Website.dc.html). */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  background: rgba(13,20,17,0);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(242,239,230,0);
+  transition: background .4s, border-color .4s;
+  font-family: var(--kd-font); font-size: 16px; line-height: normal; color: #F2EFE6;
+}
+.solid { background: rgba(13,20,17,.94); }
+.line { border-bottom-color: rgba(242,239,230,.1); }
+.bar {
+  max-width: 1440px; margin: 0 auto; padding: 14px clamp(20px,4vw,56px);
+  display: flex; align-items: center; gap: 24px; flex-wrap: nowrap;
+}
+:global(.kd-site) .nav a.logo { display: flex; align-items: center; flex-shrink: 0; padding: 0; }
+.logo img { height: 46px; width: auto; display: block; }
+
+.links { display: none; gap: 2px; margin: 0 0 0 auto; padding: 0; list-style: none; }
+.item { position: relative; list-style: none; }
+:global(.kd-site) .nav a.link, .heading {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #9DAEA6; font-size: 15px; font-weight: 500; padding: 10px 14px; border-radius: 999px;
+  letter-spacing: -.01em; white-space: nowrap; line-height: normal;
+}
+.heading { cursor: default; }
+:global(.kd-site) .nav a.link:hover, :global(.kd-site) .nav a.link:focus-visible { color: #F2EFE6; }
+:global(.kd-site) .nav a.link.active { color: #F2EFE6; }
+.caret { opacity: .6; flex-shrink: 0; }
+
+/* Dropdown: dark panel, mono labels. Always in the DOM (crawlable), hidden until hover/focus. */
+.drop {
+  position: absolute; top: 100%; left: 0; min-width: 210px; margin: 0; padding: 8px; list-style: none;
+  background: #0D1411; border: 1px solid rgba(242,239,230,.14); border-radius: 14px;
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity .2s, transform .2s, visibility 0s linear .2s;
+}
+.dropOpen { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+:global(.kd-site) .nav a.dropLink {
+  display: block; padding: 11px 14px; border-radius: 8px;
+  font-family: var(--kd-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #C9D4CE; white-space: nowrap;
+}
+:global(.kd-site) .nav a.dropLink:hover, :global(.kd-site) .nav a.dropLink:focus-visible { color: #F28B30; background: rgba(242,239,230,.05); }
+:global(.kd-site) .nav a.dropLink.dropActive { color: #F2EFE6; }
+
+.pill {
+  display: none; align-items: center; gap: 10px;
+  font-family: var(--kd-mono); font-size: 12px; padding: 8px 14px;
+  border: 1px solid rgba(242,239,230,.16); border-radius: 999px; color: #C9D4CE; white-space: nowrap; flex-shrink: 0;
+}
+:global(.kd-site) .nav a.pill, :global(.kd-site) .nav a.pill:hover { color: #C9D4CE; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: #F28B30; display: inline-block; animation: pulse 2388ms ease-in-out infinite; }
+.price { color: #F2EFE6; }
+@keyframes pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .dot { animation: none; opacity: 1; } }
+
+:global(.kd-site) .nav a.cta {
+  background: #F28B30; color: #0D1411; font-weight: 600; font-size: 14px;
+  padding: 11px 20px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; transition: background .2s;
+}
+:global(.kd-site) .nav a.cta:hover { background: #FFA457; color: #0D1411; }
+
+.menuBtn {
+  margin-left: auto; background: transparent; color: #F2EFE6; border: 1px solid rgba(242,239,230,.3); cursor: pointer;
+  font-family: var(--kd-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 10px 16px; border-radius: 999px; line-height: normal;
+}
+
+.menu {
+  display: flex; flex-direction: column; padding: 8px clamp(20px,4vw,56px) 24px;
+  background: #0D1411; border-top: 1px solid rgba(242,239,230,.1);
+  max-height: calc(100svh - 75px); overflow-y: auto;
+}
+.menuGroup { display: flex; flex-direction: column; border-bottom: 1px solid rgba(242,239,230,.08); }
+:global(.kd-site) .nav a.menuLink, .menuGroup span.menuLink {
+  display: block; color: #9DAEA6; font-size: 22px; font-weight: 600; padding: 16px 0; text-align: left;
+}
+:global(.kd-site) .nav a.menuLink.active { color: #F2EFE6; }
+:global(.kd-site) .nav a.menuSub {
+  display: block; padding: 4px 0 12px 16px; font-family: var(--kd-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #9DAEA6;
+}
+:global(.kd-site) .nav a.menuSub:hover { color: #F28B30; }
+:global(.kd-site) .nav a.menuCta {
+  margin-top: 20px; background: #F28B30; color: #0D1411; font-weight: 600; font-size: 15px; padding: 14px 20px; border-radius: 999px; text-align: center;
+}
+
+.cta { display: none; }
+@media (min-width: 820px) {
+  .links { display: flex; }
+  .cta { display: inline-block; }
+  .menuBtn { display: none; }
+  .menu { display: none; }
+}
+@media (min-width: 1160px) {
+  .pill { display: flex; }
+}
