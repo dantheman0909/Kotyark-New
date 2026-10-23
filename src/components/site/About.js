@@ -2,7 +2,6 @@ import Image from 'next/image';
 import JsonLd from '@/components/JsonLd';
 import { peopleJsonLd, webPageJsonLd } from '@/lib/seo';
 import { BOARD } from '@/lib/site-content';
-import BioToggle from './BioToggle';
 import prim from './prim.module.css';
 import s from './about.module.css';
 
@@ -83,7 +82,7 @@ export default function About() {
                       <div key={k} className={s.fact}><dt>{k}</dt><dd>{v}</dd></div>
                     ))}
                   </dl>
-                  <BioToggle paragraphs={b.bio} className={s.personBio} />
+                  <p className={s.personBio}>{b.summary}</p>
                 </div>
               </li>
             ))}
